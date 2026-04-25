@@ -45,7 +45,10 @@
       }
     ]
   },
-  "logo": "/logo/light.svg",
+  "logo": {
+    "light": "/images/scalev_logo_light.png",
+    "dark": "/images/scalev_logo_dark.png"
+  },
   "navbar": {
     "links": [
       {
