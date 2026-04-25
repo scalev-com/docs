@@ -7,7 +7,7 @@
     "light": "#66D1F9",
     "dark": "#0783B2"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/images/favicon.ico",
   "navigation": {
     "tabs": [
       {
@@ -59,7 +59,7 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://app.scalev.com/login"
     }
   },
   "contextual": {
