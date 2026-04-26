@@ -19,7 +19,18 @@
             "pages": [
               "dev-introduction",
               "authorization-with-o-auth",
-              "authentication-with-api-key"
+              "authentication-with-api-key",
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "overview",
+                  "enabling-webhooks",
+                  "verifying-a-webhook-request",
+                  "apps-webhooks",
+                  "webhook-events",
+                  "payload-example"
+                ]
+              }
             ]
           },
           {
@@ -38,7 +49,11 @@
             "pages": [
               "dev-pendahuluan",
               "otorisasi-dengan-o-auth",
-              "autentikasi-dengan-api-key"
+              "autentikasi-dengan-api-key",
+              {
+                "group": "Webhooks",
+                "pages": []
+              }
             ]
           },
           {
