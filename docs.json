@@ -77,7 +77,9 @@
   "description": "This is the single site to understand how to use Scalev.",
   "footer": {
     "socials": {
-      "website": "https://scalev.com"
+      "website": "https://scalev.com",
+      "github": "https://github.com/scalev-com",
+      "x": "https://x.com/scalev_com"
     }
   }
 }
