@@ -1,133 +1,164 @@
 ---
 title: "Introduction"
-description: "Welcome to the new home for your documentation"
-icon: 'star'
 ---
 
-## Setting up
+Scalev API v3 is a headless commerce API for storefront, customer, and authenticated business integrations. You can use it to power catalog, cart, checkout, orders, subscriptions, digital product access, and related commerce workflows in your own app or system.
 
-Get your documentation site up and running in minutes.
+## Base URL
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+```text
+https://api.scalev.com
+```
 
-## Make it yours
+All documented endpoints in this reference live under the `/v3` namespace.
 
-Design a docs site that looks great and empowers your users.
+## Authentication
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+Authentication depends on the route family:
 
-## Create beautiful pages
+### Public storefront routes
 
-Everything you need to create world-class documentation.
+Store-derived public storefront routes under `/v3/stores/{store_id}/public/*` require a publishable storefront API key:
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+```text
+X-Scalev-Storefront-Api-Key: sfpk_...
+```
 
-## Make your content agent ready
+### Customer-authenticated routes
 
-Make your docs work for humans and AI agents alike.
+Customer routes use bearer authentication:
 
-<Columns cols={2}>
-  <Card
-    title="Prompt component"
-    icon="robot"
-    href="/agent-ready/prompt"
-  >
-    Embed shareable AI prompts readers can copy or open in Cursor.
-  </Card>
-  <Card
-    title="Visibility"
-    icon="eye"
-    href="/agent-ready/visibility"
-  >
-    Show different content to humans and agents reading your docs.
-  </Card>
-  <Card
-    title="Contextual menu"
-    icon="bolt"
-    href="/agent-ready/contextual"
-  >
-    Give readers one-click access to Claude, ChatGPT, Cursor, and more.
-  </Card>
-  <Card
-    title="AI coding tools"
-    icon="wand-magic-sparkles"
-    href="/ai-tools/claude-code"
-  >
-    Set up Claude Code, Cursor, or Windsurf with Mintlify's skill.
-  </Card>
-</Columns>
+```text
+Authorization: Bearer CUSTOMER_ACCESS_TOKEN
+```
 
-## Need inspiration?
+### Authenticated business routes
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+Authenticated business routes use bearer authentication with an access token or business API key:
+
+```text
+Authorization: Bearer YOUR_TOKEN_HERE
+```
+
+## Common Response Format
+
+Scalev API v3 does not use the legacy `code` / `status` / `data` response envelope.
+
+### Single Resource Success
+
+Single-resource success responses return the resource directly:
+
+```json
+{
+  "id": "ord_123",
+  "status": "paid"
+}
+```
+
+### Non-Paginated Collection Success
+
+```json
+{
+  "data": [
+    {
+      "id": "prod_123"
+    }
+  ],
+  "is_paginated": false
+}
+```
+
+### Paginated Collection Success
+
+```json
+{
+  "data": [
+    {
+      "id": "prod_123"
+    }
+  ],
+  "is_paginated": true,
+  "has_next": true,
+  "has_previous": false,
+  "next_cursor": "opaque-token",
+  "previous_cursor": null,
+  "page_size": 25
+}
+```
+
+### Error Response
+
+```json
+{
+  "error": "Error message",
+  "error_code": "optional_error_code"
+}
+```
+
+## HTTP Status Codes
+
+The API uses standard HTTP status codes:
+
+- `200 OK` - Successful read, update, or action request
+- `201 Created` - Successful create request
+- `204 No Content` - Successful request with no response body
+- `400 Bad Request` - Invalid request format, parameters, or cursor
+- `401 Unauthorized` - Authentication required or token is invalid
+- `403 Forbidden` - Authenticated but not allowed
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Resource conflict
+- `422 Unprocessable Entity` - Validation errors
+- `429 Too Many Requests` - Rate limit exceeded
+- `5xx` - Unexpected server error
+
+## Rate Limiting
+
+API requests may be rate limited. When rate limiting is applied, limit information is returned in response headers such as:
+
+- `X-Ratelimit-Limit`
+- `X-Ratelimit-Remaining`
+- `X-Ratelimit-Reset`
+
+## Pagination
+
+Paginated `/v3` endpoints use opaque cursor-based pagination.
+
+### Request Parameters
+
+- `page_size` - Number of items to return
+- `next_cursor` - Cursor for the next page
+- `previous_cursor` - Cursor for the previous page
+
+### Response Fields
+
+- `data` - Array of items in the current page
+- `is_paginated` - Always `true` for paginated responses
+- `has_next` - Whether a next page exists
+- `has_previous` - Whether a previous page exists
+- `next_cursor` - Opaque cursor for the next page
+- `previous_cursor` - Opaque cursor for the previous page
+- `page_size` - Number of items returned per page
+
+```json
+{
+  "data": [
+    {
+      "id": "prod_123"
+    }
+  ],
+  "is_paginated": true,
+  "has_next": true,
+  "has_previous": false,
+  "next_cursor": "opaque-token",
+  "previous_cursor": null,
+  "page_size": 25
+}
+```
+
+## Support
+
+If you encounter issues, contact the Scalev support team.
+
+---
+
+This documentation may change as the Scalev API evolves.

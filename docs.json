@@ -17,7 +17,7 @@
             "tab": "Developers",
             "icon": "code-branch",
             "pages": [
-              "dev-introduction",
+              "index",
               "authorization-with-o-auth",
               "authentication-with-api-key",
               {
