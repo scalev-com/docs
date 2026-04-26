@@ -30,13 +30,9 @@
       {
         "tab": "Developers",
         "pages": [
-          "introduction-1",
-          {
-            "group": "Authentication",
-            "pages": [
-              "how-to-authenticate"
-            ]
-          }
+          "dev-introduction",
+          "authorization-with-o-auth",
+          "authentication-with-api-key"
         ]
       },
       {
