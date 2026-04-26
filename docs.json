@@ -43,6 +43,13 @@
             "tab": "API Reference",
             "icon": "code",
             "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
+          },
+          {
+            "tab": "Changelog",
+            "icon": "newspaper",
+            "pages": [
+              "changelog"
+            ]
           }
         ]
       },
