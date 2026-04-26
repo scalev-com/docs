@@ -1,5 +1,5 @@
 ---
-title: 'Membuat Pesanan'
+title: "Membuat Pesanan"
 ---
 
 ## Pesanan Produk Digital
@@ -49,7 +49,7 @@ Untuk pesanan produk digital, payload minimalnya adalah:
 }
 ```
 
-Atau jika ingin menggunakan bundle вместо produk:
+Atau jika ingin menggunakan bundle, gunakan payload berikut:
 
 ```json
 {
@@ -81,7 +81,7 @@ Response akan mencakup:
 
 Gunakan `payment_url` untuk redirect customer.
 
-***
+---
 
 ## Pesanan Produk Fisik
 
@@ -104,11 +104,11 @@ Field opsional:
 
 Cara mendapatkannya:
 
-- `address` -> isi alamat jalan saja, tanpa detail kecamatan/kota/provinsi
-- `location_id` -> cari kecamatan menggunakan `GET /v3/locations`
-- `postal_code` -> jika perlu, gunakan `GET /v3/locations/{location_id}/postal-codes` atau isi kode pos yang sudah diketahui
-- `warehouse_unique_id` -> gunakan `POST /v3/shipping-costs/search-warehouse`
-- `courier_service_id`, `shipping_cost`, `shipment_provider_code` -> gunakan `POST /v3/shipping-costs/search-courier-service`
+- `address` -\> isi alamat jalan saja, tanpa detail kecamatan/kota/provinsi
+- `location_id` -\> cari kecamatan menggunakan `GET /v3/locations`
+- `postal_code` -\> jika perlu, gunakan `GET /v3/locations/{location_id}/postal-codes` atau isi kode pos yang sudah diketahui
+- `warehouse_unique_id` -\> gunakan `POST /v3/shipping-costs/search-warehouse`
+- `courier_service_id`, `shipping_cost`, `shipment_provider_code` -\> gunakan `POST /v3/shipping-costs/search-courier-service`
 
 ### 4. Susun payload order
 
