@@ -30,6 +30,12 @@
                   "webhook-events",
                   "payload-example"
                 ]
+              },
+              {
+                "group": "Use Cases",
+                "pages": [
+                  "creating-orders"
+                ]
               }
             ]
           },
@@ -53,6 +59,12 @@
               {
                 "group": "Webhooks",
                 "pages": []
+              },
+              {
+                "group": "Contoh Penggunaan",
+                "pages": [
+                  "membuat-pesanan"
+                ]
               }
             ]
           },

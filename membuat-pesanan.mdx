@@ -1,0 +1,146 @@
+---
+title: 'Membuat Pesanan'
+---
+
+## Pesanan Produk Digital
+
+### 1. Pilih toko
+
+Gunakan `GET /v3/stores/simplified`.
+
+Saat ini runtime mendukung filter berikut:
+
+- `search`: filter berdasarkan nama toko
+- `domain`: filter berdasarkan domain toko
+
+Response juga mencakup:
+
+- `payment_methods`
+- `sub_payment_methods`
+
+Jika Anda ingin mengambil daftar metode pembayaran khusus untuk satu toko, gunakan:
+
+- `GET /v3/stores/{store_id}/payment-methods`
+
+### 2. Pilih produk atau bundle
+
+Gunakan:
+
+- `GET /v3/stores/{store_id}/products` untuk mengambil produk individual
+- `GET /v3/stores/{store_id}/bundles` untuk mengambil bundle
+
+### 3. Susun payload order
+
+Untuk pesanan produk digital, payload minimalnya adalah:
+
+```json
+{
+  "store_unique_id": "store_xxx",
+  "customer_name": "John Doe",
+  "customer_phone": "62812345678",
+  "customer_email": "example@example.com",
+  "ordervariants": [
+    {
+      "quantity": 1,
+      "variant_unique_id": "variant_xxx"
+    }
+  ],
+  "payment_method": "invoice"
+}
+```
+
+Atau jika ingin menggunakan bundle вместо produk:
+
+```json
+{
+  "store_unique_id": "store_xxx",
+  "customer_name": "John Doe",
+  "customer_phone": "62812345678",
+  "customer_email": "example@example.com",
+  "orderbundles": [
+    {
+      "quantity": 1,
+      "bundle_price_option_unique_id": "bpo_xxx"
+    }
+  ],
+  "payment_method": "invoice"
+}
+```
+
+### 4. Kirim request
+
+Panggil `POST /v3/orders` dengan payload di atas.
+
+### 5. Arahkan customer ke halaman pembayaran
+
+Response akan mencakup:
+
+- `secret_slug`
+- `public_order_url`
+- `payment_url`
+
+Gunakan `payment_url` untuk redirect customer.
+
+***
+
+## Pesanan Produk Fisik
+
+### 1–2. Sama seperti pesanan produk digital
+
+### 3. Tambahkan informasi pengiriman
+
+Field tambahan yang wajib:
+
+- `address`
+- `location_id`
+- `warehouse_unique_id`
+- `shipping_cost`
+- `courier_service_id`
+
+Field opsional:
+
+- `postal_code`
+- `shipment_provider_code`
+
+Cara mendapatkannya:
+
+- `address` -> isi alamat jalan saja, tanpa detail kecamatan/kota/provinsi
+- `location_id` -> cari kecamatan menggunakan `GET /v3/locations`
+- `postal_code` -> jika perlu, gunakan `GET /v3/locations/{location_id}/postal-codes` atau isi kode pos yang sudah diketahui
+- `warehouse_unique_id` -> gunakan `POST /v3/shipping-costs/search-warehouse`
+- `courier_service_id`, `shipping_cost`, `shipment_provider_code` -> gunakan `POST /v3/shipping-costs/search-courier-service`
+
+### 4. Susun payload order
+
+Contoh minimal:
+
+```json
+{
+  "store_unique_id": "store_xxx",
+  "customer_name": "John Doe",
+  "customer_phone": "62812345678",
+  "customer_email": "example@example.com",
+  "ordervariants": [
+    {
+      "quantity": 1,
+      "variant_unique_id": "variant_xxx"
+    }
+  ],
+  "payment_method": "invoice",
+  "address": "Jl. Pegangsaan Timur No. 28",
+  "location_id": 1,
+  "postal_code": "12345",
+  "warehouse_unique_id": "warehouse_xxx",
+  "courier_service_id": 1,
+  "shipping_cost": 20000,
+  "shipment_provider_code": "lincah"
+}
+```
+
+### 5. Kirim request
+
+Panggil `POST /v3/orders` dengan payload di atas.
+
+### 6. Arahkan customer ke halaman pembayaran
+
+Gunakan `payment_url` dari response order creation.
