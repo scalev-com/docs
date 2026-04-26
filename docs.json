@@ -9,35 +9,23 @@
   },
   "favicon": "/favicon.ico",
   "navigation": {
-    "tabs": [
+    "languages": [
       {
-        "tab": "Guides",
-        "pages": [
+        "language": "en",
+        "tabs": [
           {
-            "group": "Getting started",
+            "tab": "Developers",
             "pages": [
-              "introduction"
+              "dev-introduction",
+              "authorization-with-o-auth",
+              "authentication-with-api-key"
             ]
           },
           {
-            "group": "Stores",
-            "pages": [
-              "create-a-store"
-            ]
+            "tab": "API Reference",
+            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
           }
         ]
-      },
-      {
-        "tab": "Developers",
-        "pages": [
-          "dev-introduction",
-          "authorization-with-o-auth",
-          "authentication-with-api-key"
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
       }
     ]
   },
