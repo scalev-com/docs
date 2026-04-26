@@ -1,0 +1,164 @@
+---
+title: "Pendahuluan"
+---
+
+Scalev API v3 adalah API commerce headless untuk integrasi storefront, pelanggan, dan bisnis terautentikasi. Anda dapat menggunakannya untuk menjalankan katalog, keranjang, checkout, pesanan, langganan, akses produk digital, dan alur kerja commerce terkait di aplikasi atau sistem Anda sendiri.
+
+## Base URL
+
+```text
+https://api.scalev.com
+```
+
+Semua endpoint yang didokumentasikan dalam referensi ini berada di bawah namespace `/v3`.
+
+## Autentikasi
+
+Autentikasi bergantung pada kelompok rute:
+
+### Rute storefront publik
+
+Rute storefront publik berbasis toko di bawah `/v3/stores/{store_id}/public/*` memerlukan kunci API storefront yang dapat dipublikasikan:
+
+```text
+X-Scalev-Storefront-Api-Key: sfpk_...
+```
+
+### Rute pelanggan terautentikasi
+
+Rute pelanggan menggunakan autentikasi bearer:
+
+```text
+Authorization: Bearer CUSTOMER_ACCESS_TOKEN
+```
+
+### Rute bisnis terautentikasi
+
+Rute bisnis terautentikasi menggunakan autentikasi bearer dengan token akses atau kunci API bisnis:
+
+```text
+Authorization: Bearer YOUR_TOKEN_HERE
+```
+
+## Format Respons Umum
+
+Scalev API v3 tidak menggunakan envelope respons lama `code` / `status` / `data`.
+
+### Respons Sukses untuk Satu Sumber Daya
+
+Respons sukses untuk satu sumber daya mengembalikan sumber daya secara langsung:
+
+```json
+{
+  "id": "ord_123",
+  "status": "paid"
+}
+```
+
+### Respons Sukses untuk Koleksi Tanpa Paginasi
+
+```json
+{
+  "data": [
+    {
+      "id": "prod_123"
+    }
+  ],
+  "is_paginated": false
+}
+```
+
+### Respons Sukses untuk Koleksi dengan Paginasi
+
+```json
+{
+  "data": [
+    {
+      "id": "prod_123"
+    }
+  ],
+  "is_paginated": true,
+  "has_next": true,
+  "has_previous": false,
+  "next_cursor": "opaque-token",
+  "previous_cursor": null,
+  "page_size": 25
+}
+```
+
+### Respons Error
+
+```json
+{
+  "error": "Pesan error",
+  "error_code": "kode_error_opsional"
+}
+```
+
+## Kode Status HTTP
+
+API menggunakan kode status HTTP standar:
+
+- `200 OK` - Permintaan baca, pembaruan, atau aksi berhasil
+- `201 Created` - Permintaan pembuatan berhasil
+- `204 No Content` - Permintaan berhasil tanpa body respons
+- `400 Bad Request` - Format permintaan, parameter, atau kursor tidak valid
+- `401 Unauthorized` - Autentikasi diperlukan atau token tidak valid
+- `403 Forbidden` - Terautentikasi tetapi tidak diizinkan
+- `404 Not Found` - Sumber daya tidak ditemukan
+- `409 Conflict` - Konflik sumber daya
+- `422 Unprocessable Entity` - Error validasi
+- `429 Too Many Requests` - Rate limit terlampaui
+- `5xx` - Error server tidak terduga
+
+## Rate Limiting
+
+Permintaan API dapat terkena rate limit. Ketika rate limit diterapkan, informasi limit dikembalikan dalam header respons seperti:
+
+- `X-Ratelimit-Limit`
+- `X-Ratelimit-Remaining`
+- `X-Ratelimit-Reset`
+
+## Paginasi
+
+Endpoint `/v3` yang menggunakan paginasi memakai paginasi berbasis kursor opaque.
+
+### Parameter Permintaan
+
+- `page_size` - Jumlah item yang dikembalikan
+- `next_cursor` - Kursor untuk halaman berikutnya
+- `previous_cursor` - Kursor untuk halaman sebelumnya
+
+### Field Respons
+
+- `data` - Array item pada halaman saat ini
+- `is_paginated` - Selalu `true` untuk respons dengan paginasi
+- `has_next` - Apakah halaman berikutnya tersedia
+- `has_previous` - Apakah halaman sebelumnya tersedia
+- `next_cursor` - Kursor opaque untuk halaman berikutnya
+- `previous_cursor` - Kursor opaque untuk halaman sebelumnya
+- `page_size` - Jumlah item yang dikembalikan per halaman
+
+```json
+{
+  "data": [
+    {
+      "id": "prod_123"
+    }
+  ],
+  "is_paginated": true,
+  "has_next": true,
+  "has_previous": false,
+  "next_cursor": "opaque-token",
+  "previous_cursor": null,
+  "page_size": 25
+}
+```
+
+## Dukungan
+
+Jika Anda mengalami masalah, hubungi tim dukungan Scalev.
+
+---
+
+Dokumentasi ini dapat berubah seiring perkembangan Scalev API.

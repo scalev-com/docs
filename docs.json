@@ -26,6 +26,19 @@
             "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
           }
         ]
+      },
+      {
+        "language": "id",
+        "tabs": [
+          {
+            "tab": "Developers",
+            "pages": [
+              "dev-pendahuluan",
+              "otorisasi-dengan-o-auth",
+              "autentikasi-dengan-api-key"
+            ]
+          }
+        ]
       }
     ]
   },

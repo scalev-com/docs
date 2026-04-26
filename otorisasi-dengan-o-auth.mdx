@@ -1,0 +1,424 @@
+---
+title: 'Otorisasi dengan OAuth'
+---
+
+## Ringkasan
+
+Scalev menggunakan OAuth 2.0 Authorization Code dengan PKCE.
+
+Alur ini terbagi ke dua permukaan:
+
+- langkah otorisasi yang menghadap merchant dimulai di halaman authorize frontend Scalev
+- endpoint token, introspection, revocation, dan installation berada di permukaan API `/v3/oauth/*`
+
+Dalam praktiknya, alurnya seperti ini:
+
+1. Daftarkan aplikasi Anda ke Scalev
+2. Buat parameter PKCE
+3. Redirect browser merchant ke halaman authorize Scalev
+4. Merchant masuk dan menyetujui aplikasi Anda
+5. Backend Anda menerima authorization code
+6. Backend Anda menukar code tersebut dengan token
+7. Backend Anda menggunakan access token untuk memanggil API Scalev `/v3`
+8. Backend Anda melakukan refresh, introspection, atau revoke token sesuai kebutuhan
+
+> Halaman authorize adalah rute frontend, bukan endpoint API untuk mesin. Halaman ini sengaja dipisahkan dari kontrak API `/v3`.
+
+## URL
+
+### URL Otorisasi Frontend
+
+```text
+https://app.scalev.com/oauth/authorize
+```
+
+### Base URL API
+
+```text
+https://api.scalev.com
+```
+
+Semua endpoint OAuth publik untuk mesin dalam panduan ini berada di bawah:
+
+```text
+https://api.scalev.com/v3/oauth/*
+```
+
+## Langkah 0: Daftarkan dan Siapkan Aplikasi Anda
+
+Sebelum merchant dapat menginstal aplikasi Anda, buat dan konfigurasi aplikasi OAuth Anda di Scalev.
+
+Field aplikasi penting meliputi:
+
+- `client_id`
+- `client_secret`
+- `redirect_uri`
+- `manage_url` opsional
+- scope yang diminta
+- pengaturan webhook opsional
+- tag billing opsional
+- IP allowlist opsional
+
+Aturan penting:
+
+- `redirect_uri` harus sama persis
+- `client_secret` harus tetap berada di sisi server
+- jika aplikasi Anda menggunakan event webhook, konfigurasi pengaturan webhook aplikasi dengan benar
+- jika aplikasi Anda mendukung link launch merchant dari Scalev, atur `manage_url`
+- instalasi merchant diblokir sampai aplikasi terverifikasi
+
+## Langkah 1: Buat Parameter PKCE
+
+Sebelum me-redirect merchant, buat:
+
+- `code_verifier`
+- `code_challenge` yang diturunkan dari verifier tersebut menggunakan SHA-256 dan encoding Base64 URL
+
+### Contoh Code Verifier (JavaScript)
+
+```javascript
+function generateCodeVerifier(length = 100) {
+  if (!Number.isInteger(length) || length < 43 || length > 128) {
+    throw new Error("Length must be an integer between 43 and 128.");
+  }
+
+  const charset =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+  const randomValues = crypto.getRandomValues(new Uint8Array(length));
+
+  return Array.from(
+    randomValues,
+    (byte) => charset[byte % charset.length],
+  ).join("");
+}
+```
+
+### Contoh Code Challenge (JavaScript)
+
+```javascript
+function base64UrlEncode(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+async function generateCodeChallenge(codeVerifier) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(codeVerifier);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return base64UrlEncode(digest);
+}
+```
+
+Simpan `code_verifier` dengan aman. Anda akan membutuhkannya saat pertukaran token.
+
+## Langkah 2: Redirect Merchant ke Scalev
+
+Redirect browser merchant ke:
+
+```text
+https://app.scalev.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&state=RANDOM_STATE_STRING&code_challenge=CODE_CHALLENGE&code_challenge_method=S256
+```
+
+Parameter query wajib:
+
+| Parameter | Wajib | Deskripsi |
+| --- | --- | --- |
+| `client_id` | Ya | Client ID aplikasi OAuth Anda |
+| `redirect_uri` | Ya | Harus sama persis dengan redirect URI yang dikonfigurasi |
+| `response_type` | Ya | Harus `code` |
+| `state` | Ya | Nilai acak perlindungan CSRF yang dibuat oleh aplikasi Anda |
+| `code_challenge` | Ya | Hash SHA-256 dari code verifier yang di-encode dengan Base64 URL |
+| `code_challenge_method` | Ya | Harus `S256` |
+
+Perilaku saat ini:
+
+- PKCE wajib digunakan
+- hanya `S256` yang diterima
+- entrypoint authorize adalah URL frontend, bukan API `/v3`
+- jika merchant belum masuk, Scalev akan membawa mereka melalui login lalu mengembalikannya ke halaman authorize dengan parameter query OAuth yang sama
+
+## Opsional: Ambil Metadata Aplikasi Publik Sebelum Redirect
+
+Jika Anda ingin melakukan preflight atau menampilkan metadata aplikasi dari backend, panggil:
+
+```http
+GET https://api.scalev.com/v3/oauth/application?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI
+```
+
+Ini mengembalikan metadata aplikasi publik seperti:
+
+- `client_id`
+- `name`
+- `description`
+- `logo_url`
+- `homepage_url`
+- `redirect_uri`
+
+## Langkah 3: Merchant Meninjau dan Menyetujui Aplikasi
+
+Di halaman authorize Scalev, merchant dapat meninjau dan menyetujui:
+
+- identitas aplikasi
+- scope yang diminta
+- izin webhook, jika berlaku
+- persetujuan tag billing, jika berlaku
+
+Frontend kemudian menyelesaikan alur consent dan me-redirect merchant kembali ke `redirect_uri` yang Anda konfigurasi.
+
+## Langkah 4: Terima Authorization Code
+
+Setelah disetujui, callback backend Anda menerima:
+
+```text
+https://your-app.example.com/oauth/callback?code=AUTHORIZATION_CODE&state=RANDOM_STATE_STRING
+```
+
+Validasi wajib:
+
+1. verifikasi `state` yang dikembalikan
+2. segera tukarkan code tersebut
+
+Perilaku authorization code saat ini:
+
+- hanya alur authorization-code
+- TTL code adalah 10 menit
+- setiap code hanya dapat ditukar satu kali
+
+## Langkah 5: Tukarkan Code dengan Token
+
+Dari backend Anda, tukarkan code di:
+
+```http
+POST https://api.scalev.com/v3/oauth/token
+Content-Type: application/json
+
+{
+  "grant_type": "authorization_code",
+  "code": "AUTHORIZATION_CODE",
+  "code_verifier": "CODE_VERIFIER",
+  "client_id": "YOUR_CLIENT_ID",
+  "client_secret": "YOUR_CLIENT_SECRET"
+}
+```
+
+Respons sukses:
+
+```json
+{
+  "access_token": "ACCESS_TOKEN",
+  "refresh_token": "REFRESH_TOKEN",
+  "token_type": "Bearer",
+  "expires_in": 3600
+}
+```
+
+Field respons:
+
+| Field | Deskripsi |
+| --- | --- |
+| `access_token` | Token yang digunakan untuk permintaan API `/v3` terautentikasi |
+| `refresh_token` | Token yang digunakan untuk memperoleh access token baru |
+| `token_type` | Selalu `Bearer` |
+| `expires_in` | Masa berlaku access token dalam detik |
+
+## Langkah 6: Gunakan Access Token
+
+Gunakan access token di header `Authorization`:
+
+```http
+Authorization: Bearer ACCESS_TOKEN
+```
+
+Backend Anda kemudian dapat memanggil endpoint `/v3` yang diotorisasi merchant dan sesuai dengan scope yang diberikan.
+
+### Pemeriksaan Awal yang Berguna
+
+#### Token Introspection
+
+```http
+POST https://api.scalev.com/v3/oauth/introspect
+Content-Type: application/json
+
+{
+  "token": "ACCESS_TOKEN",
+  "token_type": "access",
+  "client_id": "YOUR_CLIENT_ID",
+  "client_secret": "YOUR_CLIENT_SECRET"
+}
+```
+
+Gunakan ini untuk memeriksa apakah token saat ini aktif untuk penggunaan runtime.
+
+#### Snapshot Status Instalasi
+
+```http
+POST https://api.scalev.com/v3/oauth/installation/status
+Content-Type: application/json
+
+{
+  "token": "ACCESS_TOKEN",
+  "token_type": "access",
+  "client_id": "YOUR_CLIENT_ID",
+  "client_secret": "YOUR_CLIENT_SECRET"
+}
+```
+
+Ini mengembalikan snapshot instalasi merchant, termasuk:
+
+- `authorized_business_id`
+- `client_id`
+- `is_active`
+- `is_enabled`
+- `granted_scopes`
+- `webhook_status`
+- `granted_webhook_events`
+- `approved_billing_tags`
+- `manage_launch_available`
+- `updated_at`
+
+Contoh:
+
+```json
+{
+  "authorized_business_id": 123,
+  "client_id": "client_abc",
+  "is_active": true,
+  "is_enabled": true,
+  "granted_scopes": ["order:list", "order:read"],
+  "webhook_status": "active",
+  "granted_webhook_events": ["payment.received", "shipment.status.updated"],
+  "approved_billing_tags": [],
+  "manage_launch_available": true,
+  "updated_at": "2026-04-01T06:10:12.345678Z"
+}
+```
+
+## Langkah 7: Refresh Access Token
+
+Ketika access token kedaluwarsa, gunakan refresh token:
+
+```http
+POST https://api.scalev.com/v3/oauth/token
+Content-Type: application/json
+
+{
+  "grant_type": "refresh_token",
+  "refresh_token": "REFRESH_TOKEN",
+  "client_id": "YOUR_CLIENT_ID",
+  "client_secret": "YOUR_CLIENT_SECRET"
+}
+```
+
+Respons sukses:
+
+```json
+{
+  "access_token": "NEW_ACCESS_TOKEN",
+  "refresh_token": "NEW_REFRESH_TOKEN",
+  "token_type": "Bearer",
+  "expires_in": 3600
+}
+```
+
+Catatan penting:
+
+- selalu ganti access token dan refresh token setelah refresh berhasil
+- pertukaran refresh-token adalah bagian dari alur `/v3/oauth/token`
+- jika instalasi dinonaktifkan atau dicabut, refresh dapat gagal
+
+## Siklus Hidup Token
+
+Perilaku saat ini:
+
+- TTL access token: 1 jam
+- TTL refresh token: 30 hari
+
+## Revocation Token
+
+Untuk mencabut token:
+
+```http
+POST https://api.scalev.com/v3/oauth/revoke
+Content-Type: application/json
+
+{
+  "token": "TOKEN_TO_REVOKE",
+  "token_type": "refresh",
+  "client_id": "YOUR_CLIENT_ID",
+  "client_secret": "YOUR_CLIENT_SECRET"
+}
+```
+
+Nilai `token_type` saat ini adalah:
+
+- `access`
+- `refresh`
+
+Revocation yang berhasil mengembalikan:
+
+- HTTP `204 No Content`
+
+## Opsional: Alur Merchant Manage Launch
+
+Jika aplikasi Anda mendefinisikan `manage_url`, Scalev dapat meluncurkan merchant ke aplikasi Anda dengan `launch_token` yang berumur singkat.
+
+Tukarkan token tersebut dari backend Anda dengan:
+
+```http
+POST https://api.scalev.com/v3/oauth/installation/launch-token/exchange
+Content-Type: application/json
+
+{
+  "launch_token": "LAUNCH_TOKEN",
+  "client_id": "YOUR_CLIENT_ID",
+  "client_secret": "YOUR_CLIENT_SECRET"
+}
+```
+
+Ini mengembalikan bentuk snapshot instalasi yang sama dengan `/v3/oauth/installation/status`.
+
+Catatan penting:
+
+- `launch_token` bersifat sekali pakai dan berumur singkat
+- token ini bukan access token
+- tidak ada secret manage-link bersama; backend Anda mengautentikasi pertukaran dengan `client_id` dan `client_secret`
+
+## Praktik Terbaik
+
+1. Redirect merchant ke halaman authorize frontend, bukan ke endpoint API backend `/v2`.
+2. Buat PKCE verifier dan challenge baru untuk setiap percobaan instalasi.
+3. Validasi `state` pada setiap callback.
+4. Simpan `client_secret`, access token, dan refresh token hanya di server.
+5. Gunakan hanya scope, event webhook, dan tag billing yang benar-benar dibutuhkan aplikasi Anda.
+6. Perlakukan `redirect_uri` sebagai nilai yang harus sama persis.
+7. Gunakan `/v3/oauth/installation/status` saat Anda membutuhkan snapshot instalasi merchant yang otoritatif.
+8. Gunakan `/v3/oauth/introspect` untuk diagnostik token runtime.
+9. Tangani instalasi yang dinonaktifkan secara terpisah dari instalasi yang dicabut.
+
+## Penanganan Error
+
+Endpoint OAuth dapat mengembalikan error seperti:
+
+| Kode Error | Deskripsi |
+| --- | --- |
+| `invalid_request` | Parameter permintaan hilang atau formatnya salah |
+| `invalid_client` | Autentikasi client gagal |
+| `invalid_grant` | Authorization code, refresh token, atau PKCE verifier tidak valid atau kedaluwarsa |
+| `unauthorized_client` | Client tidak diizinkan menggunakan grant type yang diminta |
+| `server_error` | Kegagalan sisi server yang tidak terduga |
+
+Bentuk respons error umum:
+
+```json
+{
+  "error": "Pesan error",
+  "error_code": "invalid_grant"
+}
+```
+
+Kegagalan terkait PKCE biasanya muncul sebagai:
+
+- `invalid_grant` ketika code verifier tidak cocok
+- `invalid_request` ketika parameter PKCE wajib hilang atau formatnya salah

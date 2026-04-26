@@ -4,11 +4,11 @@ title: "Authentication with API Key"
 
 ## Overview
 
-Scalev supports business API keys for machine-authenticated server-to-server requests.
+Scalev supports API keys for machine-authenticated server-to-server requests.
 
-Business API keys are the simplest option when your own backend needs to call Scalev directly without running an OAuth install flow. They are intended for backend services, automation, internal tools, and other trusted machine integrations.
+API keys are the simplest option when your own backend needs to call Scalev directly without running an OAuth install flow. They are intended for backend services, automation, internal tools, and other trusted machine integrations.
 
-Business API keys authenticate authenticated business routes, primarily on the `/v3` API surface.
+API keys authenticate business routes, primarily on the `/v3` API surface.
 
 They are **not** used for:
 
@@ -23,13 +23,13 @@ They are **not** used for:
 https://api.scalev.com
 ```
 
-Most machine-authenticated business integrations should use `/v3` routes.
+Most machine-authenticated integrations should use `/v3` routes.
 
 ## API Key Types
 
 ### Secret Keys (`sk_...`)
 
-Secret keys are full-access machine credentials for the business.
+Secret keys are full-access machine credentials.
 
 Behavior:
 
@@ -37,16 +37,6 @@ Behavior:
 - no per-scope restriction
 - best for trusted backend services and internal automation
 - must be stored securely and never exposed in browser or mobile code
-
-Example:
-
-```bash
-Authorization: Bearer sk_1a2b3c4d5e6f...
-```
-
-Important boundary:
-
-- secret keys do **not** bypass dashboard-only authorization rules
 
 ### Restricted Keys (`rk_...`)
 
@@ -58,16 +48,6 @@ Behavior:
 - must include at least one scope
 - can only use machine-eligible global scopes
 - good for least-privilege integrations and third-party backend connectors
-
-Example:
-
-```bash
-Authorization: Bearer rk_9z8y7x6w5v4u...
-```
-
-Important boundary:
-
-- restricted keys cannot be granted dashboard-only scopes
 
 ## Creating API Keys
 
@@ -100,7 +80,7 @@ Important current rules:
 
 ## Viewing API Keys
 
-From the dashboard, you can view the existing API keys for the business.
+From the dashboard, you can view the existing API keys.
 
 Visible metadata includes:
 
@@ -164,12 +144,6 @@ Behavior:
 - the new raw key is shown once
 - key type, scopes, and expiration remain tied to the same key record
 
-Use rotation when:
-
-- a key may have been exposed
-- you want to refresh a long-lived integration credential
-- you are replacing credentials in downstream systems
-
 ## Deleting API Keys
 
 Deleting an API key revokes it permanently.
@@ -181,7 +155,7 @@ Behavior:
 
 ## Authentication
 
-Business API keys are sent in the `Authorization` header using bearer format:
+API keys are sent in the `Authorization` header using bearer format:
 
 ```bash
 curl -X GET https://api.scalev.com/v3/stores \
@@ -193,11 +167,11 @@ You can use either:
 - `sk_...`
 - `rk_...`
 
-## Where Business API Keys Work
+## Where API Keys Work
 
-Business API keys are for machine-authenticated business requests.
+API keys are for machine-authenticated business requests.
 
-They work on routes that allow machine auth through business API keys.
+They work on routes that allow machine auth through API keys.
 
 They do **not** replace other auth models:
 
@@ -232,7 +206,7 @@ If a restricted key does not include the required scope, the request is rejected
 
 ## Rate Limiting
 
-Each business API key has a per-hour limit.
+Each API key has a per-hour limit.
 
 Current default:
 
@@ -279,6 +253,7 @@ For `/v3` routes, API key authentication errors use the v3 error shape.
 ```
 
 Note:
+
 - rate-limit responses are not guaranteed to use the normal JSON error shape
 
 ## Security Best Practices
@@ -325,6 +300,6 @@ SCALEV_API_BASE_URL=https://api.scalev.com
 
 ## Webhooks
 
-Business API keys are for authenticated API requests.
+API keys are for authenticated API requests.
 
 They are **not** webhook secrets and are **not** used to validate webhook deliveries. If your integration also uses webhook features, configure those separately and do not reuse API keys as webhook verification material.

@@ -1,0 +1,305 @@
+---
+title: "Autentikasi dengan API Key"
+---
+
+## Ringkasan
+
+Scalev mendukung API Key untuk permintaan server-to-server yang terautentikasi mesin.
+
+API Key adalah opsi paling sederhana ketika backend Anda perlu memanggil Scalev secara langsung tanpa menjalankan alur instalasi OAuth. API Key ini ditujukan untuk layanan backend, automasi, tool internal, dan integrasi mesin tepercaya lainnya.
+
+API Key mengautentikasi rute bisnis, terutama pada permukaan API `/v3`.
+
+API Key ini **tidak** digunakan untuk:
+
+- rute storefront publik di bawah `/v3/stores/{store_id}/public/*`
+- rute pelanggan terautentikasi di bawah `/v3/stores/{store_id}/customers/me/*`
+- rute khusus dashboard yang sengaja dikecualikan dari akses mesin
+- alur instalasi dan token khusus OAuth
+
+## Base URL
+
+```text
+https://api.scalev.com
+```
+
+Sebagian besar integrasi terautentikasi mesin sebaiknya menggunakan rute `/v3`.
+
+## Jenis API Key
+
+### Secret Keys (`sk_...`)
+
+Secret key adalah kredensial mesin dengan akses penuh.
+
+Perilaku:
+
+- cakupan scope penuh di semua endpoint bisnis yang memenuhi syarat untuk mesin
+- tidak ada batasan per scope
+- cocok untuk layanan backend tepercaya dan automasi internal
+- harus disimpan dengan aman dan tidak boleh diekspos di kode browser atau mobile
+
+### Restricted Keys (`rk_...`)
+
+Restricted key adalah kredensial mesin yang dibatasi oleh scope.
+
+Perilaku:
+
+- akses dibatasi pada scope yang ditetapkan secara eksplisit
+- harus memiliki setidaknya satu scope
+- hanya dapat menggunakan scope global yang memenuhi syarat untuk mesin
+- cocok untuk integrasi least-privilege dan konektor backend pihak ketiga
+
+## Membuat API Key
+
+API Key dibuat dari dashboard Scalev di:
+
+```text
+Settings > Developers > API Keys
+```
+
+Rute dashboard saat ini:
+
+```text
+/setting/developers/api-keys
+```
+
+Saat membuat key, konfigurasikan:
+
+- **Nama**
+- **Deskripsi** (opsional)
+- **Jenis Key**: `secret` atau `restricted`
+- **Scope**: wajib untuk restricted key
+- **Kedaluwarsa**: opsional
+
+Aturan penting saat ini:
+
+- nilai key lengkap hanya ditampilkan satu kali saat key dibuat
+- restricted key harus memiliki setidaknya satu scope
+- secret key mengabaikan scope
+- satu bisnis dapat memiliki maksimal **10 API Key**
+
+## Melihat API Key
+
+Dari dashboard, Anda dapat melihat API Key yang sudah ada.
+
+Metadata yang terlihat meliputi:
+
+- nama
+- deskripsi
+- jenis key
+- scope
+- `last_used_at`
+- `expires_at`
+- `is_expired`
+- `usage_count`
+- `rate_limit_per_hour`
+- dibuat oleh
+- dibuat pada
+- diperbarui pada
+
+Perilaku penting:
+
+- tampilan daftar dan detail menampilkan key dalam bentuk tersamarkan
+- nilai key mentah tidak ditampilkan lagi setelah pembuatan, kecuali Anda merotasinya
+
+## Memperbarui API Key
+
+Anda dapat memperbarui metadata API Key dari dashboard.
+
+### Secret Keys
+
+Anda dapat memperbarui:
+
+- nama
+- deskripsi
+
+Anda tidak dapat memperbarui:
+
+- jenis key
+- nilai key mentah
+- kedaluwarsa
+- scope
+
+### Restricted Keys
+
+Anda dapat memperbarui:
+
+- nama
+- deskripsi
+- scope
+
+Anda tidak dapat memperbarui:
+
+- jenis key
+- nilai key mentah
+- kedaluwarsa
+
+## Merotasi API Key
+
+Merotasi key akan menghasilkan nilai API Key mentah baru sambil mempertahankan metadata dan pengaturan yang ada.
+
+Perilaku:
+
+- key lama langsung menjadi tidak valid
+- key mentah baru ditampilkan satu kali
+- jenis key, scope, dan kedaluwarsa tetap terikat pada record key yang sama
+
+## Menghapus API Key
+
+Menghapus API Key akan mencabutnya secara permanen.
+
+Perilaku:
+
+- key langsung berhenti berfungsi
+- key yang dihapus tidak dapat dipulihkan
+
+## Autentikasi
+
+API Key dikirim di header `Authorization` menggunakan format bearer:
+
+```bash
+curl -X GET https://api.scalev.com/v3/stores \
+  -H "Authorization: Bearer sk_your_api_key_here"
+```
+
+Anda dapat menggunakan salah satu dari:
+
+- `sk_...`
+- `rk_...`
+
+## Tempat API Key Berlaku
+
+API Key digunakan untuk permintaan bisnis yang terautentikasi mesin.
+
+API Key ini berlaku pada rute yang mengizinkan auth mesin melalui API Key.
+
+API Key ini **tidak** menggantikan model auth lain:
+
+### Rute storefront publik
+
+Rute di bawah `/v3/stores/{store_id}/public/*` menggunakan:
+
+```text
+X-Scalev-Storefront-Api-Key: sfpk_...
+```
+
+### Rute pelanggan
+
+Rute di bawah `/v3/stores/{store_id}/customers/me/*` menggunakan bearer token pelanggan.
+
+### Rute khusus dashboard
+
+Beberapa rute sengaja dibuat khusus dashboard. API Key tidak dapat membuat, memperbarui, merotasi, atau menghapus resource yang dikelola dashboard pada rute tersebut.
+
+### Rute khusus OAuth
+
+API Key bukan pengganti instalasi OAuth atau token aplikasi OAuth.
+
+## Model Izin
+
+Perilaku izin bergantung pada jenis key:
+
+- **Secret key**: diperlakukan sebagai akses penuh untuk scope bisnis yang memenuhi syarat untuk mesin
+- **Restricted key**: harus memiliki scope persis yang diperlukan
+
+Jika restricted key tidak memiliki scope yang diperlukan, permintaan ditolak dengan `403 Forbidden`.
+
+## Rate Limiting
+
+Setiap API Key memiliki limit per jam.
+
+Default saat ini:
+
+- **10.000 permintaan per jam per key**
+
+Metadata rate-limit dikembalikan dalam header respons:
+
+- `X-Ratelimit-Limit`
+- `X-Ratelimit-Remaining`
+- `X-Ratelimit-Reset`
+
+Ketika limit terlampaui, API mengembalikan:
+
+- `429 Too Many Requests`
+
+Beberapa endpoint dapat menerapkan limit khusus endpoint yang lebih ketat.
+
+## Respons Error
+
+Untuk rute `/v3`, error autentikasi API Key menggunakan bentuk error v3.
+
+### API Key Tidak Valid (401)
+
+```json
+{
+  "error": "Invalid API key"
+}
+```
+
+### API Key Kedaluwarsa (401)
+
+```json
+{
+  "error": "API key has expired"
+}
+```
+
+### Izin Tidak Mencukupi (403)
+
+```json
+{
+  "error": "Forbidden"
+}
+```
+
+Catatan:
+
+- respons rate-limit tidak dijamin menggunakan bentuk error JSON normal
+
+## Praktik Terbaik Keamanan
+
+### 1. Simpan API Key dengan Aman
+
+- jangan pernah commit API Key ke source control
+- simpan di environment variable atau secret manager
+- jangan pernah mengeksposnya di kode frontend
+
+### 2. Prioritaskan Restricted Key
+
+- gunakan restricted key ketika akses penuh tidak diperlukan
+- berikan hanya scope yang benar-benar dibutuhkan integrasi
+- buat key terpisah untuk integrasi yang berbeda
+
+### 3. Rotasi dan Cabut dengan Cepat
+
+- rotasi key jika Anda mencurigai adanya eksposur
+- cabut key yang tidak lagi diperlukan
+- segera ganti kredensial lama di sistem downstream setelah rotasi
+
+### 4. Gunakan Kedaluwarsa Jika Sesuai
+
+- tetapkan kedaluwarsa untuk integrasi sementara atau khusus partner
+- hindari key berumur panjang kecuali ada alasan operasional yang jelas
+
+### 5. Pantau Penggunaan
+
+- tinjau `last_used_at` dan `usage_count`
+- pantau lonjakan tidak terduga atau pola akses yang tidak biasa
+
+### 6. Gunakan HTTPS Saja
+
+- kirim API Key hanya melalui HTTPS
+- jangan log nilai key lengkap dalam plaintext di log aplikasi
+
+## Contoh Environment Variable
+
+```bash
+SCALEV_API_KEY=sk_1a2b3c4d5e6f...
+SCALEV_API_BASE_URL=https://api.scalev.com
+```
+
+## Webhook
+
+API Key digunakan untuk permintaan API terautentikasi.
+
+API Key ini **bukan** secret webhook dan **tidak** digunakan untuk memvalidasi pengiriman webhook. Jika integrasi Anda juga menggunakan fitur webhook, konfigurasikan secara terpisah dan jangan gunakan ulang API Key sebagai material verifikasi webhook.
