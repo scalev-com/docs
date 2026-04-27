@@ -57,6 +57,17 @@
         "language": "id",
         "tabs": [
           {
+            "tab": "Umum",
+            "pages": [
+              {
+                "group": "E-Payment",
+                "pages": [
+                  "a-z-e-payment"
+                ]
+              }
+            ]
+          },
+          {
             "tab": "Developers",
             "icon": "code-branch",
             "pages": [
