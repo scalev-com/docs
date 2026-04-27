@@ -86,7 +86,8 @@
   },
   "logo": {
     "light": "/images/scalev_logo_light.png",
-    "dark": "/images/scalev_logo_dark.png"
+    "dark": "/images/scalev_logo_dark.png",
+    "href": "/"
   },
   "navbar": {
     "links": [
