@@ -8,9 +8,134 @@
     "dark": "#0783B2"
   },
   "favicon": "/favicon.ico",
-  "icons": { "library": "fontawesome" },
+  "icons": {
+    "library": "fontawesome"
+  },
   "navigation": {
     "languages": [
+      {
+        "language": "en",
+        "tabs": [
+          {
+            "tab": "General"
+          },
+          {
+            "tab": "Developers",
+            "icon": "code-branch",
+            "pages": [
+              "dev-introduction",
+              "authorization-with-o-auth",
+              "authentication-with-api-key",
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "overview",
+                  "enabling-webhooks",
+                  "verifying-a-webhook-request",
+                  "apps-webhooks",
+                  "webhook-events",
+                  "payload-example"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "icon": "code",
+            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
+          },
+          {
+            "tab": "Changelog",
+            "icon": "newspaper",
+            "pages": [
+              "changelog"
+            ]
+          },
+          {
+            "tab": "Developers",
+            "icon": "code-branch",
+            "pages": [
+              "dev-introduction",
+              "authorization-with-o-auth",
+              "authentication-with-api-key",
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "overview",
+                  "enabling-webhooks",
+                  "verifying-a-webhook-request",
+                  "apps-webhooks",
+                  "webhook-events",
+                  "payload-example"
+                ]
+              },
+              {
+                "group": "Use Cases",
+                "pages": [
+                  "creating-orders"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "icon": "code",
+            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
+          },
+          {
+            "tab": "Changelog",
+            "icon": "newspaper",
+            "pages": [
+              "changelog"
+            ]
+          }
+        ]
+      },
+      {
+        "language": "id",
+        "tabs": [
+          {
+            "tab": "Umum",
+            "pages": [
+              {
+                "group": "Tutorial Basic Lainnya",
+                "pages": [
+                  {
+                    "group": "E-Payment",
+                    "pages": [
+                      "a-z-e-payment"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Developers",
+            "icon": "code-branch",
+            "pages": [
+              "dev-pendahuluan",
+              "otorisasi-dengan-o-auth",
+              "autentikasi-dengan-api-key",
+              {
+                "group": "Webhooks",
+                "pages": []
+              },
+              {
+                "group": "Contoh Penggunaan",
+                "pages": [
+                  "membuat-pesanan"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Referensi API",
+            "icon": "code",
+            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
+          }
+        ]
+      },
       {
         "language": "id",
         "default": true,
@@ -52,49 +177,6 @@
             "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
           }
         ]
-      },
-      {
-        "language": "en",
-        "tabs": [
-          {
-            "tab": "Developers",
-            "icon": "code-branch",
-            "pages": [
-              "dev-introduction",
-              "authorization-with-o-auth",
-              "authentication-with-api-key",
-              {
-                "group": "Webhooks",
-                "pages": [
-                  "overview",
-                  "enabling-webhooks",
-                  "verifying-a-webhook-request",
-                  "apps-webhooks",
-                  "webhook-events",
-                  "payload-example"
-                ]
-              },
-              {
-                "group": "Use Cases",
-                "pages": [
-                  "creating-orders"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "API Reference",
-            "icon": "code",
-            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
-          },
-          {
-            "tab": "Changelog",
-            "icon": "newspaper",
-            "pages": [
-              "changelog"
-            ]
-          }
-        ]
       }
     ]
   },
@@ -118,15 +200,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "description": "This is the single site to understand how to use Scalev.",
   "footer": {
