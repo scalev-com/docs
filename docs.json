@@ -8,6 +8,7 @@
     "dark": "#0783B2"
   },
   "favicon": "/favicon.ico",
+  "icons": { "library": "fontawesome" },
   "navigation": {
     "languages": [
       {
