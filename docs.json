@@ -11,6 +11,48 @@
   "navigation": {
     "languages": [
       {
+        "language": "id",
+        "default": true,
+        "tabs": [
+          {
+            "tab": "Umum",
+            "pages": [
+              "home",
+              {
+                "group": "E-Payment",
+                "pages": [
+                  "a-z-e-payment"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Developers",
+            "icon": "code-branch",
+            "pages": [
+              "dev-pendahuluan",
+              "otorisasi-dengan-o-auth",
+              "autentikasi-dengan-api-key",
+              {
+                "group": "Webhooks",
+                "pages": []
+              },
+              {
+                "group": "Contoh Penggunaan",
+                "pages": [
+                  "membuat-pesanan"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Referensi API",
+            "icon": "code",
+            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
+          }
+        ]
+      },
+      {
         "language": "en",
         "tabs": [
           {
@@ -50,46 +92,6 @@
             "pages": [
               "changelog"
             ]
-          }
-        ]
-      },
-      {
-        "language": "id",
-        "tabs": [
-          {
-            "tab": "Umum",
-            "pages": [
-              {
-                "group": "E-Payment",
-                "pages": [
-                  "a-z-e-payment"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Developers",
-            "icon": "code-branch",
-            "pages": [
-              "dev-pendahuluan",
-              "otorisasi-dengan-o-auth",
-              "autentikasi-dengan-api-key",
-              {
-                "group": "Webhooks",
-                "pages": []
-              },
-              {
-                "group": "Contoh Penggunaan",
-                "pages": [
-                  "membuat-pesanan"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Referensi API",
-            "icon": "code",
-            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
           }
         ]
       }
@@ -132,5 +134,9 @@
       "github": "https://github.com/scalevcom",
       "x": "https://x.com/scalevcom"
     }
+  },
+  "fonts": {
+    "family": "Source Sans Pro",
+    "weight": 400
   }
 }
