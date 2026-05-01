@@ -75,6 +75,8 @@ With Store Context selected, `store` contains selected context only:
     "id": 1,
     "unique_id": "store_uid",
     "name": "Main Store",
+    "payment_methods": ["bank_transfer", "cod"],
+    "sub_payment_methods": [],
     "products": [
       {
         "id": 1,
@@ -102,23 +104,9 @@ With Store Context selected, `store` contains selected context only:
 }
 ```
 
-Use it to render selected products, bundle options, and store-aware forms. Do not assume products or bundles that are not present in this payload.
+Use it to render selected products, bundle options, enabled payment methods, and store-aware forms. Do not assume products, bundles, or payment methods that are not present in this payload.
 
-## `Scalev.payments.enabled(username?)`
-
-Returns enabled public payment methods for the business username.
-
-```js
-const payments = await Scalev.payments.enabled()
-```
-
-You can pass a username explicitly:
-
-```js
-const payments = await Scalev.payments.enabled("brand")
-```
-
-If omitted, the runtime uses the page business username. Use this when building a store-connected order form. Do not show payment methods that are not returned by this method or by the selected store context.
+`store.payment_methods` contains the enabled payment methods after Nexus filters the store settings by the business payment capabilities. Use `store.sub_payment_methods` for enabled VA or bank submethods when present.
 
 ## Location methods
 

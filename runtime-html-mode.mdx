@@ -75,6 +75,8 @@ Dengan Store Context, `store` berisi konteks terpilih saja:
     "id": 1,
     "unique_id": "store_uid",
     "name": "Main Store",
+    "payment_methods": ["bank_transfer", "cod"],
+    "sub_payment_methods": [],
     "products": [
       {
         "id": 1,
@@ -102,23 +104,9 @@ Dengan Store Context, `store` berisi konteks terpilih saja:
 }
 ```
 
-Gunakan data ini untuk render produk terpilih, bundle option, dan form yang memakai store. Jangan mengasumsikan produk atau bundle yang tidak ada di payload ini.
+Gunakan data ini untuk render produk terpilih, bundle option, payment methods aktif, dan form yang memakai store. Jangan mengasumsikan produk, bundle, atau payment method yang tidak ada di payload ini.
 
-## `Scalev.payments.enabled(username?)`
-
-Mengembalikan payment methods publik yang aktif untuk username bisnis.
-
-```js
-const payments = await Scalev.payments.enabled()
-```
-
-Kamu juga bisa mengirim username secara eksplisit:
-
-```js
-const payments = await Scalev.payments.enabled("brand")
-```
-
-Jika username tidak dikirim, runtime memakai username bisnis halaman. Gunakan method ini saat membuat form order yang terhubung dengan store. Jangan menampilkan payment method yang tidak dikembalikan oleh method ini atau Store Context terpilih.
+`store.payment_methods` berisi payment methods aktif setelah Nexus memfilter pengaturan store berdasarkan kapabilitas payment bisnis. Gunakan `store.sub_payment_methods` untuk submethod VA atau bank yang aktif saat tersedia.
 
 ## Method lokasi
 
