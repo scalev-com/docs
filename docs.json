@@ -37,7 +37,6 @@
             "icon": "code-branch",
             "pages": [
               "dev-pendahuluan",
-              "runtime-html-mode",
               "otorisasi-dengan-o-auth",
               "autentikasi-dengan-api-key",
               {
@@ -46,9 +45,11 @@
               },
               {
                 "group": "Contoh Penggunaan",
-                "pages": [
-                  "membuat-pesanan"
-                ]
+                "pages": ["membuat-pesanan"]
+              },
+              {
+                "group": "Landing Pages",
+                "pages": ["runtime-html-mode"]
               }
             ]
           },
@@ -81,7 +82,6 @@
             "icon": "code-branch",
             "pages": [
               "dev-introduction",
-              "html-mode-runtime",
               "authorization-with-o-auth",
               "authentication-with-api-key",
               {
@@ -97,9 +97,11 @@
               },
               {
                 "group": "Use Cases",
-                "pages": [
-                  "creating-orders"
-                ]
+                "pages": ["creating-orders"]
+              },
+              {
+                "group": "Landing Pages",
+                "pages": ["html-mode-runtime"]
               }
             ]
           },
@@ -111,9 +113,7 @@
           {
             "tab": "Changelog",
             "icon": "newspaper",
-            "pages": [
-              "changelog"
-            ]
+            "pages": ["changelog"]
           }
         ]
       }

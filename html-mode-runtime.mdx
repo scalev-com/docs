@@ -1,7 +1,6 @@
 ---
 title: "HTML Mode runtime"
 description: "Use the window.Scalev runtime methods available inside Scalev HTML Mode pages."
-icon: "code"
 ---
 
 Scalev HTML Mode pages can use `window.Scalev` from browser JavaScript. The runtime gives your page access to safe page context, selected store context, checkout helpers, analytics forwarding, and form prefill helpers without exposing private API tokens.
@@ -15,7 +14,7 @@ The runtime is available on rendered HTML Mode pages. In local editor previews, 
 Always guard runtime usage:
 
 ```js
-const scalev = window.Scalev
+const scalev = window.Scalev;
 
 if (!scalev) {
   // Render fallback content or keep the page usable without runtime data.
@@ -46,7 +45,7 @@ When Store Context is not selected, `store` is not available. Do not build check
 Returns public page data injected into the rendered page.
 
 ```js
-const data = Scalev.data.get()
+const data = Scalev.data.get();
 ```
 
 Return shape:
@@ -113,18 +112,20 @@ Use it to render selected products, bundle options, enabled payment methods, and
 Use these methods for address and shipping forms.
 
 ```js
-const provinces = await Scalev.location.provinces()
-const cities = await Scalev.location.cities(provinceId)
-const subdistricts = await Scalev.location.subdistricts(cityId)
-const postalCodes = await Scalev.location.postalCodes(subdistrictId)
+const provinces = await Scalev.location.provinces();
+const cities = await Scalev.location.cities(provinceId);
+const subdistricts = await Scalev.location.subdistricts(cityId);
+const postalCodes = await Scalev.location.postalCodes(subdistrictId);
 ```
 
 `provinces`, `cities`, and `subdistricts` accept optional query objects:
 
 ```js
-const provinces = await Scalev.location.provinces({ q: "Jawa" })
-const cities = await Scalev.location.cities(provinceId, { q: "Bandung" })
-const subdistricts = await Scalev.location.subdistricts(cityId, { q: "Coblong" })
+const provinces = await Scalev.location.provinces({ q: "Jawa" });
+const cities = await Scalev.location.cities(provinceId, { q: "Bandung" });
+const subdistricts = await Scalev.location.subdistricts(cityId, {
+  q: "Coblong",
+});
 ```
 
 Use IDs returned by each previous step. Do not hardcode location IDs unless the user explicitly provided them.
@@ -141,8 +142,8 @@ const result = await Scalev.checkout.validateDiscount({
   shippingCost: 0,
   pageUniqueId: "page_uid",
   paymentMethod: "cod",
-  domain: window.location.hostname
-})
+  domain: window.location.hostname,
+});
 ```
 
 Accepted field names can be camelCase or snake_case:
@@ -165,10 +166,8 @@ Returns warehouse options for selected variants and destination.
 const warehouses = await Scalev.checkout.searchWarehouses({
   storeId: 1,
   destinationId: 3172,
-  variants: [
-    { variantId: 10, qty: 1 }
-  ]
-})
+  variants: [{ variantId: 10, qty: 1 }],
+});
 ```
 
 Accepted field names:
@@ -190,8 +189,8 @@ const couriers = await Scalev.checkout.searchCouriers({
   paymentMethod: "cod",
   locationId: 3172,
   warehouseId: "warehouse_uid",
-  weight: 1200
-})
+  weight: 1200,
+});
 ```
 
 Accepted field names:
@@ -209,9 +208,9 @@ Use this after the visitor has chosen products and a shipping destination.
 Validates order payload shape without creating an order.
 
 ```js
-const data = Scalev.data.get()
-const store = data.store
-const firstVariant = store.products[0].variants[0]
+const data = Scalev.data.get();
+const store = data.store;
+const firstVariant = store.products[0].variants[0];
 
 const validation = await Scalev.checkout.validateOrder({
   page: data.page.uniqueId,
@@ -221,11 +220,9 @@ const validation = await Scalev.checkout.validateOrder({
   customerEmail: "customer@example.com",
   address: "Customer address",
   location: 12345,
-  ordervariants: [
-    { variant_unique_id: firstVariant.unique_id, quantity: 1 }
-  ],
-  paymentMethod: store.payment_methods[0] || "bank_transfer"
-})
+  ordervariants: [{ variant_unique_id: firstVariant.unique_id, quantity: 1 }],
+  paymentMethod: store.payment_methods[0] || "bank_transfer",
+});
 ```
 
 Response shape:
@@ -253,9 +250,9 @@ Creates a real public order. Call this only after a visitor intentionally submit
 
 ```js
 async function submitOrder() {
-  const data = Scalev.data.get()
-  const store = data.store
-  const firstVariant = store.products[0].variants[0]
+  const data = Scalev.data.get();
+  const store = data.store;
+  const firstVariant = store.products[0].variants[0];
 
   const payload = {
     page: data.page.uniqueId,
@@ -265,19 +262,17 @@ async function submitOrder() {
     customerEmail: "customer@example.com",
     address: "Customer address",
     location: 12345,
-    ordervariants: [
-      { variant_unique_id: firstVariant.unique_id, quantity: 1 }
-    ],
-    paymentMethod: store.payment_methods[0] || "bank_transfer"
-  }
+    ordervariants: [{ variant_unique_id: firstVariant.unique_id, quantity: 1 }],
+    paymentMethod: store.payment_methods[0] || "bank_transfer",
+  };
 
-  const validation = await Scalev.checkout.validateOrder(payload)
+  const validation = await Scalev.checkout.validateOrder(payload);
   if (!validation.valid) {
-    return showValidationWarnings(validation.warnings)
+    return showValidationWarnings(validation.warnings);
   }
 
-  const order = await Scalev.checkout.createOrder(payload)
-  return order
+  const order = await Scalev.checkout.createOrder(payload);
+  return order;
 }
 ```
 
@@ -304,8 +299,8 @@ Forwards configured analytics events through Scalev.
 await Scalev.analytics.track("facebook", {
   event_name: "Lead",
   value: 179000,
-  currency: "IDR"
-})
+  currency: "IDR",
+});
 ```
 
 You can also pass one object:
@@ -314,9 +309,9 @@ You can also pass one object:
 await Scalev.analytics.track({
   provider: "tiktok",
   payload: {
-    event: "CompletePayment"
-  }
-})
+    event: "CompletePayment",
+  },
+});
 ```
 
 Supported provider names:
@@ -333,8 +328,8 @@ Only track events that match the page interaction. Do not send credentials or pr
 Reads safe browser-scoped form prefill data.
 
 ```js
-const prefill = await Scalev.prefill.get()
-const formData = prefill.data || {}
+const prefill = await Scalev.prefill.get();
+const formData = prefill.data || {};
 ```
 
 Return shape:
@@ -358,12 +353,12 @@ Saves safe form prefill data for later visits.
 await Scalev.prefill.save(
   {
     customerName: "Customer Name",
-    customerPhone: "08123456789"
+    customerPhone: "08123456789",
   },
   {
-    source: "html_mode"
-  }
-)
+    source: "html_mode",
+  },
+);
 ```
 
 Only save ordinary form values that are safe to remember. Do not save passwords, tokens, payment secrets, or private credentials.
@@ -373,7 +368,7 @@ Only save ordinary form values that are safe to remember. Do not save passwords,
 Currently returns `null` unless Scalev enables mediated customer tokens for the page.
 
 ```js
-const customer = await Scalev.customer.prefill()
+const customer = await Scalev.customer.prefill();
 
 if (customer) {
   // Use mediated customer data when Scalev enables it.
@@ -389,20 +384,25 @@ Use this pattern when Store Context is not selected:
 ```html
 <script>
   async function init() {
-    const scalev = window.Scalev
-    const data = scalev?.data?.get ? scalev.data.get() : { page: {}, store: null }
-    const prefill = scalev?.prefill?.get ? await scalev.prefill.get() : { data: {} }
+    const scalev = window.Scalev;
+    const data = scalev?.data?.get
+      ? scalev.data.get()
+      : { page: {}, store: null };
+    const prefill = scalev?.prefill?.get
+      ? await scalev.prefill.get()
+      : { data: {} };
 
-    document.querySelector("[name='name']").value = prefill.data?.customerName || ""
+    document.querySelector("[name='name']").value =
+      prefill.data?.customerName || "";
 
     document.querySelector("form").addEventListener("submit", async (event) => {
-      event.preventDefault()
-      const form = Object.fromEntries(new FormData(event.currentTarget))
-      await scalev?.prefill?.save?.(form, { source: "lead_form" })
-    })
+      event.preventDefault();
+      const form = Object.fromEntries(new FormData(event.currentTarget));
+      await scalev?.prefill?.save?.(form, { source: "lead_form" });
+    });
   }
 
-  init()
+  init();
 </script>
 ```
 
@@ -413,13 +413,13 @@ Use this pattern only when Store Context is selected:
 ```html
 <script>
   async function submitOrder(event) {
-    event.preventDefault()
+    event.preventDefault();
 
-    const scalev = window.Scalev
-    const data = scalev.data.get()
-    const store = data.store
-    const firstProduct = store.products[0]
-    const firstVariant = firstProduct.variants[0]
+    const scalev = window.Scalev;
+    const data = scalev.data.get();
+    const store = data.store;
+    const firstProduct = store.products[0];
+    const firstVariant = firstProduct.variants[0];
 
     const payload = {
       page: data.page.uniqueId,
@@ -427,19 +427,19 @@ Use this pattern only when Store Context is selected:
       customerName: event.currentTarget.elements.customerName.value,
       customerPhone: event.currentTarget.elements.customerPhone.value,
       ordervariants: [
-        { variant_unique_id: firstVariant.unique_id, quantity: 1 }
+        { variant_unique_id: firstVariant.unique_id, quantity: 1 },
       ],
-      paymentMethod: store.payment_methods[0] || "bank_transfer"
-    }
+      paymentMethod: store.payment_methods[0] || "bank_transfer",
+    };
 
-    const validation = await scalev.checkout.validateOrder(payload)
+    const validation = await scalev.checkout.validateOrder(payload);
     if (!validation.valid) {
-      console.warn(validation.warnings)
-      return
+      console.warn(validation.warnings);
+      return;
     }
 
-    const order = await scalev.checkout.createOrder(payload)
-    console.log(order)
+    const order = await scalev.checkout.createOrder(payload);
+    console.log(order);
   }
 </script>
 ```
