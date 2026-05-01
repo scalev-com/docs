@@ -14,23 +14,20 @@
   "navigation": {
     "languages": [
       {
-        "language": "en",
+        "language": "id",
+        "default": true,
         "tabs": [
           {
-            "tab": "General",
+            "tab": "Umum",
             "pages": [
+              "home",
               {
-                "group": "Another Basic Tutorial",
+                "group": "E-Payment",
                 "pages": [
-                  {
-                    "group": "e-Payment",
-                    "pages": [
-                      "untitled-page-copied-3",
-                      "untitled-page-copied-1",
-                      "untitled-page-copied-2",
-                      "untitled-page-copied-4"
-                    ]
-                  }
+                  "a-z-e-payment",
+                  "a-z-withdrawal",
+                  "contoh-biaya-e-payment",
+                  "menambahkan-e-payment"
                 ]
               }
             ]
@@ -39,32 +36,43 @@
             "tab": "Developers",
             "icon": "code-branch",
             "pages": [
-              "dev-introduction",
-              "authorization-with-o-auth",
-              "authentication-with-api-key",
+              "dev-pendahuluan",
+              "otorisasi-dengan-o-auth",
+              "autentikasi-dengan-api-key",
               {
                 "group": "Webhooks",
+                "pages": []
+              },
+              {
+                "group": "Contoh Penggunaan",
                 "pages": [
-                  "overview",
-                  "enabling-webhooks",
-                  "verifying-a-webhook-request",
-                  "apps-webhooks",
-                  "webhook-events",
-                  "payload-example"
+                  "membuat-pesanan"
                 ]
               }
             ]
           },
           {
-            "tab": "API Reference",
+            "tab": "Referensi API",
             "icon": "code",
             "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
-          },
+          }
+        ]
+      },
+      {
+        "language": "en",
+        "tabs": [
           {
-            "tab": "Changelog",
-            "icon": "newspaper",
+            "tab": "General",
             "pages": [
-              "changelog"
+              {
+                "group": "E-Payment",
+                "pages": [
+                  "e-payment-fees",
+                  "withdrawal-at-scalev",
+                  "e-payment-fee-example",
+                  "add-e-payment"
+                ]
+              }
             ]
           },
           {
@@ -104,94 +112,6 @@
             "pages": [
               "changelog"
             ]
-          }
-        ]
-      },
-      {
-        "language": "id",
-        "tabs": [
-          {
-            "tab": "Umum"
-          },
-          {
-            "tab": "Developers",
-            "icon": "code-branch",
-            "pages": [
-              "dev-pendahuluan",
-              "otorisasi-dengan-o-auth",
-              "autentikasi-dengan-api-key",
-              {
-                "group": "Webhooks",
-                "pages": []
-              },
-              {
-                "group": "Contoh Penggunaan",
-                "pages": [
-                  "membuat-pesanan"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Referensi API",
-            "icon": "code",
-            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
-          }
-        ]
-      },
-      {
-        "language": "id",
-        "default": true,
-        "tabs": [
-          {
-            "tab": "Umum",
-            "pages": [
-              "home",
-              {
-                "group": "Tutorial Basic Lainnya",
-                "pages": [
-                  {
-                    "group": "E-Payment",
-                    "pages": [
-                      "a-z-e-payment",
-                      "test",
-                      "test-copied-2",
-                      "test-copied-1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "E-Payment",
-                "pages": [
-                  "a-z-e-payment"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Developers",
-            "icon": "code-branch",
-            "pages": [
-              "dev-pendahuluan",
-              "otorisasi-dengan-o-auth",
-              "autentikasi-dengan-api-key",
-              {
-                "group": "Webhooks",
-                "pages": []
-              },
-              {
-                "group": "Contoh Penggunaan",
-                "pages": [
-                  "membuat-pesanan"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Referensi API",
-            "icon": "code",
-            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
           }
         ]
       }
