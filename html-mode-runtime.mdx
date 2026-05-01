@@ -209,14 +209,22 @@ Use this after the visitor has chosen products and a shipping destination.
 Validates order payload shape without creating an order.
 
 ```js
+const data = Scalev.data.get()
+const store = data.store
+const firstVariant = store.products[0].variants[0]
+
 const validation = await Scalev.checkout.validateOrder({
+  page: data.page.uniqueId,
+  store: store.unique_id,
   customerName: "Customer Name",
   customerPhone: "08123456789",
-  storeUniqueId: "store_uid",
+  customerEmail: "customer@example.com",
+  address: "Customer address",
+  location: 12345,
   ordervariants: [
-    { variant_id: 10, qty: 1 }
+    { variant_unique_id: firstVariant.unique_id, quantity: 1 }
   ],
-  paymentMethod: "cod"
+  paymentMethod: store.payment_methods[0] || "bank_transfer"
 })
 ```
 
@@ -226,9 +234,10 @@ Response shape:
 {
   "valid": true,
   "normalized_payload": {
+    "page_unique_id": "page_uid",
+    "store_unique_id": "store_uid",
     "customer_name": "Customer Name",
-    "customer_phone": "08123456789",
-    "store_unique_id": "store_uid"
+    "customer_phone": "08123456789"
   },
   "warnings": []
 }
@@ -244,14 +253,22 @@ Creates a real public order. Call this only after a visitor intentionally submit
 
 ```js
 async function submitOrder() {
+  const data = Scalev.data.get()
+  const store = data.store
+  const firstVariant = store.products[0].variants[0]
+
   const payload = {
+    page: data.page.uniqueId,
+    store: store.unique_id,
     customerName: "Customer Name",
     customerPhone: "08123456789",
-    storeUniqueId: "store_uid",
+    customerEmail: "customer@example.com",
+    address: "Customer address",
+    location: 12345,
     ordervariants: [
-      { variant_id: 10, qty: 1 }
+      { variant_unique_id: firstVariant.unique_id, quantity: 1 }
     ],
-    paymentMethod: "cod"
+    paymentMethod: store.payment_methods[0] || "bank_transfer"
   }
 
   const validation = await Scalev.checkout.validateOrder(payload)
@@ -264,16 +281,18 @@ async function submitOrder() {
 }
 ```
 
-The runtime accepts common camelCase and snake_case order fields, including:
+`createOrder` accepts the same public payload keys used by Scalev's regular editor checkout flow. The runtime normalizes them before posting to Nexus:
 
 - Customer fields: `customerName`, `customerPhone`, `customerEmail`, `name`, `phone`, `address`
-- Store and page fields: `storeUniqueId`, `store_unique_id`, `pageUniqueId`, `page_unique_id`
-- Location and shipping fields: `locationId`, `postalCode`, `warehouseUniqueId`, `courierServiceId`
-- Payment fields: `paymentMethod`, `financialEntityId`, `paymentAccountUniqueId`, `subPaymentMethod`
-- Item fields: `orderlines`, `ordervariants`, `orderbundles`
+- Store and page fields: `store`, `page`, plus aliases such as `storeUniqueId`, `store_unique_id`, `pageUniqueId`, and `page_unique_id`
+- Location and shipping fields: `location`, `postalCode`, `shippingOrigin`, `courierService`, `shippingCost`, and `courierAggregator`
+- Payment fields: `paymentMethod`, `financialEntityId`, `paymentAccount`, `paymentAccountHolder`, `paymentAccountNumber`, and `subPaymentMethod`
+- Item fields: `ordervariants` with `{ variant_unique_id, quantity }`, `orderbundles` with `{ bundle_price_option_unique_id, quantity }`, or legacy `orderlines`
 - Discount and pricing fields: `discountCodeCode`, `productDiscount`, `shippingCost`, `shippingDiscount`
-- Attribution-safe fields: UTM parameters, click ids, and analytics attribution gathered by the runtime
+- Attribution-safe fields: `fbc`, `fbp`, `ttclid`, `gclid`, `ttp`, `clickId`, `eventSourceUrl`, `adSource`, UTM fields, and `affiliateCode`
 - Optional safety fields: `recaptchaToken`, `cartId`
+
+Use `unique_id` values from `Scalev.data.get().store`; do not submit numeric product, variant, or bundle ids as order item identifiers.
 
 Do not create orders automatically on page load.
 
@@ -403,13 +422,14 @@ Use this pattern only when Store Context is selected:
     const firstVariant = firstProduct.variants[0]
 
     const payload = {
+      page: data.page.uniqueId,
+      store: store.unique_id,
       customerName: event.currentTarget.elements.customerName.value,
       customerPhone: event.currentTarget.elements.customerPhone.value,
-      storeUniqueId: store.unique_id,
       ordervariants: [
-        { variant_id: firstVariant.id, qty: 1 }
+        { variant_unique_id: firstVariant.unique_id, quantity: 1 }
       ],
-      paymentMethod: "cod"
+      paymentMethod: store.payment_methods[0] || "bank_transfer"
     }
 
     const validation = await scalev.checkout.validateOrder(payload)
