@@ -1,0 +1,437 @@
+---
+title: "HTML Mode runtime"
+description: "Use the window.Scalev runtime methods available inside Scalev HTML Mode pages."
+icon: "code"
+---
+
+Scalev HTML Mode pages can use `window.Scalev` from browser JavaScript. The runtime gives your page access to safe page context, selected store context, checkout helpers, analytics forwarding, and form prefill helpers without exposing private API tokens.
+
+This page is written for both developers and AI agents that generate HTML Mode files. If you are generating an HTML file for Scalev, use this reference instead of calling Scalev backend URLs directly.
+
+## Availability
+
+The runtime is available on rendered HTML Mode pages. In local editor previews, some methods can return stubbed preview data.
+
+Always guard runtime usage:
+
+```js
+const scalev = window.Scalev
+
+if (!scalev) {
+  // Render fallback content or keep the page usable without runtime data.
+}
+```
+
+Most methods are asynchronous and return a `Promise`. `Scalev.data.get()` is synchronous.
+
+## Store context
+
+An HTML Mode page may or may not have Store Context selected in the Scalev editor.
+
+When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, selected products, and selected bundle price options. It does not include the full store catalog.
+
+When Store Context is not selected, `store` is not available. Do not build checkout, payment, shipping, discount, product catalog, cart, or order creation flows. Use the page as a regular landing page and rely only on page-safe methods such as `Scalev.data.get()`, `Scalev.analytics.track()`, and `Scalev.prefill`.
+
+## Security rules
+
+- Do not request or store API keys, business-user JWTs, storefront API keys, customer tokens, cookies, or credentials.
+- Do not call Nexus, Scalev backend URLs, or private APIs directly from page JavaScript.
+- Use only documented `window.Scalev` methods.
+- Create orders only after a visitor intentionally submits a form.
+- Call `Scalev.checkout.validateOrder()` before `Scalev.checkout.createOrder()`.
+- Do not assume unselected products, bundles, prices, inventory, payment methods, shipping options, or customer identity.
+
+## `Scalev.data.get()`
+
+Returns public page data injected into the rendered page.
+
+```js
+const data = Scalev.data.get()
+```
+
+Return shape:
+
+```json
+{
+  "page": {
+    "id": 1,
+    "uniqueId": "page_uid",
+    "username": "brand"
+  },
+  "store": null
+}
+```
+
+With Store Context selected, `store` contains selected context only:
+
+```json
+{
+  "page": {
+    "id": 1,
+    "uniqueId": "page_uid",
+    "username": "brand"
+  },
+  "store": {
+    "id": 1,
+    "unique_id": "store_uid",
+    "name": "Main Store",
+    "products": [
+      {
+        "id": 1,
+        "name": "Product",
+        "variants": [
+          {
+            "id": 10,
+            "unique_id": "variant_uid",
+            "name": "Default",
+            "price": 99000,
+            "available_qty": 12
+          }
+        ]
+      }
+    ],
+    "bundle_price_options": [
+      {
+        "id": 20,
+        "unique_id": "bundle_option_uid",
+        "name": "Bundle",
+        "price": 179000
+      }
+    ]
+  }
+}
+```
+
+Use it to render selected products, bundle options, and store-aware forms. Do not assume products or bundles that are not present in this payload.
+
+## `Scalev.payments.enabled(username?)`
+
+Returns enabled public payment methods for the business username.
+
+```js
+const payments = await Scalev.payments.enabled()
+```
+
+You can pass a username explicitly:
+
+```js
+const payments = await Scalev.payments.enabled("brand")
+```
+
+If omitted, the runtime uses the page business username. Use this when building a store-connected order form. Do not show payment methods that are not returned by this method or by the selected store context.
+
+## Location methods
+
+Use these methods for address and shipping forms.
+
+```js
+const provinces = await Scalev.location.provinces()
+const cities = await Scalev.location.cities(provinceId)
+const subdistricts = await Scalev.location.subdistricts(cityId)
+const postalCodes = await Scalev.location.postalCodes(subdistrictId)
+```
+
+`provinces`, `cities`, and `subdistricts` accept optional query objects:
+
+```js
+const provinces = await Scalev.location.provinces({ q: "Jawa" })
+const cities = await Scalev.location.cities(provinceId, { q: "Bandung" })
+const subdistricts = await Scalev.location.subdistricts(cityId, { q: "Coblong" })
+```
+
+Use IDs returned by each previous step. Do not hardcode location IDs unless the user explicitly provided them.
+
+## `Scalev.checkout.validateDiscount(payload)`
+
+Validates a discount code for a checkout payload.
+
+```js
+const result = await Scalev.checkout.validateDiscount({
+  code: "PROMO10",
+  grossRevenue: 179000,
+  netProductPrice: 179000,
+  shippingCost: 0,
+  pageUniqueId: "page_uid",
+  paymentMethod: "cod",
+  domain: window.location.hostname
+})
+```
+
+Accepted field names can be camelCase or snake_case:
+
+- `code`
+- `grossRevenue` or `gross_revenue`
+- `netProductPrice` or `net_product_price`
+- `shippingCost` or `shipping_cost`
+- `pageUniqueId` or `page_unique_id`
+- `paymentMethod` or `payment_method`
+- `domain`
+
+Use this only for store-connected checkout flows.
+
+## `Scalev.checkout.searchWarehouses(payload)`
+
+Returns warehouse options for selected variants and destination.
+
+```js
+const warehouses = await Scalev.checkout.searchWarehouses({
+  storeId: 1,
+  destinationId: 3172,
+  variants: [
+    { variantId: 10, qty: 1 }
+  ]
+})
+```
+
+Accepted field names:
+
+- `storeId`, `store_id`, or `store`
+- `destinationId`, `destination_id`, or `destination`
+- `variants`: array of `{ variantId | variant_id | id, qty | quantity }`
+- `orderId`, `order_id`, or `order` when validating against an existing order flow
+
+Use selected variants from `Scalev.data.get().store.products`.
+
+## `Scalev.checkout.searchCouriers(payload)`
+
+Returns courier service options for a store, destination, warehouse, and payment method.
+
+```js
+const couriers = await Scalev.checkout.searchCouriers({
+  storeId: 1,
+  paymentMethod: "cod",
+  locationId: 3172,
+  warehouseId: "warehouse_uid",
+  weight: 1200
+})
+```
+
+Accepted field names:
+
+- `storeId`, `store_id`, or `store`
+- `paymentMethod` or `payment_method`
+- `locationId`, `location_id`, or `destination`
+- `warehouseId`, `warehouse_id`, or `warehouse`
+- `weight`
+
+Use this after the visitor has chosen products and a shipping destination.
+
+## `Scalev.checkout.validateOrder(payload)`
+
+Validates order payload shape without creating an order.
+
+```js
+const validation = await Scalev.checkout.validateOrder({
+  customerName: "Customer Name",
+  customerPhone: "08123456789",
+  storeUniqueId: "store_uid",
+  ordervariants: [
+    { variant_id: 10, qty: 1 }
+  ],
+  paymentMethod: "cod"
+})
+```
+
+Response shape:
+
+```json
+{
+  "valid": true,
+  "normalized_payload": {
+    "customer_name": "Customer Name",
+    "customer_phone": "08123456789",
+    "store_unique_id": "store_uid"
+  },
+  "warnings": []
+}
+```
+
+If `valid` is `false`, inspect `warnings` and fix the form payload before creating an order.
+
+Common warnings include missing page id, store id, customer name, customer phone, or order items.
+
+## `Scalev.checkout.createOrder(payload)`
+
+Creates a real public order. Call this only after a visitor intentionally submits the form and `validateOrder` has passed.
+
+```js
+async function submitOrder() {
+  const payload = {
+    customerName: "Customer Name",
+    customerPhone: "08123456789",
+    storeUniqueId: "store_uid",
+    ordervariants: [
+      { variant_id: 10, qty: 1 }
+    ],
+    paymentMethod: "cod"
+  }
+
+  const validation = await Scalev.checkout.validateOrder(payload)
+  if (!validation.valid) {
+    return showValidationWarnings(validation.warnings)
+  }
+
+  const order = await Scalev.checkout.createOrder(payload)
+  return order
+}
+```
+
+The runtime accepts common camelCase and snake_case order fields, including:
+
+- Customer fields: `customerName`, `customerPhone`, `customerEmail`, `name`, `phone`, `address`
+- Store and page fields: `storeUniqueId`, `store_unique_id`, `pageUniqueId`, `page_unique_id`
+- Location and shipping fields: `locationId`, `postalCode`, `warehouseUniqueId`, `courierServiceId`
+- Payment fields: `paymentMethod`, `financialEntityId`, `paymentAccountUniqueId`, `subPaymentMethod`
+- Item fields: `orderlines`, `ordervariants`, `orderbundles`
+- Discount and pricing fields: `discountCodeCode`, `productDiscount`, `shippingCost`, `shippingDiscount`
+- Attribution-safe fields: UTM parameters, click ids, and analytics attribution gathered by the runtime
+- Optional safety fields: `recaptchaToken`, `cartId`
+
+Do not create orders automatically on page load.
+
+## `Scalev.analytics.track(providerOrPayload, payload?)`
+
+Forwards configured analytics events through Scalev.
+
+```js
+await Scalev.analytics.track("facebook", {
+  event_name: "Lead",
+  value: 179000,
+  currency: "IDR"
+})
+```
+
+You can also pass one object:
+
+```js
+await Scalev.analytics.track({
+  provider: "tiktok",
+  payload: {
+    event: "CompletePayment"
+  }
+})
+```
+
+Supported provider names:
+
+- `fb`
+- `facebook`
+- `tiktok`
+- `kwai`
+
+Only track events that match the page interaction. Do not send credentials or private customer tokens in analytics payloads.
+
+## `Scalev.prefill.get()`
+
+Reads safe browser-scoped form prefill data.
+
+```js
+const prefill = await Scalev.prefill.get()
+const formData = prefill.data || {}
+```
+
+Return shape:
+
+```json
+{
+  "data": {
+    "customerName": "Customer Name",
+    "customerPhone": "08123456789"
+  }
+}
+```
+
+Use this to repopulate form fields. Treat all values as optional.
+
+## `Scalev.prefill.save(form, metadata?)`
+
+Saves safe form prefill data for later visits.
+
+```js
+await Scalev.prefill.save(
+  {
+    customerName: "Customer Name",
+    customerPhone: "08123456789"
+  },
+  {
+    source: "html_mode"
+  }
+)
+```
+
+Only save ordinary form values that are safe to remember. Do not save passwords, tokens, payment secrets, or private credentials.
+
+## `Scalev.customer.prefill()`
+
+Currently returns `null` unless Scalev enables mediated customer tokens for the page.
+
+```js
+const customer = await Scalev.customer.prefill()
+
+if (customer) {
+  // Use mediated customer data when Scalev enables it.
+}
+```
+
+Always handle `null`.
+
+## Minimal non-store example
+
+Use this pattern when Store Context is not selected:
+
+```html
+<script>
+  async function init() {
+    const scalev = window.Scalev
+    const data = scalev?.data?.get ? scalev.data.get() : { page: {}, store: null }
+    const prefill = scalev?.prefill?.get ? await scalev.prefill.get() : { data: {} }
+
+    document.querySelector("[name='name']").value = prefill.data?.customerName || ""
+
+    document.querySelector("form").addEventListener("submit", async (event) => {
+      event.preventDefault()
+      const form = Object.fromEntries(new FormData(event.currentTarget))
+      await scalev?.prefill?.save?.(form, { source: "lead_form" })
+    })
+  }
+
+  init()
+</script>
+```
+
+## Minimal store checkout example
+
+Use this pattern only when Store Context is selected:
+
+```html
+<script>
+  async function submitOrder(event) {
+    event.preventDefault()
+
+    const scalev = window.Scalev
+    const data = scalev.data.get()
+    const store = data.store
+    const firstProduct = store.products[0]
+    const firstVariant = firstProduct.variants[0]
+
+    const payload = {
+      customerName: event.currentTarget.elements.customerName.value,
+      customerPhone: event.currentTarget.elements.customerPhone.value,
+      storeUniqueId: store.unique_id,
+      ordervariants: [
+        { variant_id: firstVariant.id, qty: 1 }
+      ],
+      paymentMethod: "cod"
+    }
+
+    const validation = await scalev.checkout.validateOrder(payload)
+    if (!validation.valid) {
+      console.warn(validation.warnings)
+      return
+    }
+
+    const order = await scalev.checkout.createOrder(payload)
+    console.log(order)
+  }
+</script>
+```

@@ -37,6 +37,7 @@
             "icon": "code-branch",
             "pages": [
               "dev-pendahuluan",
+              "runtime-html-mode",
               "otorisasi-dengan-o-auth",
               "autentikasi-dengan-api-key",
               {
@@ -80,6 +81,7 @@
             "icon": "code-branch",
             "pages": [
               "dev-introduction",
+              "html-mode-runtime",
               "authorization-with-o-auth",
               "authentication-with-api-key",
               {

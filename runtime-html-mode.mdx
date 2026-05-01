@@ -1,0 +1,437 @@
+---
+title: "Runtime HTML Mode"
+description: "Gunakan method runtime window.Scalev yang tersedia di halaman Scalev HTML Mode."
+icon: "code"
+---
+
+Halaman Scalev HTML Mode dapat memakai `window.Scalev` dari JavaScript browser. Runtime ini memberi akses ke konteks halaman yang aman, Store Context terpilih, helper checkout, analytics forwarding, dan helper prefill form tanpa mengekspos token API privat.
+
+Halaman ini ditulis untuk developer dan AI agent yang membuat file HTML Mode. Jika kamu membuat file HTML untuk Scalev, gunakan referensi ini dan jangan memanggil URL backend Scalev secara langsung.
+
+## Ketersediaan
+
+Runtime tersedia di halaman HTML Mode yang sudah dirender. Di preview editor lokal, beberapa method dapat mengembalikan data preview.
+
+Selalu cek runtime sebelum dipakai:
+
+```js
+const scalev = window.Scalev
+
+if (!scalev) {
+  // Render fallback content atau pastikan halaman tetap bisa digunakan.
+}
+```
+
+Sebagian besar method bersifat asynchronous dan mengembalikan `Promise`. `Scalev.data.get()` bersifat synchronous.
+
+## Store Context
+
+Halaman HTML Mode bisa memiliki Store Context atau tidak.
+
+Jika Store Context dipilih, `Scalev.data.get().store` berisi ringkasan store, produk terpilih, dan bundle price options terpilih saja. Data ini bukan seluruh katalog store.
+
+Jika Store Context belum dipilih, `store` tidak tersedia. Jangan membuat checkout, payment, shipping, diskon, katalog produk, cart, atau flow pembuatan order. Perlakukan halaman sebagai landing page biasa dan gunakan hanya method aman seperti `Scalev.data.get()`, `Scalev.analytics.track()`, dan `Scalev.prefill`.
+
+## Aturan keamanan
+
+- Jangan meminta atau menyimpan API key, business-user JWT, storefront API key, customer token, cookie, atau kredensial.
+- Jangan memanggil Nexus, URL backend Scalev, atau private API langsung dari JavaScript halaman.
+- Gunakan hanya method `window.Scalev` yang terdokumentasi.
+- Buat order hanya setelah pengunjung sengaja submit form.
+- Panggil `Scalev.checkout.validateOrder()` sebelum `Scalev.checkout.createOrder()`.
+- Jangan mengasumsikan produk, bundle, harga, stok, payment method, opsi pengiriman, atau identitas customer yang tidak tersedia.
+
+## `Scalev.data.get()`
+
+Mengembalikan data publik halaman yang diinject ke halaman.
+
+```js
+const data = Scalev.data.get()
+```
+
+Bentuk respons:
+
+```json
+{
+  "page": {
+    "id": 1,
+    "uniqueId": "page_uid",
+    "username": "brand"
+  },
+  "store": null
+}
+```
+
+Dengan Store Context, `store` berisi konteks terpilih saja:
+
+```json
+{
+  "page": {
+    "id": 1,
+    "uniqueId": "page_uid",
+    "username": "brand"
+  },
+  "store": {
+    "id": 1,
+    "unique_id": "store_uid",
+    "name": "Main Store",
+    "products": [
+      {
+        "id": 1,
+        "name": "Product",
+        "variants": [
+          {
+            "id": 10,
+            "unique_id": "variant_uid",
+            "name": "Default",
+            "price": 99000,
+            "available_qty": 12
+          }
+        ]
+      }
+    ],
+    "bundle_price_options": [
+      {
+        "id": 20,
+        "unique_id": "bundle_option_uid",
+        "name": "Bundle",
+        "price": 179000
+      }
+    ]
+  }
+}
+```
+
+Gunakan data ini untuk render produk terpilih, bundle option, dan form yang memakai store. Jangan mengasumsikan produk atau bundle yang tidak ada di payload ini.
+
+## `Scalev.payments.enabled(username?)`
+
+Mengembalikan payment methods publik yang aktif untuk username bisnis.
+
+```js
+const payments = await Scalev.payments.enabled()
+```
+
+Kamu juga bisa mengirim username secara eksplisit:
+
+```js
+const payments = await Scalev.payments.enabled("brand")
+```
+
+Jika username tidak dikirim, runtime memakai username bisnis halaman. Gunakan method ini saat membuat form order yang terhubung dengan store. Jangan menampilkan payment method yang tidak dikembalikan oleh method ini atau Store Context terpilih.
+
+## Method lokasi
+
+Gunakan method ini untuk form alamat dan pengiriman.
+
+```js
+const provinces = await Scalev.location.provinces()
+const cities = await Scalev.location.cities(provinceId)
+const subdistricts = await Scalev.location.subdistricts(cityId)
+const postalCodes = await Scalev.location.postalCodes(subdistrictId)
+```
+
+`provinces`, `cities`, dan `subdistricts` menerima query object opsional:
+
+```js
+const provinces = await Scalev.location.provinces({ q: "Jawa" })
+const cities = await Scalev.location.cities(provinceId, { q: "Bandung" })
+const subdistricts = await Scalev.location.subdistricts(cityId, { q: "Coblong" })
+```
+
+Gunakan ID dari step sebelumnya. Jangan hardcode location ID kecuali user memberikannya secara eksplisit.
+
+## `Scalev.checkout.validateDiscount(payload)`
+
+Memvalidasi kode diskon untuk payload checkout.
+
+```js
+const result = await Scalev.checkout.validateDiscount({
+  code: "PROMO10",
+  grossRevenue: 179000,
+  netProductPrice: 179000,
+  shippingCost: 0,
+  pageUniqueId: "page_uid",
+  paymentMethod: "cod",
+  domain: window.location.hostname
+})
+```
+
+Nama field dapat memakai camelCase atau snake_case:
+
+- `code`
+- `grossRevenue` atau `gross_revenue`
+- `netProductPrice` atau `net_product_price`
+- `shippingCost` atau `shipping_cost`
+- `pageUniqueId` atau `page_unique_id`
+- `paymentMethod` atau `payment_method`
+- `domain`
+
+Gunakan hanya untuk flow checkout yang terhubung dengan store.
+
+## `Scalev.checkout.searchWarehouses(payload)`
+
+Mengembalikan opsi warehouse untuk variant dan tujuan terpilih.
+
+```js
+const warehouses = await Scalev.checkout.searchWarehouses({
+  storeId: 1,
+  destinationId: 3172,
+  variants: [
+    { variantId: 10, qty: 1 }
+  ]
+})
+```
+
+Nama field yang diterima:
+
+- `storeId`, `store_id`, atau `store`
+- `destinationId`, `destination_id`, atau `destination`
+- `variants`: array `{ variantId | variant_id | id, qty | quantity }`
+- `orderId`, `order_id`, atau `order` untuk flow order yang sudah ada
+
+Gunakan variant terpilih dari `Scalev.data.get().store.products`.
+
+## `Scalev.checkout.searchCouriers(payload)`
+
+Mengembalikan opsi courier service untuk store, tujuan, warehouse, dan payment method.
+
+```js
+const couriers = await Scalev.checkout.searchCouriers({
+  storeId: 1,
+  paymentMethod: "cod",
+  locationId: 3172,
+  warehouseId: "warehouse_uid",
+  weight: 1200
+})
+```
+
+Nama field yang diterima:
+
+- `storeId`, `store_id`, atau `store`
+- `paymentMethod` atau `payment_method`
+- `locationId`, `location_id`, atau `destination`
+- `warehouseId`, `warehouse_id`, atau `warehouse`
+- `weight`
+
+Gunakan method ini setelah pengunjung memilih produk dan tujuan pengiriman.
+
+## `Scalev.checkout.validateOrder(payload)`
+
+Memvalidasi bentuk payload order tanpa membuat order.
+
+```js
+const validation = await Scalev.checkout.validateOrder({
+  customerName: "Customer Name",
+  customerPhone: "08123456789",
+  storeUniqueId: "store_uid",
+  ordervariants: [
+    { variant_id: 10, qty: 1 }
+  ],
+  paymentMethod: "cod"
+})
+```
+
+Bentuk respons:
+
+```json
+{
+  "valid": true,
+  "normalized_payload": {
+    "customer_name": "Customer Name",
+    "customer_phone": "08123456789",
+    "store_unique_id": "store_uid"
+  },
+  "warnings": []
+}
+```
+
+Jika `valid` bernilai `false`, baca `warnings` dan perbaiki payload form sebelum membuat order.
+
+Warning umum mencakup page id, store id, nama customer, nomor customer, atau item order yang belum ada.
+
+## `Scalev.checkout.createOrder(payload)`
+
+Membuat public order sungguhan. Panggil method ini hanya setelah pengunjung sengaja submit form dan `validateOrder` lolos.
+
+```js
+async function submitOrder() {
+  const payload = {
+    customerName: "Customer Name",
+    customerPhone: "08123456789",
+    storeUniqueId: "store_uid",
+    ordervariants: [
+      { variant_id: 10, qty: 1 }
+    ],
+    paymentMethod: "cod"
+  }
+
+  const validation = await Scalev.checkout.validateOrder(payload)
+  if (!validation.valid) {
+    return showValidationWarnings(validation.warnings)
+  }
+
+  const order = await Scalev.checkout.createOrder(payload)
+  return order
+}
+```
+
+Runtime menerima field order camelCase dan snake_case umum, termasuk:
+
+- Customer fields: `customerName`, `customerPhone`, `customerEmail`, `name`, `phone`, `address`
+- Store dan page fields: `storeUniqueId`, `store_unique_id`, `pageUniqueId`, `page_unique_id`
+- Lokasi dan shipping fields: `locationId`, `postalCode`, `warehouseUniqueId`, `courierServiceId`
+- Payment fields: `paymentMethod`, `financialEntityId`, `paymentAccountUniqueId`, `subPaymentMethod`
+- Item fields: `orderlines`, `ordervariants`, `orderbundles`
+- Diskon dan pricing fields: `discountCodeCode`, `productDiscount`, `shippingCost`, `shippingDiscount`
+- Attribution-safe fields: UTM parameters, click ids, dan analytics attribution yang dikumpulkan runtime
+- Field keamanan opsional: `recaptchaToken`, `cartId`
+
+Jangan membuat order otomatis saat halaman dibuka.
+
+## `Scalev.analytics.track(providerOrPayload, payload?)`
+
+Meneruskan event analytics yang sudah dikonfigurasi melalui Scalev.
+
+```js
+await Scalev.analytics.track("facebook", {
+  event_name: "Lead",
+  value: 179000,
+  currency: "IDR"
+})
+```
+
+Kamu juga bisa mengirim satu object:
+
+```js
+await Scalev.analytics.track({
+  provider: "tiktok",
+  payload: {
+    event: "CompletePayment"
+  }
+})
+```
+
+Nama provider yang didukung:
+
+- `fb`
+- `facebook`
+- `tiktok`
+- `kwai`
+
+Track hanya event yang sesuai dengan interaksi halaman. Jangan mengirim kredensial atau customer token privat dalam payload analytics.
+
+## `Scalev.prefill.get()`
+
+Membaca data prefill form yang aman dan tersimpan di browser.
+
+```js
+const prefill = await Scalev.prefill.get()
+const formData = prefill.data || {}
+```
+
+Bentuk respons:
+
+```json
+{
+  "data": {
+    "customerName": "Customer Name",
+    "customerPhone": "08123456789"
+  }
+}
+```
+
+Gunakan ini untuk mengisi ulang field form. Anggap semua value opsional.
+
+## `Scalev.prefill.save(form, metadata?)`
+
+Menyimpan data prefill form yang aman untuk kunjungan berikutnya.
+
+```js
+await Scalev.prefill.save(
+  {
+    customerName: "Customer Name",
+    customerPhone: "08123456789"
+  },
+  {
+    source: "html_mode"
+  }
+)
+```
+
+Simpan hanya value form biasa yang aman untuk diingat. Jangan menyimpan password, token, rahasia pembayaran, atau kredensial privat.
+
+## `Scalev.customer.prefill()`
+
+Saat ini mengembalikan `null` kecuali Scalev mengaktifkan mediated customer tokens untuk halaman.
+
+```js
+const customer = await Scalev.customer.prefill()
+
+if (customer) {
+  // Gunakan data customer mediated saat Scalev mengaktifkannya.
+}
+```
+
+Selalu handle `null`.
+
+## Contoh minimal tanpa store
+
+Gunakan pola ini saat Store Context belum dipilih:
+
+```html
+<script>
+  async function init() {
+    const scalev = window.Scalev
+    const data = scalev?.data?.get ? scalev.data.get() : { page: {}, store: null }
+    const prefill = scalev?.prefill?.get ? await scalev.prefill.get() : { data: {} }
+
+    document.querySelector("[name='name']").value = prefill.data?.customerName || ""
+
+    document.querySelector("form").addEventListener("submit", async (event) => {
+      event.preventDefault()
+      const form = Object.fromEntries(new FormData(event.currentTarget))
+      await scalev?.prefill?.save?.(form, { source: "lead_form" })
+    })
+  }
+
+  init()
+</script>
+```
+
+## Contoh minimal checkout store
+
+Gunakan pola ini hanya saat Store Context dipilih:
+
+```html
+<script>
+  async function submitOrder(event) {
+    event.preventDefault()
+
+    const scalev = window.Scalev
+    const data = scalev.data.get()
+    const store = data.store
+    const firstProduct = store.products[0]
+    const firstVariant = firstProduct.variants[0]
+
+    const payload = {
+      customerName: event.currentTarget.elements.customerName.value,
+      customerPhone: event.currentTarget.elements.customerPhone.value,
+      storeUniqueId: store.unique_id,
+      ordervariants: [
+        { variant_id: firstVariant.id, qty: 1 }
+      ],
+      paymentMethod: "cod"
+    }
+
+    const validation = await scalev.checkout.validateOrder(payload)
+    if (!validation.valid) {
+      console.warn(validation.warnings)
+      return
+    }
+
+    const order = await scalev.checkout.createOrder(payload)
+    console.log(order)
+  }
+</script>
+```
