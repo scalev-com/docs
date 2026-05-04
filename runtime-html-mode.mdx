@@ -3,7 +3,7 @@ title: "Runtime HTML Mode"
 description: "Gunakan method runtime window.Scalev yang tersedia di halaman Scalev HTML Mode."
 ---
 
-Halaman Scalev HTML Mode dapat memakai `window.Scalev` dari JavaScript browser. Runtime ini memberi akses ke konteks halaman yang aman, Store Context terpilih, helper checkout, analytics forwarding, dan helper prefill form tanpa mengekspos token API privat.
+Halaman Scalev HTML Mode dapat memakai `window.Scalev` dari JavaScript browser. Runtime ini memberi akses ke konteks halaman yang aman, Store Context terpilih, helper checkout, analytics forwarding, helper prefill form, dan diagnostics tanpa mengekspos token API privat.
 
 Halaman ini ditulis untuk developer dan AI agent yang membuat file HTML Mode. Jika kamu membuat file HTML untuk Scalev, gunakan referensi ini dan jangan memanggil URL backend Scalev secara langsung.
 
@@ -21,7 +21,7 @@ if (!scalev) {
 }
 ```
 
-Sebagian besar method bersifat asynchronous dan mengembalikan `Promise`. `Scalev.data.get()` bersifat synchronous.
+Sebagian besar method bersifat asynchronous dan mengembalikan `Promise`. `Scalev.data.get()` dan `Scalev.diagnostics.get()` bersifat synchronous.
 
 ## Store Context
 
@@ -29,7 +29,7 @@ Halaman HTML Mode bisa memiliki Store Context atau tidak.
 
 Jika Store Context dipilih, `Scalev.data.get().store` berisi ringkasan store, produk terpilih, dan bundle price options terpilih saja. Data ini bukan seluruh katalog store.
 
-Jika Store Context belum dipilih, `store` tidak tersedia. Jangan membuat checkout, payment, shipping, diskon, katalog produk, cart, atau flow pembuatan order. Perlakukan halaman sebagai landing page biasa dan gunakan hanya method aman seperti `Scalev.data.get()`, `Scalev.analytics.track()`, dan `Scalev.prefill`.
+Jika Store Context belum dipilih, `store` tidak tersedia. Jangan membuat checkout, payment, shipping, diskon, katalog produk, cart, atau flow pembuatan order. Perlakukan halaman sebagai landing page biasa dan gunakan hanya method aman seperti `Scalev.data.get()`, `Scalev.analytics.track()`, dan `Scalev.prefill.get()`.
 
 ## Aturan keamanan
 
@@ -135,14 +135,14 @@ Gunakan ID dari step sebelumnya. Jangan hardcode location ID kecuali user member
 Memvalidasi kode diskon untuk payload checkout.
 
 ```js
+const store = Scalev.data.get().store;
+
 const result = await Scalev.checkout.validateDiscount({
   code: "PROMO10",
   grossRevenue: 179000,
   netProductPrice: 179000,
   shippingCost: 0,
-  pageUniqueId: "page_uid",
-  paymentMethod: "cod",
-  domain: window.location.hostname,
+  paymentMethod: store.sub_payment_methods?.[0] || "bank_transfer",
 });
 ```
 
@@ -156,6 +156,8 @@ Nama field dapat memakai camelCase atau snake_case:
 - `paymentMethod` atau `payment_method`
 - `domain`
 
+`pageUniqueId` otomatis memakai halaman saat ini, dan `domain` otomatis memakai hostname saat ini. Value payment dinormalisasi sebelum request: value `BT_*` menjadi `bank_transfer`, dan value yang ada di `store.sub_payment_methods` menjadi `va`.
+
 Gunakan hanya untuk flow checkout yang terhubung dengan store.
 
 ## `Scalev.checkout.searchWarehouses(payload)`
@@ -163,45 +165,48 @@ Gunakan hanya untuk flow checkout yang terhubung dengan store.
 Mengembalikan opsi warehouse untuk variant dan tujuan terpilih.
 
 ```js
+const data = Scalev.data.get();
+const firstVariant = data.store.products[0].variants[0];
+
 const warehouses = await Scalev.checkout.searchWarehouses({
-  storeId: 1,
-  destinationId: 3172,
-  variants: [{ variantId: 10, qty: 1 }],
+  destinationSubdistrictId: selectedSubdistrictId,
+  ordervariants: [{ variant_unique_id: firstVariant.unique_id, quantity: 1 }],
 });
 ```
 
 Nama field yang diterima:
 
-- `storeId`, `store_id`, atau `store`
-- `destinationId`, `destination_id`, atau `destination`
-- `variants`: array `{ variantId | variant_id | id, qty | quantity }`
+- `storeId`, `store_id`, atau `store`; jika tidak dikirim, runtime memakai Store Context terpilih.
+- `destinationSubdistrictId`, `destination_subdistrict_id`, `subdistrictId`, `subdistrict_id`, `destinationId`, `destination_id`, `destination`, `locationId`, `location_id`, atau `location`
+- `variants`, `orderVariants`, atau `ordervariants`: array `{ variantId | variant_id | id | variant_unique_id | variantUniqueId | unique_id | uniqueId, qty | quantity }`
 - `orderId`, `order_id`, atau `order` untuk flow order yang sudah ada
 
-Gunakan variant terpilih dari `Scalev.data.get().store.products`.
+Gunakan variant terpilih dari `Scalev.data.get().store.products`. Kamu boleh mengirim value publik `variant_unique_id`; runtime akan mencocokkannya ke numeric `variant_id` yang dibutuhkan endpoint warehouse landing page lama.
 
 ## `Scalev.checkout.searchCouriers(payload)`
 
 Mengembalikan opsi courier service untuk store, tujuan, warehouse, dan payment method.
 
 ```js
+const firstWarehouse = warehouses.data?.[0] || warehouses[0];
+
 const couriers = await Scalev.checkout.searchCouriers({
-  storeId: 1,
   paymentMethod: "cod",
-  locationId: 3172,
-  warehouseId: "warehouse_uid",
+  destinationSubdistrictId: selectedSubdistrictId,
+  warehouse: firstWarehouse,
   weight: 1200,
 });
 ```
 
 Nama field yang diterima:
 
-- `storeId`, `store_id`, atau `store`
+- `storeId`, `store_id`, atau `store`; jika tidak dikirim, runtime memakai Store Context terpilih.
 - `paymentMethod` atau `payment_method`
-- `locationId`, `location_id`, atau `destination`
-- `warehouseId`, `warehouse_id`, atau `warehouse`
+- `destinationSubdistrictId`, `destination_subdistrict_id`, `subdistrictId`, `subdistrict_id`, `locationId`, `location_id`, `destinationId`, `destination_id`, `destination`, atau `location`
+- `warehouseId`, `warehouse_id`, atau `warehouse`. Kamu bisa mengirim object warehouse dari hasil `searchWarehouses`.
 - `weight`
 
-Gunakan method ini setelah pengunjung memilih produk dan tujuan pengiriman.
+Gunakan method ini setelah pengunjung memilih produk dan tujuan pengiriman. Backend membutuhkan numeric `warehouse_id`; runtime mengambil id itu dari object warehouse jika memungkinkan.
 
 ## `Scalev.checkout.validateOrder(payload)`
 
@@ -280,7 +285,7 @@ async function submitOrder() {
 
 - Customer fields: `customerName`, `customerPhone`, `customerEmail`, `name`, `phone`, `address`
 - Store dan page fields: `store`, `page`, plus alias seperti `storeUniqueId`, `store_unique_id`, `pageUniqueId`, dan `page_unique_id`
-- Lokasi dan shipping fields: `location`, `postalCode`, `shippingOrigin`, `courierService`, `shippingCost`, dan `courierAggregator`
+- Lokasi dan shipping fields: `location`, `destinationSubdistrictId`, `subdistrictId`, `postalCode`, `shippingOrigin`, `courierService`, `shippingCost`, dan `courierAggregator`
 - Payment fields: `paymentMethod`, `financialEntityId`, `paymentAccount`, `paymentAccountHolder`, `paymentAccountNumber`, dan `subPaymentMethod`
 - Item fields: `ordervariants` dengan `{ variant_unique_id, quantity }`, `orderbundles` dengan `{ bundle_price_option_unique_id, quantity }`, atau legacy `orderlines`
 - Diskon dan pricing fields: `discountCodeCode`, `productDiscount`, `shippingCost`, `shippingDiscount`
@@ -288,6 +293,8 @@ async function submitOrder() {
 - Field keamanan opsional: `recaptchaToken`, `cartId`
 
 Gunakan value `unique_id` dari `Scalev.data.get().store`; jangan mengirim id numerik produk, variant, atau bundle sebagai identifier item order.
+
+Seperti helper diskon dan shipping, value payment dinormalisasi sebelum request. Value `BT_*` dikirim sebagai `bank_transfer`; submethod VA atau bank yang aktif di `store.sub_payment_methods` dikirim sebagai `payment_method: "va"` dengan submethod terpilih.
 
 Jangan membuat order otomatis saat halaman dibuka.
 
@@ -297,9 +304,15 @@ Meneruskan event analytics yang sudah dikonfigurasi melalui Scalev.
 
 ```js
 await Scalev.analytics.track("facebook", {
-  event_name: "Lead",
-  value: 179000,
-  currency: "IDR",
+  firstName: "Customer",
+  phone: "08123456789",
+  variants: [{ unique_id: "variant_uid", quantity: 1, price: 179000 }],
+  events: [
+    {
+      event_name: "Lead",
+      parameters: { value: 179000, currency: "IDR" },
+    },
+  ],
 });
 ```
 
@@ -309,7 +322,12 @@ Kamu juga bisa mengirim satu object:
 await Scalev.analytics.track({
   provider: "tiktok",
   payload: {
-    event: "CompletePayment",
+    events: [
+      {
+        event: "CompletePayment",
+        parameters: { value: 179000, currency: "IDR" },
+      },
+    ],
   },
 });
 ```
@@ -320,6 +338,10 @@ Nama provider yang didukung:
 - `facebook`
 - `tiktok`
 - `kwai`
+
+Runtime meneruskan shape backend analytics Scalev lama untuk setiap provider. Runtime menambahkan page id saat ini, event source URL, referrer, dan attribution aman dari cookie browser atau URL parameter saat tersedia. Untuk event Facebook dan TikTok, `event_id` dibuat otomatis jika tidak dikirim.
+
+Untuk atribusi produk, kirim `variants`, `orderVariants`, atau `ordervariants` dengan `variant_unique_id` / `unique_id`, dan `bundlePriceOptions`, `bundle_price_options`, atau `orderbundles` dengan `bundle_price_option_unique_id` / `unique_id`.
 
 Track hanya event yang sesuai dengan interaksi halaman. Jangan mengirim kredensial atau customer token privat dalam payload analytics.
 
@@ -365,17 +387,27 @@ Simpan hanya value form biasa yang aman untuk diingat. Jangan menyimpan password
 
 ## `Scalev.customer.prefill()`
 
-Saat ini mengembalikan `null` kecuali Scalev mengaktifkan mediated customer tokens untuk halaman.
+Mengembalikan profil customer termediasi saat pengunjung memiliki sesi customer storefront aktif. Jika sesi customer tidak tersedia, atau lookup customer gagal, method ini mengembalikan `null`.
 
 ```js
 const customer = await Scalev.customer.prefill();
 
 if (customer) {
-  // Gunakan data customer mediated saat Scalev mengaktifkannya.
+  // Gunakan data customer mediated.
 }
 ```
 
-Selalu handle `null`.
+Runtime memanggil endpoint lokal Scalev supaya token customer tetap berada di server. Selalu handle `null`.
+
+## `Scalev.diagnostics.get()`
+
+Mengembalikan diagnostics runtime terbaru untuk debugging.
+
+```js
+const diagnostics = Scalev.diagnostics.get();
+```
+
+Diagnostics dapat mencakup request runtime yang gagal dan, saat `?agent_debug=1` aktif, warning visual seperti horizontal overflow atau form control yang terlihat tetapi belum memiliki label. Jangan membuat logika customer-facing dari diagnostics; gunakan hanya untuk debugging dan QA.
 
 ## Contoh minimal tanpa store
 

@@ -3,7 +3,7 @@ title: "HTML Mode runtime"
 description: "Use the window.Scalev runtime methods available inside Scalev HTML Mode pages."
 ---
 
-Scalev HTML Mode pages can use `window.Scalev` from browser JavaScript. The runtime gives your page access to safe page context, selected store context, checkout helpers, analytics forwarding, and form prefill helpers without exposing private API tokens.
+Scalev HTML Mode pages can use `window.Scalev` from browser JavaScript. The runtime gives your page access to safe page context, selected store context, checkout helpers, analytics forwarding, form prefill helpers, and diagnostics without exposing private API tokens.
 
 This page is written for both developers and AI agents that generate HTML Mode files. If you are generating an HTML file for Scalev, use this reference instead of calling Scalev backend URLs directly.
 
@@ -21,7 +21,7 @@ if (!scalev) {
 }
 ```
 
-Most methods are asynchronous and return a `Promise`. `Scalev.data.get()` is synchronous.
+Most methods are asynchronous and return a `Promise`. `Scalev.data.get()` and `Scalev.diagnostics.get()` are synchronous.
 
 ## Store context
 
@@ -29,7 +29,7 @@ An HTML Mode page may or may not have Store Context selected in the Scalev edito
 
 When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, selected products, and selected bundle price options. It does not include the full store catalog.
 
-When Store Context is not selected, `store` is not available. Do not build checkout, payment, shipping, discount, product catalog, cart, or order creation flows. Use the page as a regular landing page and rely only on page-safe methods such as `Scalev.data.get()`, `Scalev.analytics.track()`, and `Scalev.prefill`.
+When Store Context is not selected, `store` is not available. Do not build checkout, payment, shipping, discount, product catalog, cart, or order creation flows. Use the page as a regular landing page and rely only on page-safe methods such as `Scalev.data.get()`, `Scalev.analytics.track()`, and `Scalev.prefill.get()`.
 
 ## Security rules
 
@@ -135,14 +135,14 @@ Use IDs returned by each previous step. Do not hardcode location IDs unless the 
 Validates a discount code for a checkout payload.
 
 ```js
+const store = Scalev.data.get().store;
+
 const result = await Scalev.checkout.validateDiscount({
   code: "PROMO10",
   grossRevenue: 179000,
   netProductPrice: 179000,
   shippingCost: 0,
-  pageUniqueId: "page_uid",
-  paymentMethod: "cod",
-  domain: window.location.hostname,
+  paymentMethod: store.sub_payment_methods?.[0] || "bank_transfer",
 });
 ```
 
@@ -156,6 +156,8 @@ Accepted field names can be camelCase or snake_case:
 - `paymentMethod` or `payment_method`
 - `domain`
 
+`pageUniqueId` defaults to the current page, and `domain` defaults to the current hostname. Payment values are normalized before the request: `BT_*` values become `bank_transfer`, and values listed in `store.sub_payment_methods` become `va`.
+
 Use this only for store-connected checkout flows.
 
 ## `Scalev.checkout.searchWarehouses(payload)`
@@ -163,45 +165,48 @@ Use this only for store-connected checkout flows.
 Returns warehouse options for selected variants and destination.
 
 ```js
+const data = Scalev.data.get();
+const firstVariant = data.store.products[0].variants[0];
+
 const warehouses = await Scalev.checkout.searchWarehouses({
-  storeId: 1,
-  destinationId: 3172,
-  variants: [{ variantId: 10, qty: 1 }],
+  destinationSubdistrictId: selectedSubdistrictId,
+  ordervariants: [{ variant_unique_id: firstVariant.unique_id, quantity: 1 }],
 });
 ```
 
 Accepted field names:
 
-- `storeId`, `store_id`, or `store`
-- `destinationId`, `destination_id`, or `destination`
-- `variants`: array of `{ variantId | variant_id | id, qty | quantity }`
+- `storeId`, `store_id`, or `store`; if omitted, the runtime uses the selected Store Context.
+- `destinationSubdistrictId`, `destination_subdistrict_id`, `subdistrictId`, `subdistrict_id`, `destinationId`, `destination_id`, `destination`, `locationId`, `location_id`, or `location`
+- `variants`, `orderVariants`, or `ordervariants`: array of `{ variantId | variant_id | id | variant_unique_id | variantUniqueId | unique_id | uniqueId, qty | quantity }`
 - `orderId`, `order_id`, or `order` when validating against an existing order flow
 
-Use selected variants from `Scalev.data.get().store.products`.
+Use selected variants from `Scalev.data.get().store.products`. You may pass public `variant_unique_id` values; the runtime resolves them to the numeric `variant_id` expected by the old landing-page warehouse endpoint.
 
 ## `Scalev.checkout.searchCouriers(payload)`
 
 Returns courier service options for a store, destination, warehouse, and payment method.
 
 ```js
+const firstWarehouse = warehouses.data?.[0] || warehouses[0];
+
 const couriers = await Scalev.checkout.searchCouriers({
-  storeId: 1,
   paymentMethod: "cod",
-  locationId: 3172,
-  warehouseId: "warehouse_uid",
+  destinationSubdistrictId: selectedSubdistrictId,
+  warehouse: firstWarehouse,
   weight: 1200,
 });
 ```
 
 Accepted field names:
 
-- `storeId`, `store_id`, or `store`
+- `storeId`, `store_id`, or `store`; if omitted, the runtime uses the selected Store Context.
 - `paymentMethod` or `payment_method`
-- `locationId`, `location_id`, or `destination`
-- `warehouseId`, `warehouse_id`, or `warehouse`
+- `destinationSubdistrictId`, `destination_subdistrict_id`, `subdistrictId`, `subdistrict_id`, `locationId`, `location_id`, `destinationId`, `destination_id`, `destination`, or `location`
+- `warehouseId`, `warehouse_id`, or `warehouse`. You can pass the warehouse object returned by `searchWarehouses`.
 - `weight`
 
-Use this after the visitor has chosen products and a shipping destination.
+Use this after the visitor has chosen products and a shipping destination. The backend expects a numeric `warehouse_id`; the runtime extracts it from the warehouse object when possible.
 
 ## `Scalev.checkout.validateOrder(payload)`
 
@@ -280,7 +285,7 @@ async function submitOrder() {
 
 - Customer fields: `customerName`, `customerPhone`, `customerEmail`, `name`, `phone`, `address`
 - Store and page fields: `store`, `page`, plus aliases such as `storeUniqueId`, `store_unique_id`, `pageUniqueId`, and `page_unique_id`
-- Location and shipping fields: `location`, `postalCode`, `shippingOrigin`, `courierService`, `shippingCost`, and `courierAggregator`
+- Location and shipping fields: `location`, `destinationSubdistrictId`, `subdistrictId`, `postalCode`, `shippingOrigin`, `courierService`, `shippingCost`, and `courierAggregator`
 - Payment fields: `paymentMethod`, `financialEntityId`, `paymentAccount`, `paymentAccountHolder`, `paymentAccountNumber`, and `subPaymentMethod`
 - Item fields: `ordervariants` with `{ variant_unique_id, quantity }`, `orderbundles` with `{ bundle_price_option_unique_id, quantity }`, or legacy `orderlines`
 - Discount and pricing fields: `discountCodeCode`, `productDiscount`, `shippingCost`, `shippingDiscount`
@@ -288,6 +293,8 @@ async function submitOrder() {
 - Optional safety fields: `recaptchaToken`, `cartId`
 
 Use `unique_id` values from `Scalev.data.get().store`; do not submit numeric product, variant, or bundle ids as order item identifiers.
+
+As with discount and shipping helpers, payment values are normalized before the request. `BT_*` values are sent as `bank_transfer`; enabled VA or bank submethods in `store.sub_payment_methods` are sent as `payment_method: "va"` with the selected submethod.
 
 Do not create orders automatically on page load.
 
@@ -297,9 +304,15 @@ Forwards configured analytics events through Scalev.
 
 ```js
 await Scalev.analytics.track("facebook", {
-  event_name: "Lead",
-  value: 179000,
-  currency: "IDR",
+  firstName: "Customer",
+  phone: "08123456789",
+  variants: [{ unique_id: "variant_uid", quantity: 1, price: 179000 }],
+  events: [
+    {
+      event_name: "Lead",
+      parameters: { value: 179000, currency: "IDR" },
+    },
+  ],
 });
 ```
 
@@ -309,7 +322,12 @@ You can also pass one object:
 await Scalev.analytics.track({
   provider: "tiktok",
   payload: {
-    event: "CompletePayment",
+    events: [
+      {
+        event: "CompletePayment",
+        parameters: { value: 179000, currency: "IDR" },
+      },
+    ],
   },
 });
 ```
@@ -320,6 +338,10 @@ Supported provider names:
 - `facebook`
 - `tiktok`
 - `kwai`
+
+The runtime forwards the old Scalev analytics backend shapes for each provider. It adds the current page id, event source URL, referrer, and safe attribution values from browser cookies or URL parameters when available. For Facebook and TikTok events, `event_id` is generated automatically when omitted.
+
+For product attribution, pass `variants`, `orderVariants`, or `ordervariants` with `variant_unique_id` / `unique_id`, and `bundlePriceOptions`, `bundle_price_options`, or `orderbundles` with `bundle_price_option_unique_id` / `unique_id`.
 
 Only track events that match the page interaction. Do not send credentials or private customer tokens in analytics payloads.
 
@@ -365,17 +387,27 @@ Only save ordinary form values that are safe to remember. Do not save passwords,
 
 ## `Scalev.customer.prefill()`
 
-Currently returns `null` unless Scalev enables mediated customer tokens for the page.
+Returns a mediated customer profile when the visitor has an active storefront customer session. If no customer session is available, or if the customer lookup fails, it returns `null`.
 
 ```js
 const customer = await Scalev.customer.prefill();
 
 if (customer) {
-  // Use mediated customer data when Scalev enables it.
+  // Use mediated customer data.
 }
 ```
 
-Always handle `null`.
+The runtime calls a local Scalev endpoint so customer tokens stay server-side. Always handle `null`.
+
+## `Scalev.diagnostics.get()`
+
+Returns recent runtime diagnostics for debugging.
+
+```js
+const diagnostics = Scalev.diagnostics.get();
+```
+
+Diagnostics can include failed runtime requests and, when `?agent_debug=1` is present, visual warnings such as horizontal overflow or unlabeled visible form controls. Do not build customer-facing logic from diagnostics; use it for debugging and QA only.
 
 ## Minimal non-store example
 
