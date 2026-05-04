@@ -1,0 +1,255 @@
+---
+title: "Tutorial Cara Mengantisipasi Spam Order"
+description: "Ada kalanya landing page jualan Anda diserbu order iseng."
+---
+- Kalau Anda lebih mudah mencerna tutorial versi video, tonton yang video.
+
+- Kalau Anda lebih mudah mencerna tutorial versi text, baca tulisannya.
+
+## Tutorial Versi Video:
+
+<iframe src="https://www.youtube.com/embed/ii3DTooQUNc" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+\===
+
+## Tutorial Versi Text:
+
+Ada kalanya landing page jualan Anda diserbu order iseng.
+
+Entah iseng order ngetes funnel LP karena penasaran.
+
+Entah iseng order dari orang hasil belajar cara dapet Dollar di eFBi Pro.
+
+Atau iseng bikin fake order dan emang gak niat beli.
+
+Sekali dua kali mungkin belum masalah, tapi kalau sudah berulang setiap hari.
+
+Waktunya dipasang tameng!
+
+Di Scalev, Anda bisa mengurangi spam order dengan fitur **Order Shield**.
+
+Supaya order yang diduga spam bisa di filter terlebih dahulu.
+
+Cara akses:
+
+Dashboard Scalev → Stores → Pilih Toko → Lalu cari di panel kanan widget **Order Shield**.
+
+<figure>
+
+![Ordershield1](https://tutorial.scalev.id/wp-content/uploads/2025/11/ordershield1.png)
+
+<figcaption>
+
+Pengaturan Order Shield default
+
+</figcaption>
+
+</figure>
+
+Di dalamnya ada empat area utama:
+
+- Form Rules
+
+- Blocked People
+
+- Blocked IP
+
+- AI Spam Filter
+
+Aktifkan sesuai kebutuhan. Order nakal akan otomatis dimasukkan ke "[Suspicious Orders](https://app.scalev.id/suspicious-order)" jika terdeteksi mencurigakan.
+
+## Keterangan dari masing-masing fitur
+
+### **1\. Form Rules**
+
+Untuk mengurangi order _“iseng cepat-cepat”_ seperti spam nama pendek, alamat tidak jelas, dan percobaan order bertubi-tubi.
+
+Anda bisa ubah aturan di form checkout versi Anda sendiri untuk menangkis kegiatan tersebut.
+
+Ubah pilihan menjadi “OK. Atur sekarang.” untuk mengaktifkan.
+
+##### **Pengaturan yang tersedia dan apa yang terjadi:**
+
+#### **a. Jumlah minimal huruf untuk Nama**
+
+Batasi minimal karakter pada isian Nama di form checkout.
+
+Misal ditetapkan 3 karakter.
+
+Saat visitor mengetik pada isian Nama, muncul warning langsung: _“Nama minimal 3 karakter.”_
+
+Akan hilang otomatis ketika isian Nama sudah sesuai minimal karakter.
+
+#### **b. Jumlah minimal huruf untuk Alamat**
+
+Batasi minimal karakter pada isian Alamat di form checkout.
+
+Misal ditetapkan 7 karakter.
+
+Jika Alamat diisi kurang dari 7 karakter, setelah submit akan muncul pesan: _“Address is too short.”_
+
+Order tidak akan bisa disubmit sampai isian Alamat sesuai minimal karakter.
+
+#### **c. Maksimal jumlah pesanan per Nomor HP dalam 1 jam**
+
+Batasi jumlah order per Nomor HP dalam rentang 1 jam.
+
+Misal ditetapkan 1 order/jam.
+
+Ketika ada percobaan order kedua dalam rentang 1 jam dengan Nomor HP yang sama, setelah submit akan muncul pesan: _“Duplicate order.”_
+
+Catatan: jika buyer yang sama ganti Nomor HP, perhitungannya mengikuti nomor baru tersebut.
+
+#### **d. Maksimal jumlah pesanan per Alamat IP dalam 1 jam**
+
+Batasi jumlah order per **Alamat IP** dalam rentang 1 jam.
+
+Misal ditetapkan 1 order/jam.
+
+Ketika ada percobaan order kedua dalam rentang 1 jam dari IP yang sama, setelah submitakan muncul pesan: _“Duplicate order.”_
+
+Catatan: jika buyer yang sama ganti perangkat/jaringan sehingga IP berbeda, perhitungannya mengikuti IP baru tersebut.
+
+### **2\. Blocked Customer**
+
+Untuk visitor/customer yang sudah pernah order dan ditandai sebagai spam sebelumnya.
+
+Anda bisa atur bagaimana Scalev memperlakukan order baru dari mereka.
+
+Ubah pilihan menjadi “Setuju. Biar orderan dari orang tsb, masuk ke suspicious orders!” untuk mengaktifkan.
+
+Kapan digunakan:
+
+- ON bila Anda ingin orderan dari orang-orang yang pernah melakukan spam gak langsung masuk ke halaman Orders.
+
+- OFF bila Anda gak masalah semua orderan lolos ke halaman Orders.
+
+Anda dapat mengecek list order yang tertangkap sebagai spam di halaman "[Suspicious Orders](https://app.scalev.id/suspicious-order)".
+
+### **3\. IP Blacklist**
+
+Untuk orderan dari IP address yang sudah pernah ditandai sebagai spam sebelumnya.
+
+Anda bisa atur bagaimana Scalev memperlakukan order baru dari IP tersebut.
+
+Ubah pilihan menjadi “Setuju. Biar orderan dari IP jahat, masuk ke suspicious orders!” untuk mengaktifkan.
+
+Anda dapat mengecek list IP address yang tertangkap sebagai spam di halaman "[Suppression IP List](https://app.scalev.id/setting/suppressed-ips)".
+
+### **4\. AI Spam Filter**
+
+Untuk memfilter otomotis orderan yang masuk, Scalev juga punya AI buat bantuin.
+
+Ubah pilihan menjadi "Aktifkan. Pengen liat AI racikannya Scalev." untuk mengaktifkan.
+
+Jika diaktifkan, AI akan bantu cek Nama, Nomor HP, dan Email setiap orderan yang masuk.
+
+Kalau terdeteksi pola aneh (seperti nama acak, nomor tidak wajar, email tidak masik akal, atau pola berulang khas bot), maka akan dianggap spam.
+
+Jika AI menilai spam:
+
+1. IP address pelakunya dimasukkan ke Suppression IP List.
+
+3. Orderannya langsung dialihkan ke Suspicious Orders.
+
+\===
+
+Ketika Anda belum pernah mengatur Order Shield, maka pengaturan default akan seperti ini:
+
+- Form Rules: NONAKTIF
+
+- Blocked Customer: **AKTIF**
+
+- IP Blacklist: **AKTIF**
+
+- AI Spam Filter: NONAKTIF
+
+Artinya semua orderan yang sebelumnya pernah Anda curigai spam (belum melakukan tindakan apapun) tetap lolos sebagai order normal jika melakukan order lagi.
+
+Ketika mengaktifkan Order Shield, sistem juga bisa saja tetap meloloskan orderan yang pernah Anda curigai spam (belum melakukan tindakan apapun).
+
+Karena itu, tindakan manual menjadi langkah paling awal yang aman saat Anda menemui order yang mencurigakan.
+
+## Tindakan Manual Untuk Pencegahan
+
+### **1\. Tandai IP sebagai Spam**
+
+Untuk memberitahu ke sistem apa yang harus dilakukan ketika kedepannya ada orderan masuk dari IP address yang sudah pernah Anda tandai spam.
+
+Supaya order dari IP address yang sama selanjutnya akan masuk ke "[Suspicious Orders](https://app.scalev.id/suspicious-order)".
+
+Caranya:
+
+Ke Menu Orders → Pilih Order → cari panel kanan widget UTM & Others → klik "Add to suppression list"
+
+### **2\. Tandai Customer sebagai Spam**
+
+Untuk memberitahu ke sistem apa yang harus dilakukan ketika kedepannya ada orderan masuk dari Customer yang sudah pernah Anda tandai spam.
+
+Supaya order dari Customer yang sama selanjutnya akan masuk ke "[Suspicious Orders](https://app.scalev.id/suspicious-order)".
+
+Caranya:
+
+Ke Menu Customers → Pilih Customer → klik "Block this customer"
+
+\===
+
+## Istilah Utama yang Wajib Paham
+
+### **1\. Suspicious Orders**
+
+Berisi daftar semua order pada Akun Scalev Anda yang ditandai sebagai spam.
+
+Semua order yang masuk kesini bukan diblokir, Anda bisa pantau dan analisa lebih lanjut terhadap orderan tersebut.
+
+Aksi yang bisa dilakukan di halaman ini:
+
+- Mark as Not Spam → jika ternyata bukan fake order. Dampak: order kembali ke alur normal dan semua script langsung ditrigger (notifikasi, webhook, automations, dsb).
+
+- Biarkan di Suspicious → jika terbukti spam.
+
+### **2\. IP Suppression List**
+
+Berisi daftar alamat IP yang ditandai sebagai spam/bot.
+
+Daftar ini yang akan digunakan oleh sistem untuk mengarahkan orderan baru yang masuk akan diloloskan ke Menu Orders atau langsung ke Suspicious Orders.
+
+\===
+
+## Saran untuk Memaksimalkan Order Shield di Scalev
+
+<figure>
+
+![Ordershield2](https://tutorial.scalev.id/wp-content/uploads/2025/11/ordershield2.png)
+
+<figcaption>
+
+Pengaturan Order Shield yang disarankan
+
+</figcaption>
+
+</figure>
+
+1. Tandai manual order yang jelas-jelas mencurigakan dengan "Add to suppression list".
+
+3. Tandai manual customer yang diduga melakukan spam dengan "Block this customer".
+
+5. Nyalakan Form Rules dengan batas minimal masuk akal:
+    - Nama ditetapkan 3 karakter
+    
+    - Alamat ditetapkan 7 karakter
+    
+    - Nomor HP ditetapkan 1 order/jam
+    
+    - Alamat IP ditetapkan 1 order/jam
+
+7. Nyalakan Blocked Customer dan IP Blacklist ke **AKTIF** supaya order dari Orang/IP bermasalah otomatis parkir di Suspicious Orders.
+
+9. Review Suspicious Orders:
+    - Jika legit → Mark as Not Spam (semua script langsung terpanggil, order kembali normal).
+    
+    - Jika meragukan → biarkan disana.
+
+Demikianlah cara untuk mengantisipasi atau mencegah spam order dengan memanfaatkan pengaturan validasi lanjutan pemesanan di toko Scalev Anda.
+
+Ketika pengaturan validasi ini aktif diharapkan dapat membantu meminimalisir jumlah order yang terindikasi spam dari orang-orang iseng yang mampir ke LP jualan Anda.

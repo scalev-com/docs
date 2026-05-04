@@ -1,0 +1,61 @@
+---
+title: "Kenapa Muncul Error “Duplicate Order” Saat Test Submit Form Order?"
+description: "Contoh errornya muncul seperti screenshot di bawah ini:"
+---
+Contoh errornya muncul seperti screenshot di bawah ini:
+
+<figure>
+
+![Duplicate order](https://tutorial.scalev.id/wp-content/uploads/2025/08/Duplicate-Order.jpeg)
+
+<figcaption>
+
+Duplicate order saat testing
+
+</figcaption>
+
+</figure>
+
+Jika Anda mengalami error seperti itu pada saat testing order, maka penyebabnya karena:
+
+Kedeketan jarak submit orderannya.
+
+Biasanya itu terjadi karena sebelumnya Anda pernah melakukan test order.
+
+Dengan detil orderan yang sama persis.
+
+Bisa dari nama atau nomor hp nya yang sama.
+
+Jadi, kedeteksi sebagai spam orderan.
+
+Itu langkah preventif supaya Anda tidak kena spam order.
+
+**Solusinya:**
+
+Tunggu aja beberapa menit, kalau mau bisa testing orderan lagi.
+
+Atau order dengan detil yang berbeda seperti beda nama atau beda nomor hp nya.
+
+Jangan lupa juga periksa pengaturan [Order Validation](https://tutorial.scalev.id/anti-spam-order/ "Anti Spam Order") di toko Anda seperti ini:
+
+<figure>
+
+![Duplicate order 1](https://tutorial.scalev.id/wp-content/uploads/2025/08/duplicate-order-1.png)
+
+<figcaption>
+
+Order Validation
+
+</figcaption>
+
+</figure>
+
+Pastikan pengaturan yang di kotak merah sudah sesuai dengan kebutuhan toko Anda.
+
+- **Max Number of Orders per Phone Number in One Hour** adalah jumlah percobaan order berdasarkan nomor telepon dalam 1 jam.
+
+- **Max Number of Orders per IP Address in One Hour** adalah jumlah percobaan order berdasarkan alamat IP dalam 1 jam.
+
+Jumlah percobaan order dalam 1 jam dapat disesuaikan sendiri untuk pencegahan spam order.
+
+Termasuk ketika melakukan testing order.

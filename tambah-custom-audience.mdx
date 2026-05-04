@@ -1,0 +1,168 @@
+---
+title: "Tutorial Cara Menambahkan Custom Audience Meta ke Scalev"
+description: "Sebelum Anda melanjutkan untuk melakukan tutorial ini, pastikan Anda sudah:"
+---
+Sebelum Anda melanjutkan untuk melakukan tutorial ini, pastikan Anda sudah:
+
+1. [Mengintegrasikan ad account Meta ke Scalev](https://tutorial.scalev.id/integrasi-ad-account/).
+
+3. Sudah memiliki/membuat Custom Audience dengan type [Customer List di Meta](https://tutorial.scalev.id/custom-audience-meta/)
+
+5. Membuat custom audience di ad account Meta Ads Anda setidaknya untuk 2 event (KETIKA ADA ORDERAN & KETIKA PEMBAYARANNYA SUDAH DITERIMA).
+
+.
+
+Jika sudah, Anda boleh mengikuti langkah-langkah untuk menambahkan Custom Audience (CA) Meta ke Scalev berikut ini.
+
+1\. Buka dasbor Scalev lalu pergi ke Store → Pilih Toko yang dimiliki oleh Bisnis Anda
+
+<figure>
+
+![Tambah Custom Audience 1](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-1-1024x615.png)
+
+<figcaption>
+
+Klik pada nama toko Anda
+
+</figcaption>
+
+</figure>
+
+2\. Di halaman Toko cek widget "Meta Custom Audience" di sidebar sebelah kanan lalu klik link "Lihat"
+
+<figure>
+
+![Tambah Custom Audience 2](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-2-1024x572.png)
+
+<figcaption>
+
+Klik link Lihat untuk membuka dialog baru
+
+</figcaption>
+
+</figure>
+
+3\. Muncul dialog berikut ini, lalu klik link + Tambah Custom Audience
+
+<figure>
+
+![Tambah Custom Audience 3](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-3.png)
+
+<figcaption>
+
+Klik + Tambah Custom Audience
+
+</figcaption>
+
+</figure>
+
+4\. Muncul dropdown pilihan ad account yang tersambung ke akun Facebook Anda, lalu pilih salah satu ad account
+
+<figure>
+
+![Tambah Custom Audience 4](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-4.png)
+
+<figcaption>
+
+Pilih ad account yang tampil di dalam dropdown
+
+</figcaption>
+
+</figure>
+
+5\. Kemudian muncul kolom Meta Custom Audience, pilih salah satu CA (atau lebih dari satu juga boleh) yang pernah Anda buat di Meta untuk dimasukkan ke kolom ini
+
+<figure>
+
+![Tambah Custom Audience 5](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-5.png)
+
+<figcaption>
+
+Pilih satu atau lebih Custom Audience yang mau dimasukkan
+
+</figcaption>
+
+</figure>
+
+6\. Setelah memasukkan CA-nya klik tombol Simpan
+
+<figure>
+
+![Tambah Custom Audience 6](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-6.png)
+
+<figcaption>
+
+Jangan lupa klik tombol Simpan
+
+</figcaption>
+
+</figure>
+
+Ada 4 (empat) tab kondisi CA berdasarkan status order yaitu Created, Pending, Confirmed, dan Completed.
+
+_Sebelum memasukkan CA ke Scalev pastikan Anda sudah membuatnya terlebih dahulu sesuai kondisi status order tersebut di Business Manager Meta Anda (yang nomor 2, di pembukaan artikel ini)._
+
+Jika sudah siap dan ada CA-nya silakan _connect-kan_ CA tersebut ke tab yang sesuai kondisinya masing-masing di dialog tersebut.
+
+1. Pending → CA ketika ada event ORANG MELAKUKAN ORDER
+
+3. Confirmed → CA ketika ada event PEMBAYARAN ORANG TERSEBUT DITERIMA (kalau COD, ketika orang tsb _deal - deal-an_ untuk jadi memesan dengan sistem pembayaran lewat COD terhadap CS olshop Anda).
+
+5. “Created” → Bisa dihiraukan.
+
+7. Completed → Tidak wajib. Tapi kalau Anda mau, ini Anda bisa connect-kan ke CA yang menandakan orang ini sudah selesai transaksinya dengan Ada. Kalau produk digital, berarti sudah bayar & terima produknya. Kalau produk fisik, owne sudah sampai terima uangnya & customer sudah sampai terima barangnya.
+
+Sampai sini Anda sudah berhasil menambahkan CA ke Scalev.
+
+* * *
+
+Misalkan, Anda memiliki iklan yang sudah berjalan lama dan event Purchase-nya sudah mengumpulkan banyak data audiens.
+
+Lalu Anda buat CA baru berdasarkan iklan tersebut (yang banyak event Purchase-nya), kemudian Anda sambungkan ke Scalev.
+
+Maka CA tersebut akan mengumpulkan data audiens dari yang sudah ada dan melakukan sinkronisasi secara otomatis dengan event Purchase baru yang terjadi di Scalev (ditambahkan dan ditimpa).
+
+Artinya, tiap order baru yang memicu event Purchase di Scalev jika data audiens di dalam order tersebut memiliki kecocokan data dengan CA yang baru tersebut maka Meta akan berupaya menimpa datanya.
+
+Namun jika data audiens-nya benar-benar baru dan belum ada kecocokan di dalam CA tersebut maka akan ditambahkan sebagai data baru ke CA tersebut.
+
+## Jenis-jenis Custom Audience
+
+Ada pertanyaan dari salah satu user Scalev tentang best practice mengenai jenis CA yang sebaiknya digunakan dalam Scalev.
+
+Sebelum lanjut, perlu diketahui bahwa jenis CA itu cukup banyak.
+
+Berikut jenis-jenis CA yang ada di Meta:
+
+<figure>
+
+![Tipe Custom Audience Meta](https://tutorial.scalev.id/wp-content/uploads/2024/07/tipe-custom-audience-meta-1024x783.png)
+
+<figcaption>
+
+Jenis-jenis Custom Audience Meta
+
+</figcaption>
+
+</figure>
+
+CA di Meta itu jenisnya beragam seperti ditampilkan pada screenshot di atas.
+
+Tapi yang akan dibahas di sini adalah CA yang populer digunakan yaitu Website dan Customer list.
+
+- CA Website - mengumpulkan data pengunjung website dari event-event yang triggered
+
+- CA Customer list - mengumpulkan data customer yang sudah melakukan pembelian dari upload data secara manual
+
+Beda antara CA Website dan CA Customer list adalah:
+
+- CA Website memiliki batas waktu retensi audiens, contoh: 30 hari, 60 hari, 90 hari, dan seterusnya sampai maksimal 180 hari.  
+      
+    Artinya data audiens di dalam CA tersebut terbatas oleh durasi yang ditentukan sendiri. Data audiens yang melebihi batas waktu retensi tersebut maka TIDAK DAPAT DIJANGKAU untuk ditarget dalam iklan.  
+    
+
+- Sedangkan CA Customer list tidak ada batas waktu retensi audiens. Artinya data audiens CA ini durasinya ALL TIME.  
+      
+    Jadi dari awal CA Customer list dibuat hingga seterusnya audiens DAPAT DIJANGKAU dalam iklan.
+
+Dengan memahami perbedaan antara CA Website dan CA Customer tersebut maka Anda bisa memutuskan mana yang terbaik untuk disinkronisasikan dengan Scalev berdasarkan kebutuhan bisnis Anda.

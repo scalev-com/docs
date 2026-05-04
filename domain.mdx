@@ -1,0 +1,220 @@
+---
+title: "Tutorial Cara Menambahkan Domain & Sub Domain Pribadi Ke Scalev"
+description: "Sama seperti di server lama Anda bisa memasukan Domain / subdomain pada server baru ini."
+---
+<iframe src="https://www.youtube.com/embed/4DN1nLc4Sbk" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+- [Pindahkan DNS Manager domain ke Cloudflare!](https://tutorial.scalev.id/cloudflare/)
+
+- [Mengakses landingpage menggunakan domain Pribadi!](https://tutorial.scalev.id/limit-lp/)
+
+* * *
+
+1. Masuk ke menu Setting.
+
+3. Klik Domain.
+
+5. Klik Tambahkan Domain.
+
+Sama seperti di server lama Anda bisa memasukan Domain / subdomain pada server baru ini.
+
+<figure>
+
+![Setting cloudflare 1](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-1-1024x640.png)
+
+<figcaption>
+
+Halaman tambah domain
+
+</figcaption>
+
+</figure>
+
+Kemudian masukan domain/subdomain yang klik simpan.
+
+Kemudian akan muncul Kode DNS yang harus Anda masukan ke cloudflare Anda, seperti ini:
+
+<figure>
+
+![Setting cloudflare 2](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-2-804x1024.png)
+
+<figcaption>
+
+DNS record Scalev
+
+</figcaption>
+
+</figure>
+
+Kemudian Silahkan Anda pergi ke Cloudflare Anda.
+
+Klik DNS ⇢ Add Record
+
+<figure>
+
+![Setting cloudflare 3](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-3-1024x523.png)
+
+<figcaption>
+
+Tambah record DNS di Cloudflare
+
+</figcaption>
+
+</figure>
+
+Masukan DNS tersebut ke cloudflare Anda 1 per 1.
+
+Dan pastikan semua kode DNS (baik Type, Name, Target) sudah sesuai dengan yang tertera di Scalev.
+
+Serta jangan lupa untuk merubah Proxy Status menjadi ⇢ **DNS Only**
+
+<figure>
+
+![Setting cloudflare 4](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-4-1024x323.png)
+
+<figcaption>
+
+DNS Only pada record CNAME
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Setting cloudflare 5](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-5-1024x437.png)
+
+<figcaption>
+
+Tambahkan record TXT yang pertama
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Setting cloudflare 6](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-6-1024x427.png)
+
+<figcaption>
+
+Tambahkan record TXT yang kedua
+
+</figcaption>
+
+</figure>
+
+  
+  
+
+Jika Anda sudah pastikan data DNS yang Anda masukan ke Cloudflare sudah sesuai dengan data DNS dari Scalev.
+
+Silahkan klik verifikasi di Scalev Anda.
+
+Jika berhasil, status domain Anda akan aktif seperti ini:
+
+<figure>
+
+![Setting cloudflare 7](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-7-1024x976.png)
+
+<figcaption>
+
+Status domain aktif di Scalev
+
+</figcaption>
+
+</figure>
+
+Sampai disini domain Anda sudah dapat digunakan.
+
+Anda tinggal mengganti domain bawaan Scalev menjadi Domain pribadi Anda.
+
+Contoh:
+
+- Yang Awalnya ⇢ https://elpe.myscalev.com/ngebut 
+
+- Diubah menjadi ⇢ https://lpngebut.com/ngebut
+
+**Catatan:**
+
+1. Jika DNS type A dengan Name domain terdapat lebih dari 1, maka hapus DNS type A selain DNS type A dari Scalev. 
+
+3. DNS Type A wajib mematikan Proxy / diubah jadi DNS Only.
+
+5. Verifikasi domain biasanya membutuhkan waktu maksimal 2×24 jam, baik DNS Type TXT ataupun DNS Type A. Jadi jika setelah memasukan DNS ke Cloudflare ternyata belum bisa di verifikasi di Scalev, silahkan tunggu & lakukan klik tombol verifikasi secara berkala.
+
+### Domain sudah aktif tapi tidak dapat diakses?
+
+Ketika domain Anda sudah ditambahkan sesuai instruksi dan dipastikan sudah benar, tapi Anda tidak dapat mengaksesnya sendiri di laptop.
+
+Padahal kalau orang lain mengakses domain Anda ternyata sudah aktif dan bisa diakses dengan normal.
+
+Maka kendalanya terletak pada **cache jaringan internet dan browser Anda.**
+
+Solusinya ada tiga:
+
+1. Restart modem/wifi internet Anda
+
+3. Hapus cache di browser
+
+5. Flush DNS
+
+Dengan merestart modem/wifi Anda, biasanya koneksi internet Anda mendapatkan alamat IP baru yang fresh untuk mengakses internet.
+
+Pastikan juga cache pada browser Anda telah dihapus.
+
+Caranya:
+
+Di browser Chrome / Firefox, pencet tombol CTRL + SHIFT + DEL.
+
+Centang:
+
+- Browsing history
+
+- Cached images and files
+
+Time range pilih All time.
+
+<figure>
+
+![Delete Cache](https://tutorial.scalev.id/wp-content/uploads/2024/03/delete-cache-1024x954.png)
+
+<figcaption>
+
+Hapus cache browser
+
+</figcaption>
+
+</figure>
+
+Lalu klik tombol Delete Data.
+
+Untuk menghapus cache koneksi internet di laptop Anda ikuti cara berikut ini.
+
+**Pengguna Windows:**
+
+1. Buka aplikasi CMD dengan memencet kombinasi tombol logo Windows WIN + R
+
+3. Ketik `ipconfig /flushdns`
+
+5. Tekan Enter
+
+7. Selesai
+
+**Pengguna Mac:**
+
+1. Buka aplikasi Terminal dengan memencet CMD + SPACE
+
+3. Ketik terminal, tekan Enter
+
+5. Jendela Terminal terbuka, ketik `dscacheutil -flushcache`
+
+7. Tekan Return (Enter)
+
+9. Selesai
+
+Demikian solusi domain aktif yang tidak dapat diakses di laptop Anda setelah menambahkan domain baru di Scalev.
+
+Jika Anda sudah mencoba seluruh solusi di atas namun tidak juga berhasil, silakan hubungi CS Scalev.
+
+Semoga bermanfaat.

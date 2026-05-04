@@ -1,0 +1,331 @@
+---
+title: "Tutorial Cara Setting Pixel Sesuai Best Practices dari Meta"
+description: "Untuk menindaklanjuti peringatan yang muncul pada tab Diagnostics di Events Manager, ada baiknya kalau Anda memastikan terlebih dulu setting pixel Meta..."
+---
+Untuk menindaklanjuti peringatan yang muncul pada tab Diagnostics di Events Manager, ada baiknya kalau Anda memastikan terlebih dulu setting pixel Meta itu sudah mengikut standard praktik terbaik (Best Practices) dari Meta.
+
+Baik untuk pixel yang baru dibuat atau pixel yang sudah ada dari dulu.
+
+<figure>
+
+![Best practices meta 1](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-1-1024x501.png)
+
+<figcaption>
+
+Pesan peringatan di pixel Diagnostics Events Manager
+
+</figcaption>
+
+</figure>
+
+<iframe src="https://www.youtube.com/embed/ket4Ct-08HU" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+Caranya Anda dapat tonton video di atas atau ikuti instruksi melalui tulisan di bawah ini:
+
+Jika Anda mengikuti instruksi pembuatan pixel baru di artikel ini: [](https://tutorial.scalev.id/tambah-pixel/ "Tutorial Cara Menambahkan Pixel ke Scalev")[Tutorial Cara Menambahkan Pixel ke Scalev](https://tutorial.scalev.id/tambah-pixel/)
+
+Lalu mengatur Conversion API (CAPI) di artikel ini: [](https://tutorial.scalev.id/conversionapi/ "Tutorial Cara Mengambil Conversion API Access Token (Supaya Bisa Diintegrasikan dengan Account Scalev Anda)")[Tutorial Cara Mengambil Conversion API Access Token (Supaya Bisa Diintegrasikan dengan Account Scalev Anda)](https://tutorial.scalev.id/conversionapi/)
+
+Maka selanjutnya Anda perlu memeriksa dan memastikan pengaturan parameter yang diperlukan oleh pixel CAPI agar sesuai dengan standar Meta.
+
+Supaya kalau sudah mengikuti Best Practices ini pixel Anda tidak lagi memunculkan warning error yang berkaitan dengan event CAPI di tab Diagnostics.
+
+Ikuti langkah-langkah berikut:
+
+1\. Buka halaman depan BM Meta di [https://business.facebook.com](https://business.facebook.com)
+
+<figure>
+
+![Best practices meta 2](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-2-1024x717.png)
+
+<figcaption>
+
+Buka Events Manager di BM
+
+</figcaption>
+
+</figure>
+
+2\. Klik tombol Connect Data untuk menghubungkan pixel yang sudah ada
+
+<figure>
+
+![Best practices meta 3](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-3-1024x480.png)
+
+<figcaption>
+
+Klik Connect Data
+
+</figcaption>
+
+</figure>
+
+3\. Pilih Web lalu klik tombol Next
+
+<figure>
+
+![Best practices meta 4](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-4-1024x953.png)
+
+<figcaption>
+
+Pilih Web
+
+</figcaption>
+
+</figure>
+
+4\. Pilih nama pixel yang aktif Anda pakai
+
+<figure>
+
+![Best practices meta 5](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-5-1024x484.png)
+
+<figcaption>
+
+Pilih pixel aktif
+
+</figcaption>
+
+</figure>
+
+5\. Centang "Set up manually" lalu klik tombol Next
+
+<figure>
+
+![Best practices meta 6](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-6-1024x801.png)
+
+<figcaption>
+
+Set up manually
+
+</figcaption>
+
+</figure>
+
+6\. Centang "Conversions API and Meta Pixel" lalu klik tombol Next.
+
+<figure>
+
+![Best practices meta 7](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-7-1024x910.png)
+
+<figcaption>
+
+Pilih yang Recommended
+
+</figcaption>
+
+</figure>
+
+7\. Selanjutnya klik "Start CAPI setup" lalu klik tombol "Finish" / "Close" juga boleh
+
+<figure>
+
+![Best practices meta 8](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-8-1024x667.png)
+
+<figcaption>
+
+Klik Start CAPI setup untuk memulai
+
+</figcaption>
+
+</figure>
+
+8\. Selanjutnya ada halaman "Manual Implementation Overview", klik tombol Continue untuk melanjutkan
+
+<figure>
+
+![Best practices meta 9](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-9-1024x640.png)
+
+<figcaption>
+
+Manual Implementation Overview
+
+</figcaption>
+
+</figure>
+
+9\. Pastikan tercentang di semua event aktif yang digunakan pada pixel Anda
+
+<figure>
+
+![Best practices meta 10](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-10-1024x640.png)
+
+<figcaption>
+
+Daftar event pixel aktif
+
+</figcaption>
+
+</figure>
+
+10\. Jika ada event pixel Anda yang mendapatkan warning tanda seru seperti ini, maka harus segera diperbaiki sesuai standar Meta
+
+<figure>
+
+![Best practices meta 11](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-11-1024x1010.png)
+
+<figcaption>
+
+Daftar parameter yang harus diperbaiki
+
+</figcaption>
+
+</figure>
+
+Sehingga hasilnya menjadi begini:
+
+<figure>
+
+![Best practices meta 12](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-12.png)
+
+<figcaption>
+
+Settingan Best Practices pixel Meta
+
+</figcaption>
+
+</figure>
+
+Ini daftar parameter yang harus diperbaiki, yaitu:
+
+- Event ID
+
+- Phone
+
+- Email
+
+- IP address
+
+Ke empat parameter tersebut **WAJIB** Anda centang seperti di langkah berikut ini.
+
+11\. Centang minimal 4 parameter sesuai daftar di atas
+
+<figure>
+
+![Best practices meta 13](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-13-1024x845.png)
+
+<figcaption>
+
+Centang 4 parameter wajib ini
+
+</figcaption>
+
+</figure>
+
+Lakukan centang parameter tersebut di event-event yang lain.
+
+Seperti ViewContent, AddToCart, InitiateCheckout, dll.
+
+Semua event yang aktif di pixel Anda.
+
+Lalu klik tombol Next.
+
+12\. Review Setup, lanjut klik tombol Continue.
+
+<figure>
+
+![Best practices meta 14](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-14-1024x769.png)
+
+<figcaption>
+
+Review setup
+
+</figcaption>
+
+</figure>
+
+13\. Klik tombol Continue
+
+<figure>
+
+![Best practices meta 15](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-15-1024x768.png)
+
+<figcaption>
+
+Langsung klik tombol Continue
+
+</figcaption>
+
+</figure>
+
+14\. Selanjutnya akan dibawa ke halaman berikut, klik tombol Get Started.
+
+<figure>
+
+![Best practices meta 16](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-16-1024x640.png)
+
+<figcaption>
+
+Mulai dengan klik tombol Get Started
+
+</figcaption>
+
+</figure>
+
+15\. Klik Continue sampai langkah berikutnya, lalu klik tombol "Generate an Access Token"
+
+<figure>
+
+![Best practices meta 17](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-17-1024x640.png)
+
+<figcaption>
+
+Ambil kode access token untuk pixel Anda
+
+</figcaption>
+
+</figure>
+
+16\. Setelah di-generate, salin/copy kode Anda untuk persiapan ditambahkan ke pixel di Scalev
+
+<figure>
+
+![Best practices meta 18](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-18-1024x676.png)
+
+<figcaption>
+
+Salin kode token ke Scalev
+
+</figcaption>
+
+</figure>
+
+17\. Pergi ke pengaturan Analitik di Scalev di menu Settings > Analitik > Facebook Pixel
+
+Atau bisa klik melalui link ini: [https://app.scalev.id/setting/tracking](https://app.scalev.id/setting/tracking)
+
+18\. Edit pixel Anda dan paste kode token tersebut di field "Conversion API Access Token"
+
+<figure>
+
+![Best practices meta 19](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-19-730x1024.png)
+
+<figcaption>
+
+Update kode token Meta di Scalev
+
+</figcaption>
+
+</figure>
+
+19\. Klik tombol Simpan.
+
+20\. Kembali ke Events Manager, klik tombol Finish untuk mengakhiri prosesnya
+
+<figure>
+
+![Best practices meta 20](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-20-1024x640.png)
+
+<figcaption>
+
+Akhiri proses implementasi
+
+</figcaption>
+
+</figure>
+
+Sampai sini proses implementasi parameter yang disarankan oleh Meta untuk pixel aktif Anda sudah selesai.
+
+Silakan tunggu dan cek secara berkala tab Diagnostics di Events Manager untuk mengetahui pesan warning apa saja yang muncul dan yang sudah tidak muncul lagi setelah menerapkan best practices ini.
+
+Selamat mencoba!

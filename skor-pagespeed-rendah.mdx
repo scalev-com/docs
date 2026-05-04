@@ -1,0 +1,31 @@
+---
+title: "Kenapa Skor Pagespeed saya rendah atau terasa acak?"
+description: "Kenapa skornya berubah-ubah?"
+---
+Cara mengecek speed bisa dilakukan di sini: [https://pagespeed.web.dev](https://pagespeed.web.dev/)
+
+Kenapa skornya berubah-ubah?
+
+1\. Skor ini dicek melalui random network milik Google. Terkadang ada network mereka yang tidak "ramah" dengan ISP di Indonesia. Tapi umumnya aman.
+
+2\. Komponen terbesar yang diload oleh web umumnya ada 2: pixel dan image.
+
+Seringkali pixel Meta unstable, alias mogok di tengah jalan. Kalau ini kasusnya sudah wallahualam. Cara mengeceknya, kadang di pagespeed muncul seperti ini:
+
+![Faq Pagespeed Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/faq-pagespeed-min.png)
+
+Ini kasusnya pixel mogok alias gagal dieksekusi.
+
+Kalau kasusnya adalah image, maka Anda tinggal mengikuti tutorial saja untuk melakukan treatment terhadap image.
+
+Bagaimana caranya kita tau performa asli Scalev tanpa terganggu oleh masalah pixel?
+
+1. Duplicate LP Anda.
+
+3. Lepaskan semua pixel yang terpasang termasuk dengan event-nya.
+
+5. Simpan.
+
+7. Uji dengan pagespeed.
+
+Anda akan menemukan hasil asli performa landing page Scalev.

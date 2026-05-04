@@ -1,0 +1,120 @@
+---
+title: "Perbedaan Gross Revenue, Net Revenue, dan Adjusted Revenue"
+description: "Nilai Purchase Event"
+---
+<figure>
+
+![Nilai Purchase Event](https://tutorial.scalev.id/wp-content/uploads/2024/08/nilai-purchase-event-1024x308.jpeg)
+
+<figcaption>
+
+Nilai Purchase Event
+
+</figcaption>
+
+</figure>
+
+Gross Revenue = Nilai akhir pada invoice yang dibayar oleh Customer
+
+Net Revenue = Harga barang (produk) dikurangi diskon barang dikurangi kode unik
+
+Adjusted Gross = Harga barang dikurangi diskon barang dikurangi kode unik dikurangi diskon ongkir
+
+Contoh case:
+
+Agus checkout membeli produk fisik 1 pcs kaos polos seharga Rp100.000 dengan diskon Rp15.000 dan ongkirnya Rp25.000. Agus mendapatkan diskon ongkir Rp5.000 kemudian memilih rekening Virtual Account (VA) untuk membayar pesanan tersebut dengan biaya VA sebesar 5%.
+
+Maka:
+
+Harga produk Rp100.000  
+Diskon produk -Rp15.000  
+Kode unik -Rp321  
+Diskon ongkir -Rp5.000  
+Ongkir Rp25.000
+
+Subtotal Rp104.679  
+Fee transaksi VA (5%) Rp5.233
+
+Total Rp109.912
+
+Dari contoh transaksi Agus ini Anda dapat menemukan perbedaan nilai purchase event-nya sebagai berikut:
+
+## Gross Revenue
+
+Rp100.000 - Rp15.000 - Rp321 - Rp5.000 + Rp25.000 + Rp5.233
+
+Maka:
+
+**Gross Revenue = Rp109.912** ← Nilai purchase event yang akan dikirimkan ke Meta.
+
+## Net Revenue
+
+Rp100.000 - Rp15.000 - Rp321
+
+Maka:
+
+**Net Revenue = Rp84.679** ← Nilai purchase event yang akan dikirimkan ke Meta.
+
+## Adjusted Gross Revenue
+
+Rp100.000 - Rp15.000 - Rp321 - Rp5.000
+
+Maka:
+
+**Adjusted Gross Revenue = Rp79.679** ← Nilai purchase event yang akan dikirimkan ke Meta.
+
+Contoh case lain:
+
+Surti dari Aceh checkout membeli produk skincare sebanyak 2 paket, harga produk Rp150.000 per paket. Surti mendapatkan promo gratis ongkir seluruh Indonesia.
+
+Lucy dari Jayapura juga checkout membeli produk skincare yang sama dengan Surti, tapi Lucy membeli 3 paket. Lucy juga mendapatkan promo gratis ongkir seluruh Indonesia.
+
+Paket dikirimkan dari Bandung memakai kurir Ninja Express ke alamat masing-masing pembeli.
+
+Surti dan Lucy memilih metode pembayaran melalui rekening Virtual Account dengan fee sebesar 5% per transaksi.
+
+Maka:
+
+**Pesanan Surti**
+
+Harga produk Rp150.000 (x2) Rp300.000  
+Diskon produk Rp0  
+Kode unik -Rp150  
+Diskon ongkir -Rp113.000  
+Ongkir per paket Rp56.500 (x2)
+
+Subtotal Rp186.850  
+Fee transaksi VA (5%) Rp9.342
+
+Total Rp196.192
+
+Nilai purchase event pesanan Surti:
+
+Gross Revenue: Rp300.000 - Rp0 - Rp150 - Rp113.000 - Rp0 - Rp9.342 = **Rp177.508**  
+Net Revenue: Rp300.000 - Rp0 - Rp150 = **Rp299.850**  
+Adjusted Gross: Rp300.000 - Rp0 - Rp150 - Rp113.000 = **Rp186.850**
+
+**Pesanan Lucy**
+
+Harga produk Rp150.000 (x3) Rp450.000  
+Diskon produk Rp0  
+Kode unik -Rp550  
+Diskon ongkir -Rp313.500  
+Ongkir per paket Rp104.500 (x3)
+
+Subtotal Rp135.950  
+Fee transaksi VA (5%) Rp6.797
+
+Total Rp142.747
+
+Nilai purchase event pesanan Lucy:
+
+Gross Revenue: Rp450.000 - Rp0 - Rp550 - Rp313.500 - Rp0 - Rp6.797 = **Rp135.950**  
+Net Revenue: Rp450.000 - Rp0 - Rp550 = **Rp449.450**  
+Adjusted Gross: Rp450.000 - Rp0 - Rp550 - Rp313.500 = **Rp135.950**
+
+Angka yang dicetak **tebal** di atas adalah nilai purchase event yang akan dikirimkan dari Scalev ke Meta.
+
+Demikianlah perbedaan antara Gross Revenue, Net Revenue, dan Adjusted Revenue yang terdapat pada pengaturan [Trigger Event Purchase](https://tutorial.scalev.id/triggerpurchase/) di Scalev.
+
+Anda dapat memilih salah satu dari 3 pilihan nilai purchase event yang sesuai dengan bisnis Anda.

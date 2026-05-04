@@ -1,0 +1,106 @@
+---
+title: "Tutorial Cara Testing Event Pixel SnackVideo"
+description: "Jika Anda sudah membuat pixel Event API SnackVideo, maka selanjutnya Anda perlu ngetes pemasangan pixelnya untuk memastikan flow eventnya berjalan dengan..."
+---
+Jika Anda sudah membuat pixel Event API SnackVideo, maka selanjutnya Anda perlu ngetes pemasangan pixelnya untuk memastikan flow eventnya berjalan dengan benar.
+
+Ikuti langkah-langkah berikut ini.
+
+### 1\. Web Events
+
+Login ke akun iklan SnackVideo Anda di [https://ads.kwai.com/](https://ads.kwai.com/)
+
+Setelah masuk, klik menu Assets lalu pilih Web Events.
+
+<figure>
+
+![Membuat Pixel Eventapi 1](https://tutorial.scalev.id/wp-content/uploads/2024/12/membuat-pixel-eventapi-1-1024x640.png)
+
+<figcaption>
+
+Buka menu Web Events
+
+</figcaption>
+
+</figure>
+
+### 2\. Pilih Pixel
+
+Klik pada nama pixel Events API yang telah Anda buat, jika belum buat [lihat panduannya di sini](https://tutorial.scalev.id/membuat-pixel-eventapi-snackvideo/ "Tutorial Cara Bikin Pixel Event API SnackVideo").
+
+### 3\. Test Events
+
+Klik tab Test Event untuk mengetahui kode yang harus dipakai saat testing.
+
+Dan melihat hasil testinya juga di sini, di sebelah kanan.
+
+<figure>
+
+![Test event snackvideo 1](https://tutorial.scalev.id/wp-content/uploads/2025/03/test-event-snackvideo-1-1024x640.png)
+
+<figcaption>
+
+Copy kode testing
+
+</figcaption>
+
+</figure>
+
+### 4\. Test Mode
+
+**PENTING!** Pastikan Anda menyalakan toggle Test Mode dulu di pengaturan Analitik Scalev.
+
+<figure>
+
+![Test event snackvideo 2](https://tutorial.scalev.id/wp-content/uploads/2025/03/test-event-snackvideo-2-706x1024.png)
+
+<figcaption>
+
+Aktifkan toggle Test Mode sebelum memulai testing
+
+</figcaption>
+
+</figure>
+
+### 5\. Parameter click\_id
+
+Tambahkan kode testing yang diambil dari langkah no. 3 di atas, lalu tempelkan dengan tambahan parameter **click\_id** di ujung link LP Anda.
+
+Contoh:
+
+Kode Testing = rY3vrGB7ICRbG4poTCqDtA  
+Link LP = https://domainanda.com/landing-page-baru**?click\_id=rY3vrGB7ICRbG4poTCqDtA**
+
+Link LP yang sudah dilengkapi dengan kode testing tersebut yang harus Anda test.
+
+### 6\. Test Order
+
+Buka link lengkap tersebut di browser penyamaran (incognito).
+
+Test LP Anda sampai selesai.
+
+Isi form checkout untuk membuat order baru.
+
+Lalu ubah status order menjadi Confirmed & Paid.
+
+### 7\. Preview Event
+
+Kembali ke langkah nomor 3 untuk melihat event apa saja yang berhasil trigger.
+
+<figure>
+
+![Test event snackvideo 3 min](https://tutorial.scalev.id/wp-content/uploads/2025/03/test-event-snackvideo-3-min-1024x423.png)
+
+<figcaption>
+
+Event yang berhasil trigger
+
+</figcaption>
+
+</figure>
+
+Jika event-event yang Anda pasang di LP-nya sudah muncul, seperti screenshot di atas maka testing event sudah berjalan dengan benar.
+
+Sampai sini testing pixel SnackVideo Anda di Scalev sudah selesai dan siap untuk beriklan.
+
+Jangan lupa matikan toggle Test Mode di langkah nomor 4 sebelum mulai beriklan di SnackVideo.

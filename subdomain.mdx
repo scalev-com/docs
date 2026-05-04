@@ -1,0 +1,164 @@
+---
+title: "Tutorial Cara Menambahkan Custom Sub-Domain Ke Scalev"
+description: "Di Scalev, Anda bisa menambahkan Custom sub-domain & Custom Domain utama sacara bersamaan."
+---
+Di Scalev, Anda bisa menambahkan Custom sub-domain & Custom Domain utama sacara bersamaan.
+
+Misal,
+
+- Domain utama saya: elkareem.store
+
+- Kemudian saya ingin bisa mengunakan sub-domain dari elkareem.store yaitu: lapak.elkareem.store
+
+Hal tersebut bisa dilakukan.
+
+Sebelum masuk ke langkah-langkahnya, sekedar informasi kaau proses verifikasi ini memerlukan waktu antara 5 menit → 2x24 jam hingga sub-domain Anda aktif.
+
+Berikut langkah-langkah-langkah menambahkan sub-domain ke Scalev.
+
+### #1. Tambahkan sub-domain ke Scalev
+
+- Pergi ke menu Setting.
+
+- Klik Domain.
+
+- Klik + Tambah Domain.
+
+![Cleanshot 2024 09 08 At 07.21.32](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.21.32-1024x584.png)
+
+- Masukan sub-domain yang diinginkan.
+
+- Klik Simpan.
+
+![Cleanshot 2024 09 08 At 07.22.36](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.22.36.png)
+
+\*_subdomain "lapak" bisa diisi kata apa saja asal 1 kata._  
+_Misal domain utama: elkareem.store  
+Anda mau menambahkan kata cart didepannya, maka yang masukan ke Scalev adalah cart.elkareem.store_
+
+- Nanti akan muncul daftar DNS seperti ini:
+
+![Cleanshot 2024 09 08 At 07.23.32](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.23.32.png)
+
+* * *
+
+### #2. Masukan DNS Scalev ke Cloudflare/DNS Manager Anda.\*
+
+_\*Kami mewajibkan Anda menggunakan DNS manager yang support CNAME seperti Cloudflare._
+
+- Buka cloudflare Anda.
+
+- Pilih domain yang mau diintegrasikan.
+
+- Klik DNS.
+
+- Klik Add Record
+
+![Cleanshot 2024 09 08 At 07.24.17](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.24.17-1024x580.png)
+
+- Masukan DNS type CNAME dari Scalev ke Cloudflare
+
+- Ikuti langkah-langkah di gambar ini:
+
+![1](https://tutorial.scalev.id/wp-content/uploads/2024/09/1.png)
+
+- Klik Simpan.
+
+_\*pastikan untuk membuat proxy statusnya menjadi DNS only.  
+Jika ketika mem-paste name & target ada space/enter yang terbawa silahkan dihapus._
+
+⇣
+
+- Masukan DNS type TXT yang pertama.
+
+- Ikuti langkah-langkah di gambar ini:
+
+![2](https://tutorial.scalev.id/wp-content/uploads/2024/09/2.png)
+
+- Klik Simpan.
+
+_\*pastikan TTL nya adalah Auto.  
+Jika ketika mem-paste name & target ada space/enter yang terbawa silahkan dihapus._
+
+⇣
+
+- Masukan DNS type TXT yang kedua.
+
+- Ikuti langkah-langkah di gambar ini:
+
+![3](https://tutorial.scalev.id/wp-content/uploads/2024/09/3.png)
+
+- Klik Simpan.
+
+_\*pastikan TTL nya adalah Auto.  
+Jika ketika mem-paste name & target ada space/enter yang terbawa silahkan dihapus._
+
+* * *
+
+### #3. Tunggu sub-domain terverifikasi.
+
+- Silahkan kembali ke Scalev.
+
+- Klik tombol verifikasi.
+
+![Cleanshot 2024 09 08 At 07.29.04](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.29.04.png)
+
+Jika sudah berhasil terverifikasi status domain Anda akan seperti ini:
+
+![Cleanshot 2024 09 08 At 07.46.09](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.46.09-1024x578.png)
+
+## #FAQ:
+
+Paket Scalev Free bisa gunakan custom sub-domain?
+
+Mohon maaf, untuk bisa menggunakan custom domain/custom sub-domain, Anda harus berlangganan paket Scalev minimal paket Lite.
+
+Selengkapnya bisa dilihat di: [https://home.scalev.id/plan](https://home.scalev.id/plan)
+
+Kalau belum punya Cloudflare, bagaimana?
+
+Anda bisa daftar Cloudflarenya dulu.
+
+Gunakan paket yang FREE saja.
+
+Tutorialnya di: [https://tutorial.scalev.id/cloudflare/](https://tutorial.scalev.id/cloudflare/)
+
+Berapa lama proses verifikasi custom sub-domain?
+
+Proses verifikasi memerlukan waktu antara 5 menit → 2x24 jam silahkan refresh Scalev secara berkala.
+
+Bagaimana jika DNS type TXT yang pertama tidak muncul targetnya di Scalev?
+
+Masukan saja DNS type CNAME & DNS type TXT yang kedua ke DNS manager/cloudflare.
+
+Kemudian tunggu 5 menit - 2x24 jam.
+
+⇣
+
+**PENTING**:
+
+kemungkinan status tidak aktif, tapi custom sub-domain tetap bisa diakses, silahkan lakukan pengetesan dengan cara:
+
+Misal:
+
+- Link landingpage Anda: https://mirza.scalev.id/bajuanak
+
+- custom subdomain Anda: https://toko.mirza.com
+
+- Maka silahkan buka browser Anda & masukan link https://toko.mirza.com/bajuanak
+
+Jika dapat diakses, tandanya custom sub-domain Anda sudah aktif di Scalev.
+
+Apakah bisa menggunakan DNS Manager selain Cloudflare?
+
+Bisa,
+
+Hanya saja kami sangat menyarankan Anda menggunakan Cloudflare.
+
+Atau DNS manager yang memang support DNS type CNAME.
+
+Untuk mempercepat proses verifikasi sub domain Anda.
+
+Bagaimana cara menggunakan Sub-Domain yang sudah aktif?
+
+Jika sub-domain Anda sudah dinyatakan aktif di Scalev Anda, silahkan ikuti tutorial ini untuk bisa menggunakannya: [https://tutorial.scalev.id/customdomain/](https://tutorial.scalev.id/customdomain/)

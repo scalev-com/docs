@@ -1,0 +1,63 @@
+---
+title: "Form Terisi Otomatis di Semesta Scalev dengan Autofill"
+description: "Scalev sudah merilis update terbaru namanya autofill."
+---
+Scalev sudah merilis update terbaru namanya **autofill**.
+
+Autofill adalah fitur yang membuat form di LP Scalev terisi secara otomatis pada saat checkout.
+
+Jadi customer yang pernah melakukan checkout atau order di suatu toko Scalev apabila dia order di toko lain yang berbeda maka data dirinya seperti nama, telepon, email, dll, itu akan **terisi secara otomatis**.
+
+Ilustrasi:
+
+- Agus mengunjungi LP A untuk order produk di toko Anda
+
+- Agus mengisi data nama, telepon/email, alamat (Produk Fisik) di form checkout
+
+- Agus kembali mengunjungi toko Anda setelah beberapa waktu dalam rentang 31 hari
+
+- Namun kali ini Agus mengunjungi LP B atau LP lainnya di toko Anda yang bisa jadi menjual produk yang berbeda dengan LP A
+
+- Ketika Agus mau checkout lagi data pribadinya sudah terisi lengkap secara otomatis
+
+- Agus tinggal mengklik 1 kali tombol submit saja sudah bisa langsung checkout
+
+Mirip seperti proses checkout di marketplace pada umumnya.
+
+Di toko mana pun customer belanja data pribadinya sudah terisi secara otomatis.
+
+Seolah-olah seperti sudah membuat akun sebelumnya.
+
+Ini merupakan salah satu friksi yang membuat orang-orang malas belanja di situs web selain marketplace.
+
+Hambatannya harus membuat akun dulu.
+
+Nah dengan adanya fitur autofill ini Scalev bisa menghilangkan friksi tersebut.
+
+## Cara Kerja Fitur Autofill di Scalev
+
+Begini cara kerjanya:
+
+Jika form yang diisi menggunakan **Custom Domain**, maka hanya akan bekerja untuk domain yang sama, namun tidak termasuk untuk semua subdomain di domain tersebut, misal:
+
+- Mengisi form di `tokoagus.com`
+
+- Ketika buka LP mana pun di `tokoagus.com`, data form otomatis terisi
+
+- Ketika buka `form.tokoagus.com`, data form tidak otomatis terisi
+
+- Ketika buka `agus.myscalev.com`, data form tidak otomatis terisi
+
+Jika form yang diisi menggunakan subdomain myscalev.com, maka akan bekerja untuk semua subdomain myscalev.com tapi tidak untuk Custom Domain, misal:
+
+- Mengisi form di `agus.myscalev.com`
+
+- Ketika buka `budi.myscalev.com`, data form otomatis terisi
+
+- Ketika buka `tokoagus.com`, data form tidak otomatis terisi
+
+- Ketika buka `form.tokoagus.com`, data form tidak otomatis terisi
+
+Begitulah cara kerja fitur autofill di Scalev.
+
+Fitur ini dapat dinikmati oleh seluruh user Scalev.

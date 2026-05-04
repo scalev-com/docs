@@ -1,0 +1,210 @@
+---
+title: "Tutorial Cara Redirect www ke Domain Utama Dengan Cloudflare"
+description: "Atau pengguna Scalev berbayar mana pun yang ingin menghemat kuota jatah custom domain."
+---
+Khusus Anda pengguna Scalev paket Lite yang [jatah custom domainnya](https://tutorial.scalev.id/customdomain/) hanya 1 (satu) yang boleh aktif dipakai.
+
+Atau pengguna Scalev berbayar mana pun yang ingin menghemat kuota jatah custom domain.
+
+Maka trik di artikel ini harus Anda coba.
+
+Sebelum melakukan instruksi di artikel ini saya asumsikan Anda telah menambahkan custom domain sesuai tutorial ini → [https://tutorial.scalev.id/azcustomdomain/](https://tutorial.scalev.id/azcustomdomain/)
+
+## Manfaat Redirect www ke Domain Utama
+
+- **Konsistensi URL**: Menyederhanakan URL agar selalu mengarah ke satu versi.
+
+- **Menghindari duplikasi konten**: Mencegah mesin pencari menganggap versi www dan non-www sebagai dua situs berbeda.
+
+- **Meningkatkan SEO**: Konsolidasi otoritas dan peringkat ke satu versi URL.
+
+- **Data analitik lebih akurat**: Memudahkan pelacakan data dan kinerja situs dalam satu versi.
+
+- **Pengalaman pengguna yang konsisten**: Mengarahkan pengguna ke versi yang sama setiap kali mengakses situs.
+
+- **Hemat jatah custom domain di Scalev.**
+
+## Mengapa harus bikin redirect?
+
+Satu nama domain itu terdapat dua versi yang dapat digunakan agar bisa diakses oleh pengunjung yaitu versi www dan versi non-www.
+
+Contoh:
+
+- army.id (versi non-www)
+
+- www.army.id (versi www)
+
+Dua-duanya mesti aktif untuk memastikan tidak ada error 404 (halaman tidak dapat diakses) oleh pengunjung.
+
+Kalau hanya memakai salah satu versi domain tersebut, maka kemungkinan besar salah satunya error 404 tidak bisa diakses jika tidak diatur.
+
+Maka untuk menghindari error 404 tersebut perlu dilakukan _redirection_ (pengalihan) pada salah satu domain tersebut.
+
+Dan menjadikan salah satu versi domain tersebut menjadi domain utama yang selalu dipakai.
+
+Supaya bisa mendapatkan manfaat-manfaat yang disebutkan di atas.
+
+## Cara Redirect www ke Domain Utama
+
+1\. Login ke akun Cloudflare
+
+2\. Pilih domain Anda yang sudah aktif
+
+3\. Pada menu sisi kiri, cari **Page Rules**
+
+4\. Di halaman Page Rules, klik tombol biru **Create Page Rule**
+
+<figure>
+
+![Redirect Www 1 Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/redirect-www-1-min-scaled.jpeg)
+
+<figcaption>
+
+Buka halaman Page Rules di Cloudflare
+
+</figcaption>
+
+</figure>
+
+5\. Kemudian isi pengaturan rule-nya persis seperti di screenshot berikut:
+
+<figure>
+
+![Redirect Www.2 Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/redirect-www.2-min.png)
+
+<figcaption>
+
+Pengaturan Page Rules untuk Redirection
+
+</figcaption>
+
+</figure>
+
+Sesuaikan dengan domain milik Anda.
+
+- URL (required): **www.army.id/**\*
+
+- Pick a Setting (required): **Forwarding URL**
+
+- Select status code (required): **301 - Permanent Redirect**
+
+- Enter destination URL (required): **https://army.id**
+
+6\. Setelah itu klik tombol biru "Save and Deploy Page Rule"
+
+## Menambah record CNAME baru
+
+Setelah membuat Page Rule di atas, selanjutnya Anda perlu memastikan record CNAME untuk www dan \* telah ditambahkan.
+
+Jika belum ada, maka buat record baru.
+
+Di sini Anda perlu membuat 2 record CNAME baru, yaitu:
+
+- CNAME www diarahkan ke @
+
+- CNAME \* diarahkan ke @
+
+@ = domain utama Anda tanpa www  
+\* = wildcard (subdomain random yang tidak ada)
+
+Contoh pengisian:
+
+<figure>
+
+![Redirect Www 3 Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/redirect-www-3-min.png)
+
+<figcaption>
+
+Menambahkan CNAME www dan \* diarahkan ke @
+
+</figcaption>
+
+</figure>
+
+Sampai sini pengaturan redirect www dengan Cloudflare sudah selesai.
+
+Silakan dites mengakses domain milik Anda di dua versi alamat www dan tanpa www.
+
+Jika berhasil maka akan tampil halaman depan di domain utama Anda.
+
+Versi www dialihkan ke versi non-www.
+
+Jika tidak berhasil, silakan cek FAQ di bawah ini.
+
+## FAQ
+
+Saya sudah membuat Page Rule seperti instruksi di atas tapi tetap tidak bisa diakses, kenapa?
+
+Ada beberapa kemungkinan Anda tidak dapat mengakses versi www padahal sudah mengikuti instruksi di atas.
+
+Seperti:
+
+- Cache browser
+
+- Cache jaringan internet
+
+- CNAME belum ditambahkan, dll.
+
+- Status Page Rule belum diaktifkan
+
+- Halaman utama domain belum disetel di Scalev
+
+Setelah menerapkan pengaturan redirect www, pastikan Anda:
+
+- Sudah clear cache di browser yang Anda gunakan
+
+- Reset/restart sambungan koneksi internet Anda
+
+- CNAME untuk www dan \* sudah ditambahkan ke domain aktif Anda
+
+- Pastikan Page Rule aktif (berwarna hijau)
+
+- Pastikan telah menentukan halaman utama untuk domain Anda di Scalev
+
+<figure>
+
+![Redirect Www 4 Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/redirect-www-4-min.png)
+
+<figcaption>
+
+Toggle Page Rule aktif menyala hijau
+
+</figcaption>
+
+</figure>
+
+Penyebab lain yang saya ketahui yaitu provider internet yang memblokir/membatasi akses ke situs web yang menggunakan Cloudflare sebagai sistem keamanannya.
+
+Scalev menggunakan Cloudflare.
+
+Jika penyebab yang saya sebutkan di daftar tadi sudah dipastikan tidak ada masalah, tetapi masih tidak dapat mengakses domain Anda.
+
+Cobalah ganti koneksi internet Anda ke provider lain.
+
+Saya mau pakai versi www sebagai domain utama Scalev, bagaimana caranya?
+
+Pada langkah ke 5 di atas, Anda balikkan saja kondisinya menjadi seperti ini:
+
+- URL (required): **army.id/** (hapus www)
+
+- Pick a Setting (required): **Forwarding URL**
+
+- Select status code (required): **301 - Permanent Redirect**
+
+- Enter destination URL (required): **https://www.army.id** (tambahkan www di bagian ini)
+
+Sesuaikan dengan domain milik Anda sendiri.
+
+CNAME record www saya saat ini sudah ada record DNS-nya, bagaimana?
+
+Jika record CNAME www tersebut diarahkan ke @ (domain utama), maka Anda tidak perlu menambahkan CNAME baru untuk record ini.
+
+Jika tidak diarahkan ke @ maka edit record tersebut dan arahkan ke @.
+
+Saya tidak pakai Cloudflare, bagaimana cara buatnya?
+
+Artikel tutorial ini sementara dibuat khusus untuk pemakai Cloudflare dulu.
+
+Jika Anda menggunakan DNS Manager selain Cloudflare, maka perlu penyesuaian yang berbeda dengan Cloudflare.
+
+Hubungi CS Scalev untuk bantuan lebih lanjut.

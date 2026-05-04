@@ -1,0 +1,93 @@
+---
+title: "Tutorial Cara Melacak UTM Dari Form Embed Scalev"
+description: "Untuk sementara ini, form embed Scalev yang disematkan di luar platform Scalev tidak dapat melacak UTM."
+---
+Untuk sementara ini, form embed Scalev yang disematkan di luar platform Scalev tidak dapat melacak UTM.
+
+Contoh casenya, misal:
+
+tokobaru.com adalah domain utama yang menggunakan WP sebagai LP.
+
+tokobaru.myscalev.com adalah subdomain Scalev Anda di Scalev.
+
+Anda menggunakan form Scalev dengan meng-embed-kannya di tokobaru.com.
+
+Lalu beriklan di Google Ads dan Anda ingin melacak performa iklan dengan UTM.
+
+Saat ini jika terjadi konversi di form embed tersebut di domain tokobaru.com maka tidak akan dapat terlacak UTM-nya ketika masuk menjadi order di Scalev.
+
+**Solusinya:**
+
+Gunakan kode embed khusus di bawah ini alih-alih pakai embed bawaan Scalev.
+
+```
+<iframe id="myiframe" width="100%" frameborder="0" src="https://usernameanda.myscalev.com/landing-page-baru"></iframe><script>const iframe=document.getElementById("myiframe");function resizeIframe(e){iframe.style.height=e+"px"}function isUrl(e){try{return new URL(e),!0}catch{return!1}}function isJSONObject(e){try{const t=JSON.parse(e);return"object"==typeof t&&null!==t}catch{return!1}}function isIframeSameOrigin(){try{return iframe.contentDocument||iframe.contentWindow.document,!0}catch{return!1}}window.addEventListener("message",function(e){if("https://usernameanda.myscalev.com"===e.origin){if(isUrl(e.data))return void(location.href=e.data);if(isJSONObject(e.data)&&!isIframeSameOrigin()){const t=JSON.parse(e.data);"resize"===t.type&&resizeIframe(t.height)}e.data&&"form_submit"===e.data.event&&(window.dataLayer=window.dataLayer||[],window.dataLayer.push({event:"form_submit_embed"}))}},!1),document.addEventListener("DOMContentLoaded",function(){(new IntersectionObserver(function(e){e.forEach((t=>{if(t.isIntersecting){const e=new URL(iframe.src),t=new URLSearchParams(window.location.search);t.forEach(((t,r)=>e.searchParams.append(r,t))),iframe.src=e.toString(),observer.disconnect()}}))}).observe(iframe)});</script>
+```
+
+Caranya cukup dengan memodifikasi link yang disorot kuning.
+
+Ganti dengan link LP dan subdomain Scalev milik Anda.
+
+Contoh:
+
+```
+https://usernameanda.myscalev.com/landing-page-baru 
+```
+
+Ganti dengan:
+
+```
+https://tokoanda.com/landing-page-baru 
+```
+
+Itu adalah link LP Scalev Anda yang terdapat form checkout.
+
+Lalu yang kedua,
+
+```
+https://usernameanda.myscalev.com
+```
+
+Ganti dengan:
+
+```
+https://tokobaru.myscalev.com
+```
+
+Itu adalah subdomain Scalev Anda.
+
+Tiap user Scalev pasti punya subdomain tersebut.
+
+Simpan & Terbitkan LP Anda.
+
+\===
+
+Kemudian di Google Tag Manager Anda tambahkan Tag baru.
+
+Pilih Custom HTML untuk Tag Type-nya
+
+Lalu masukkan script berikut ini:
+
+```
+<script>
+window.parent.postMessage({ event: 'form_submit' }, 'https://domainutamaanda.com');
+</script>
+```
+
+Ganti https://domainutamaanda.com dengan domain milik Anda sendiri.
+
+Triggernya pilih Custom Event **form\_submit** yang pernah dibuat.
+
+Save.
+
+Selanjutnya, jika embed form khusus ini Anda gunakan untuk beriklan di Google Ads pastikan triggernya disesuaikan dulu menjadi **form\_submit\_embed**.
+
+Buat baru trigger Custom Event di tag **Google Ads Conversion Tracking** yang sudah ada, kalau sebelumnya menggunakan Custom Event dengan value form\_submit maka untuk trigger yang baru ini ini ubah menjadi **form\_submit\_embed**.
+
+Setelah itu form embed Scalev Anda dapat melacak UTM seperti biasa walaupun tidak pakai LP Scalev untuk beriklan.
+
+\===
+
+**NOTE:**
+
+Perlu diingat bahwa kode embed di artikel ini memodifikasi kode embed bawaan Scalev yang digunakan **khusus** untuk melacak konversi iklan dari Google Ads dengan UTM di landing page **non-Scalev.**

@@ -1,0 +1,32 @@
+---
+title: "Tutorial Cara Supaya LP Scalev Bisa Di-zoom Pakai Tangan"
+description: "Secara default LP Scalev memang tidak dapat di-zoom (diperpesar) sehingga tulisan yang terlihat kecil susah dibacanya."
+---
+
+Secara default LP Scalev memang tidak dapat di-zoom (diperpesar) sehingga tulisan yang terlihat kecil susah dibacanya.
+
+Nah, supaya LP Anda dapat di-zoom pakai tangan, masukkan kode berikut ke Custom Head Script di LPS Scalev:
+
+```javascript
+<script>!function(){var e=document.querySelector("meta[name=viewport]");e&&e.remove();var a=document.createElement("meta");a.name="viewport",a.content="width=device-width, initial-scale=1.0, maximum-scale=2, user-scalable=yes",document.head.appendChild(a)}();</script>
+```
+
+<figure>
+  ![Zoom head script](https://tutorial.scalev.id/wp-content/uploads/2025/02/zoom-head-script.png)
+
+  <figcaption>
+    Script untuk mengaktifkan zoom di LP Scalev
+  </figcaption>
+</figure>
+
+Caranya:
+
+1. Buka dan edit LP Anda yang mau diaktifkan zoomnya
+2. Cek tab **Pengaturan**
+3. Cari pengaturannya di sidebar kiri
+4. Lalu aktifkan toggle **Custom Head Script**
+5. Copy dan paste kode di atas ke kotak yang disediakan
+6. Simpan dan Terbitkan LP Anda
+7. Selesai.
+
+Selanjutnya coba buka LP Anda dan zoom pakai tangan, jika LP bisa diperbesar maka kode di atas sudah berhasil diterapkan.

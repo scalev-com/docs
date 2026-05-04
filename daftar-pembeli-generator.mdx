@@ -1,0 +1,158 @@
+```html
+<script>
+/* MODE TOGGLE */
+document.getElementById('mode').addEventListener('change',function(){
+  document.getElementById('sheetBox').style.display = this.value==='sheet'?'block':'none';
+});
+
+/* ADD ROW */
+function addRow(){
+  const tr=document.createElement('tr');
+  tr.innerHTML='<td><input></td><td><input></td><td><input></td><td><input></td>';
+  document.querySelector('#tbl tbody').appendChild(tr);
+}
+
+/* LOAD GOOGLE SHEET */
+function loadSheet(){
+  const url=document.getElementById('sheetUrl').value;
+  if(!url){alert('Isi URL CSV');return;}
+
+  fetch(url)
+    .then(r=>r.text())
+    .then(csv=>{
+      const rows=csv.trim().split('\n').slice(1);
+      const tbody=document.querySelector('#tbl tbody');
+      tbody.innerHTML='';
+      rows.forEach(r=>{
+        const c=r.split(',');
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+          <td><input value="${c[0]||''}"></td>
+          <td><input value="${c[1]||''}"></td>
+          <td><input value="${c[2]||''}"></td>
+          <td><input value="${c.slice(3).join(', ')||''}"></td>`;
+        tbody.appendChild(tr);
+      });
+    });
+}
+
+/* GENERATE FINAL HTML (OUTPUT AMAN SCALEV) */
+function generate(){
+  const color=document.getElementById('color').value;
+  const height=document.getElementById('height').value;
+  const speed=document.getElementById('speed').value || 35;
+
+  let items='';
+  document.querySelectorAll('#tbl tbody tr').forEach(r=>{
+    const i=r.querySelectorAll('input');
+    if(i[0].value){
+      items+=`
+        <div class="buyer-item">
+          <div>
+            <b>${i[0].value}</b><br>
+            <small>${i[3].value}</small>
+          </div>
+          <div style="text-align:right">
+            ${i[1].value}<br>
+            <small>${i[2].value}</small>
+          </div>
+        </div>`;
+    }
+  });
+
+  const html=`<style>
+    #buyerScroll{
+      max-width:460px;
+      margin:auto;
+      background:#fff;
+      border-radius:16px;
+      overflow:hidden;
+      font-family:Arial,sans-serif;
+      box-shadow:0 6px 18px rgba(0,0,0,.08)
+    }
+    #buyerScroll .title{
+      text-align:center;
+      font-weight:700;
+      font-size:18px;
+      padding:14px;
+      border-bottom:1px solid #eee
+    }
+    #buyerScroll .scroll{
+      height:${height}px;
+      overflow:hidden !important
+    }
+    #buyerScroll .list{
+      display:flex !important;
+      flex-direction:column !important;
+      animation:buyerUp ${speed}s linear infinite !important;
+      will-change:transform
+    }
+    #buyerScroll .buyer-item{
+      display:flex !important;
+      justify-content:space-between !important;
+      padding:12px 14px;
+      border-bottom:1px solid #eee;
+      border-left:6px solid ${color}
+    }
+    #buyerScroll b{font-size:14px}
+    #buyerScroll small{font-size:12px;color:#666}
+    @keyframes buyerUp{
+      0%{transform:translateY(0)}
+      100%{transform:translateY(-50%)}
+    }
+  </style>
+  <div id="buyerScroll">
+    <div class="title">DAFTAR PEMBELI HARI INI</div>
+    <div class="scroll">
+      <div class="list">
+        ${items}
+        ${items}
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('preview').innerHTML=html;
+  document.getElementById('code').textContent=html;
+}
+
+/* COPY CODE */
+function copyCode(){
+  navigator.clipboard.writeText(
+    document.getElementById('code').textContent
+  );
+  alert('HTML berhasil disalin');
+}
+</script>
+```
+
+---
+title: "🛒 Generator Daftar Pembeli (FINAL)"
+description: "Generator Daftar Pembeli – Final Stable"
+---
+Generator Daftar Pembeli – Final Stable
+
+# 🛒 Generator Daftar Pembeli (FINAL)
+
+Semua tombol aktif • Output match vitameal • Aman untuk Scalev
+
+Mode Data Manual Input Google Sheet
+
+Google Sheet CSV URL 🔄 Ambil Data Sheet
+
+Warna Border Kiri
+
+Tinggi Scroll (px)
+
+Kecepatan Scroll (detik) — rekomendasi: 35
+
+| Nama | Qty | Jam lalu | Lokasi |
+| --- | --- | --- | --- |
+| | | | |
+
+➕ Tambah Baris ⚙️ Generate HTML
+
+### Preview
+
+### Kode HTML (Paste ke Scalev)
+
+📋 Copy Code

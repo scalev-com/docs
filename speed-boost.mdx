@@ -1,0 +1,117 @@
+---
+title: "Tutorial Cara Optimasi Landing Page Tingkat Lanjut Dengan Fitur Speed Boost"
+description: "Tetapi kalau Anda sudah ikhtiar mengikuti semua instruksi optimasi di artikel tersebut namun merasa hasilnya kurang memuaskan."
+---
+Seperti yang pernah dibahas di [artikel optimasi LP sebelumnya](https://tutorial.scalev.id/optimasi-landingpage/ "Tutorial Cara Optimasi Speed Landing Page Scalev") ketika Anda membuat LP baru di Scalev itu pengaturan bawaannya sudah dioptimalkan untuk speed.
+
+Tetapi kalau Anda sudah ikhtiar mengikuti semua instruksi optimasi di artikel tersebut namun merasa hasilnya kurang memuaskan.
+
+Maka fitur Speed Boost ini boleh dicoba oleh Anda.
+
+Speed Boost yang saya maksud dan akan dibahas di artikel ini adalah fitur Client Analytics Config (Experimental).
+
+Fitur ini mengatur cara kerja pixel Analitik yang Anda tambahkan ke Scalev (seperti Facebook Pixel, TikTok Pixel, SnackVideo Pixel, dll) dan dimuat ke dalam LP Anda ketika diakses oleh visitor.
+
+Cara kerjanya akan saya bahas satu per satu di bawah ini.
+
+<figure>
+
+![Speed boost 1](https://tutorial.scalev.id/wp-content/uploads/2025/03/speed-boost-1.png)
+
+<figcaption>
+
+Pengaturan Experimental
+
+</figcaption>
+
+</figure>
+
+Lokasi fitur ini terletak di pengaturan LP.
+
+Landing Page Studio > Pengaturan > Speed Boost
+
+Pilihannya ada 3, yaitu:
+
+- Head
+
+- Body Close & 3-Second Delay
+
+- Web Worker
+
+## Head
+
+Metode bawaan yang paling umum digunakan.
+
+Sudah jadi pilihan standard di internet.
+
+Cara kerjanya:
+
+- Ketika suatu LP diakses, browser Anda menunggu dulu semua script dan pixel yang terpasang di Head `<head>` agar dimuat lebih dulu (prioritas tinggi) sebelum yang lainnya.
+
+- Durasi browser menunggu ini dipengaruhi oleh banyak faktor, seperti aplikasi browser yang digunakan, kecepatan koneksi internet, jumlah konten LP yang akan ditampilkan, dll.
+
+- Jika stabil, paling cepat 1 detik.
+
+- Umumnya, rata-rata 1-3 detik.
+
+- Jadi jelek, jika durasinya sampai 4-5 detik ke atas.
+
+Metode ini memastikan pixel Analitik berjalan duluan agar dapat melacak aktivitas visitor sesegera mungkin ketika berinteraksi dengan LP Anda.
+
+Kadang stabil. Kadang tidak stabil.
+
+Yah, tergantung oleh beberapa faktor yang disebutkan tadi.
+
+## Body Close & 3-Second Delay
+
+Metode ini menempatkan kinerja pixel Analitik tidak di dalam `<head>`, tetapi di bagian bawah LP sebelum penutupan `</body>`.
+
+Pixel Analitik tersebut tidak langsung dimuat saat LP diakses, tapi menunggu jeda waktu 3 detik (delay) setelah semua konten LP sudah beres ditampilkan lebih dulu.
+
+Setelah itu baru pixel Analitik berjalan dan mulai melacak aktivitas visitor.
+
+## Web Worker
+
+Metode ini menempatkan kinerja pixel Analitik secara terpisah dari proses tampilan LP Anda.
+
+Tidak dimuat di `<head>` tidak juga dimuat di penutupan `</body>`.
+
+Tapi bekerja di balik layar (background process) di dalam browser Anda.
+
+Tidak mengganggu tampilan konten LP, tidak juga memberatkan LP.
+
+Mulai melacak aktivitas visitor ketika suatu event di LP Anda ketrigger.
+
+\===
+
+## Metode mana yang harus dipilih untuk semakin mengoptimalkan kinerja LP Scalev?
+
+Jawaban singkat:
+
+Web Worker.
+
+Jawaban kondisional:
+
+1. Pilih Web Worker jika Anda:
+    - Banyak menggunakan pixel Analitik lebih dari 1 pixel
+    
+    - Baik itu dari jenis pixel yang sama maupun campuran. Contoh: pakai Facebook Pixel iya, TikTok Pixel Iya, SnackVideo iya pakai juga.
+    
+    - Apalagi kalau ditambah pixel backup dari jenis Analitik yang sama.
+
+3. Pilih Body Close & 3-Second jika Anda:
+    - Mengisi konten LP dengan banyak komponen seperti gambar, slider, FAQ, animasi, dll.
+    
+    - Hanya pakai 1 pixel dari 1 jenis saja. Contoh: cuma pakai satu Facebook Pixel aja.
+    
+    - Memakai komponen Video / HTML yang menampilkan video YouTube atau yang sejenis.
+
+Pengaturan tingkat lanjut ini tidak harus selalu dilakukan oleh Anda di setiap LP.
+
+Opsional.
+
+Dalam artian Anda tidak harus selalu mengutak-atik fitur Speed Boost ini.
+
+Biarkan saja paling amannya tetap dalam posisi pengaturan bawaan dari Scalev, yaitu metode Head.
+
+Namun jika Anda merasa metode Head bawaan Scalev kinerjanya sudah mulai tidak stabil, maka saran saya kembali ke jawaban kondisional di atas.

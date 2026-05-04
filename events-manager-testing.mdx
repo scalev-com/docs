@@ -1,0 +1,65 @@
+---
+title: "Tutorial Cara Testing Pixel Di Events Manager"
+description: "Untuk memastikan dataset (pixel) yang terpasang di LP Anda events-nya sudah berjalan dengan benar maka perlu diuji terlebih dulu oleh Events Manager di BM..."
+---
+Catatan Penting:
+
+- Kode Testing hanya dimasukan saat Anda melakukan test event
+
+- Jika sudah akan beriklan silahkan hapus kode testing dari Scalev
+
+Untuk memastikan dataset (pixel) yang terpasang di LP Anda events-nya sudah berjalan dengan benar maka perlu diuji terlebih dulu oleh Events Manager di BM Meta.
+
+Caranya silakan ikuti panduan berikut ini.
+
+1\. Masuk ke beranda Business Manager (BM) Anda di Meta, lalu buka halaman Events Manager
+
+![Events Manager 7 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-7-min-1024x612.png)
+
+2\. Di halaman Events Manager cek bilah sisi kiri lalu klik Data Sources
+
+![Events Manager 8 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-8-min.png)
+
+3\. Kalau sudah di halaman Data Sources:
+
+- Pilih pixel yang akan dites
+
+- Klik tab Test events
+
+- Copy kode test
+
+![Events Manager 9 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-9-min-1024x559.png)
+
+4\. Setelah itu buka halaman pengaturan Analitik Scalev di Setting > Analitik lalu klik pixel yang Anda pakai
+
+![Events Manager 3 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-3-min-1024x612.png)
+
+5\. Muncul dialog Detail Akun Analitik, paste kode test dari Events Manager ke kolom Kode Testing setelah itu klik tombol Simpan
+
+![Events Manager 4 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-4-min-748x1024.png)
+
+Setelah menyimpan pengaturan tersebut langkah selanjutnya adalah membuka LP Anda di Scalev dengan **browser Chrome/Edge**.
+
+⛔️ Tidak direkomendasikan mengetes LP dengan browser Safari.
+
+Silakan test funnel LP Anda mulai dari membuka halaman sampai submit form.
+
+Ketika order sudah masuk ke Scalev, ubah status orderan menjadi Paid.
+
+Kemudian perhatikan halaman Events Manager di bagian tabel "Events Received".
+
+![Events Manager 10 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-10-min-1024x749.png)
+
+Keterangan status event:
+
+- **Processed** - satu kali trigger event berhasil diterima oleh Meta.
+
+- **Deduplicated** - dua kali event yang sama ke-trigger lalu oleh Meta diterima dan dihitung sebagai satu kali trigger event.
+
+Dua tipe status event tersebut normal dan aman.
+
+Jika semua event yang ada di funnel Anda sudah muncul sampai event Purchase, berarti pengujian pixel Anda sudah **BENAR** dan siap untuk dipakai beriklan.
+
+NOTE:
+
+Jika tampilan BM Anda berbahasa Indonesia, lihat versi bahasa Indonesianya di sini → [https://tutorial.scalev.id/testing-events-manager-id/](https://tutorial.scalev.id/testing-events-manager-id/)
