@@ -1,0 +1,115 @@
+---
+title: "Tutorial Cara Mengantisipasi Spam Order"
+description: "Ada kalanya LP jualan Anda menerima order dari orang iseng."
+---
+## Tutorial Versi Video:
+
+<iframe src="https://www.youtube.com/embed/YrH9bEU5jj0" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+\===
+
+## Tutorial Versi Text:
+
+Ada kalanya LP jualan Anda menerima order dari orang iseng.
+
+Entah iseng order sekadar ngetes funnel LP Anda karena penasaran.
+
+Atau iseng bikin fake order dari orang yang gak niat beli.
+
+Satu-dua kali boleh lah kita cuekin, tapi kalau sampai spam order lebih dari 2x atau bahkan sampai puluhan kali setiap hari.
+
+Itu sudah sangat menganggu.
+
+Harus dicegah!
+
+Nah, di Scalev Anda dapat mencegah spam order ini dengan cara mengatur validasi lanjutan di toko Anda.
+
+Aktifkan dua fitur **Order Validation** berikut ini:
+
+- Additional Order Form Validation
+
+- Spam Filter
+
+Caranya:
+
+Di dasbor Scalev, pergi ke Stores **→** Toko Anda **→** Lalu cek di sebelah kanan ada widget bernama **Order Validation**
+
+<figure>
+
+![Anti spam order](https://tutorial.scalev.id/wp-content/uploads/2024/12/Anti-spam-order.png)
+
+<figcaption>
+
+Pengaturan Order Validation untuk mencegah spam order
+
+</figcaption>
+
+</figure>
+
+Klik dropdown _Enable Additional Validation on Order Form?_
+
+Pilih **Yes, enable additional validation**.
+
+Kemudian di bagian **Spam Filter** klik _Enable Spam Filter in this Store?_
+
+Pilih **Yes, enable spam filter**
+
+## Keterangan pengaturan Order Validation
+
+### **Jumlah Karakter Minimal untuk Nama**
+
+Minimal jumlah karakter pada isian nama di form checkout yang dapat diloloskan menjadi order, misal 3 karakter.
+
+Jika namanya diisi berjumlah di bawah 3 karakter, maka ordernya tidak akan masuk.
+
+Contoh nama spam: Aq, Km, Bp.
+
+### **Jumlah Karakter Minimal untuk Alamat**
+
+Minimal jumlah karakter pada isian alamat di form checkout yang dapat diloloskan menjadi order, misal 7 karakter.
+
+Jika alamat buyer diisi berjumlah di bawah 7 karakter, maka ordernya tidak akan masuk.
+
+### **Jumlah Maksimal Pesanan per Nomor Telepon dalam Satu Jam**
+
+Batas maksimal order yang dapat dibuat oleh buyer per Nomor Telepon dalam satu jam.
+
+Misal 1 order.
+
+Maka buyer dapat checkout sebanyak 1 pesanan dalam satu jam per nomor telepon, percobaan order yang ke 2 tidak akan masuk.
+
+Apabila buyer yang sama checkout lagi tapi menggunakan nomor telepon yang berbeda, maka ordernya akan masuk sesuai batasan per Nomor Telepon di atas.
+
+### **Jumlah Maksimal Pesanan per Alamat IP dalam Satu Jam**
+
+Batas maksimal order yang dapat dibuat oleh buyer per Alamat IP dalam satu jam.
+
+Misal 1 order.
+
+Maka buyer dapat checkout sebanyak 1 pesanan dalam satu jam dengan alamat IP yang sama, percobaan order yang ke 2 tidak akan masuk.
+
+Apabila buyer yang sama checkout lagi tapi menggunakan perangkat lain dengan koneksi IP yang berbeda, maka ordernya akan masuk sesuai batasan per Alamat IP di atas.
+
+## Keterangan pengaturan Spam Filter
+
+Filter spam Scalev bekerja dengan dua cara utama, yaitu:
+
+### 1\. **Pengecekan Alamat IP**
+
+Kalau ada orang yang pesan dari alamat yang sudah masuk daftar hitam (daftar IP yang sering digunakan untuk spam), maka pesanan itu otomatis dianggap mencurigakan dan masuk ke daftar hitam.
+
+Anda dapat mengecek daftar hitam IP yang tertangkap sebagai spam di halaman "[Suppression IP List](https://app.scalev.id/setting/suppressed-ips)".
+
+### 2\. **Pengecekan Nama, Nomor HP, dan Email pakai AI**
+
+Sistem Scalev juga akan memeriksa nama, nomor telepon, dan email customer.
+
+Kalau terlihat aneh atau mencurigakan (seperti nama acak atau email yang tidak masuk akal), maka akan dianggap sebagai spam.
+
+Kalau benar terdeteksi spam, alamat IP-nya juga langsung dimasukkan ke daftar hitam.
+
+Semua pesanan yang dicurigai sebagai spam dapat Anda periksa langsung di menu "[Suspicious Order](https://app.scalev.id/suspicious-order)".
+
+Demikianlah cara untuk mengantisipasi atau mencegah spam order dengan memanfaatkan pengaturan validasi lanjutan pemesanan di toko Scalev Anda.
+
+Ketika pengaturan validasi ini aktif diharapkan dapat membantu meminimalisir jumlah order yang terindikasi spam dari orang-orang iseng yang mampir ke LP jualan Anda.

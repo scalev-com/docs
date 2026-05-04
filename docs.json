@@ -29,6 +29,12 @@
                   "contoh-biaya-e-payment",
                   "menambahkan-e-payment"
                 ]
+              },
+              "jualandigital",
+              "tracking-email",
+              {
+                "group": "Untitled Group",
+                "pages": []
               }
             ]
           },
@@ -45,11 +51,15 @@
               },
               {
                 "group": "Contoh Penggunaan",
-                "pages": ["membuat-pesanan"]
+                "pages": [
+                  "membuat-pesanan"
+                ]
               },
               {
                 "group": "Landing Pages",
-                "pages": ["runtime-html-mode"]
+                "pages": [
+                  "runtime-html-mode"
+                ]
               }
             ]
           },
@@ -97,11 +107,15 @@
               },
               {
                 "group": "Use Cases",
-                "pages": ["creating-orders"]
+                "pages": [
+                  "creating-orders"
+                ]
               },
               {
                 "group": "Landing Pages",
-                "pages": ["html-mode-runtime"]
+                "pages": [
+                  "html-mode-runtime"
+                ]
               }
             ]
           },
@@ -113,7 +127,9 @@
           {
             "tab": "Changelog",
             "icon": "newspaper",
-            "pages": ["changelog"]
+            "pages": [
+              "changelog"
+            ]
           }
         ]
       }
