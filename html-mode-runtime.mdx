@@ -5,7 +5,7 @@ description: "Use the window.Scalev runtime methods available inside Scalev HTML
 
 Scalev HTML Mode pages can use `window.Scalev` from browser JavaScript. The runtime gives your page access to safe page context, selected store context, checkout helpers, analytics forwarding, form prefill helpers, and diagnostics without exposing private API tokens.
 
-This page is written for both developers and AI agents that generate HTML Mode files. If you are generating an HTML file for Scalev, use this reference instead of calling Scalev backend URLs directly.
+This page is written for both developers and AI agents that generate HTML Mode files. If you are generating an HTML file for Scalev, use this reference instead of calling private Scalev URLs directly.
 
 ## Availability
 
@@ -34,7 +34,7 @@ When Store Context is not selected, `store` is not available. Do not build check
 ## Security rules
 
 - Do not request or store API keys, business-user JWTs, storefront API keys, customer tokens, cookies, or credentials.
-- Do not call Nexus, Scalev backend URLs, or private APIs directly from page JavaScript.
+- Do not call private Scalev URLs or private APIs directly from page JavaScript.
 - Use only documented `window.Scalev` methods.
 - Create orders only after a visitor intentionally submits a form.
 - Call `Scalev.checkout.validateOrder()` before `Scalev.checkout.createOrder()`.
@@ -105,7 +105,7 @@ With Store Context selected, `store` contains selected context only:
 
 Use it to render selected products, bundle options, enabled payment methods, and store-aware forms. Do not assume products, bundles, or payment methods that are not present in this payload.
 
-`store.payment_methods` contains the enabled payment methods after Nexus filters the store settings by the business payment capabilities. Use `store.sub_payment_methods` for enabled VA or bank submethods when present.
+`store.payment_methods` contains the enabled payment methods after Scalev filters the store settings by the business payment capabilities. Use `store.sub_payment_methods` for enabled VA or bank submethods when present.
 
 ## Location methods
 
@@ -206,7 +206,7 @@ Accepted field names:
 - `warehouseId`, `warehouse_id`, or `warehouse`. You can pass the warehouse object returned by `searchWarehouses`.
 - `weight`
 
-Use this after the visitor has chosen products and a shipping destination. The backend expects a numeric `warehouse_id`; the runtime extracts it from the warehouse object when possible.
+Use this after the visitor has chosen products and a shipping destination. Scalev expects a numeric `warehouse_id`; the runtime extracts it from the warehouse object when possible.
 
 ## `Scalev.checkout.validateOrder(payload)`
 
@@ -281,7 +281,7 @@ async function submitOrder() {
 }
 ```
 
-`createOrder` accepts the same public payload keys used by Scalev's regular editor checkout flow. The runtime normalizes them before posting to Nexus:
+`createOrder` accepts the same public payload keys used by Scalev's regular editor checkout flow. The runtime normalizes them before sending the order request:
 
 - Customer fields: `customerName`, `customerPhone`, `customerEmail`, `name`, `phone`, `address`
 - Store and page fields: `store`, `page`, plus aliases such as `storeUniqueId`, `store_unique_id`, `pageUniqueId`, and `page_unique_id`
@@ -289,8 +289,6 @@ async function submitOrder() {
 - Payment fields: `paymentMethod`, `financialEntityId`, `paymentAccount`, `paymentAccountHolder`, `paymentAccountNumber`, and `subPaymentMethod`
 - Item fields: `ordervariants` with `{ variant_unique_id, quantity }`, `orderbundles` with `{ bundle_price_option_unique_id, quantity }`, or legacy `orderlines`
 - Discount and pricing fields: `discountCodeCode`, `productDiscount`, `shippingCost`, `shippingDiscount`
-- Attribution-safe fields: `fbc`, `fbp`, `ttclid`, `gclid`, `ttp`, `clickId`, `eventSourceUrl`, `adSource`, UTM fields, and `affiliateCode`
-- Optional safety fields: `recaptchaToken`, `cartId`
 
 Use `unique_id` values from `Scalev.data.get().store`; do not submit numeric product, variant, or bundle ids as order item identifiers.
 
@@ -341,7 +339,7 @@ Supported provider names:
 - `tiktok`
 - `kwai`
 
-The runtime forwards the old Scalev analytics backend shapes for each provider. It adds the current page id, event source URL, referrer, and safe attribution values from browser cookies or URL parameters when available. For Facebook and TikTok events, `event_id` is generated automatically when omitted.
+The runtime forwards the legacy Scalev analytics payload shapes for each provider. It adds the current page id, event source URL, referrer, and safe attribution values from browser cookies or URL parameters when available. For Facebook and TikTok events, `event_id` is generated automatically when omitted.
 
 For product attribution, pass `variants`, `orderVariants`, or `ordervariants` with `variant_unique_id` / `unique_id`, and `bundlePriceOptions`, `bundle_price_options`, or `orderbundles` with `bundle_price_option_unique_id` / `unique_id`.
 

@@ -5,7 +5,7 @@ description: "Gunakan method runtime window.Scalev yang tersedia di halaman Scal
 
 Halaman Scalev HTML Mode dapat memakai `window.Scalev` dari JavaScript browser. Runtime ini memberi akses ke konteks halaman yang aman, Store Context terpilih, helper checkout, analytics forwarding, helper prefill form, dan diagnostics tanpa mengekspos token API privat.
 
-Halaman ini ditulis untuk developer dan AI agent yang membuat file HTML Mode. Jika kamu membuat file HTML untuk Scalev, gunakan referensi ini dan jangan memanggil URL backend Scalev secara langsung.
+Halaman ini ditulis untuk developer dan AI agent yang membuat file HTML Mode. Jika kamu membuat file HTML untuk Scalev, gunakan referensi ini dan jangan memanggil URL privat Scalev secara langsung.
 
 ## Ketersediaan
 
@@ -34,7 +34,7 @@ Jika Store Context belum dipilih, `store` tidak tersedia. Jangan membuat checkou
 ## Aturan keamanan
 
 - Jangan meminta atau menyimpan API key, business-user JWT, storefront API key, customer token, cookie, atau kredensial.
-- Jangan memanggil Nexus, URL backend Scalev, atau private API langsung dari JavaScript halaman.
+- Jangan memanggil URL privat Scalev atau private API langsung dari JavaScript halaman.
 - Gunakan hanya method `window.Scalev` yang terdokumentasi.
 - Buat order hanya setelah pengunjung sengaja submit form.
 - Panggil `Scalev.checkout.validateOrder()` sebelum `Scalev.checkout.createOrder()`.
@@ -105,7 +105,7 @@ Dengan Store Context, `store` berisi konteks terpilih saja:
 
 Gunakan data ini untuk render produk terpilih, bundle option, payment methods aktif, dan form yang memakai store. Jangan mengasumsikan produk, bundle, atau payment method yang tidak ada di payload ini.
 
-`store.payment_methods` berisi payment methods aktif setelah Nexus memfilter pengaturan store berdasarkan kapabilitas payment bisnis. Gunakan `store.sub_payment_methods` untuk submethod VA atau bank yang aktif saat tersedia.
+`store.payment_methods` berisi payment methods aktif setelah Scalev memfilter pengaturan store berdasarkan kapabilitas payment bisnis. Gunakan `store.sub_payment_methods` untuk submethod VA atau bank yang aktif saat tersedia.
 
 ## Method lokasi
 
@@ -281,7 +281,7 @@ async function submitOrder() {
 }
 ```
 
-`createOrder` menerima key payload publik yang sama dengan flow checkout regular editor Scalev. Runtime menormalisasi payload sebelum mengirimnya ke Nexus:
+`createOrder` menerima key payload publik yang sama dengan flow checkout regular editor Scalev. Runtime menormalisasi payload sebelum mengirim request order:
 
 - Customer fields: `customerName`, `customerPhone`, `customerEmail`, `name`, `phone`, `address`
 - Store dan page fields: `store`, `page`, plus alias seperti `storeUniqueId`, `store_unique_id`, `pageUniqueId`, dan `page_unique_id`
@@ -289,8 +289,6 @@ async function submitOrder() {
 - Payment fields: `paymentMethod`, `financialEntityId`, `paymentAccount`, `paymentAccountHolder`, `paymentAccountNumber`, dan `subPaymentMethod`
 - Item fields: `ordervariants` dengan `{ variant_unique_id, quantity }`, `orderbundles` dengan `{ bundle_price_option_unique_id, quantity }`, atau legacy `orderlines`
 - Diskon dan pricing fields: `discountCodeCode`, `productDiscount`, `shippingCost`, `shippingDiscount`
-- Attribution-safe fields: `fbc`, `fbp`, `ttclid`, `gclid`, `ttp`, `clickId`, `eventSourceUrl`, `adSource`, UTM fields, dan `affiliateCode`
-- Field keamanan opsional: `recaptchaToken`, `cartId`
 
 Gunakan value `unique_id` dari `Scalev.data.get().store`; jangan mengirim id numerik produk, variant, atau bundle sebagai identifier item order.
 
@@ -341,7 +339,7 @@ Nama provider yang didukung:
 - `tiktok`
 - `kwai`
 
-Runtime meneruskan shape backend analytics Scalev lama untuk setiap provider. Runtime menambahkan page id saat ini, event source URL, referrer, dan attribution aman dari cookie browser atau URL parameter saat tersedia. Untuk event Facebook dan TikTok, `event_id` dibuat otomatis jika tidak dikirim.
+Runtime meneruskan shape payload analytics Scalev lama untuk setiap provider. Runtime menambahkan page id saat ini, event source URL, referrer, dan attribution aman dari cookie browser atau URL parameter saat tersedia. Untuk event Facebook dan TikTok, `event_id` dibuat otomatis jika tidak dikirim.
 
 Untuk atribusi produk, kirim `variants`, `orderVariants`, atau `ordervariants` dengan `variant_unique_id` / `unique_id`, dan `bundlePriceOptions`, `bundle_price_options`, atau `orderbundles` dengan `bundle_price_option_unique_id` / `unique_id`.
 
