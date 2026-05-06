@@ -48,15 +48,11 @@
               },
               {
                 "group": "Contoh Penggunaan",
-                "pages": [
-                  "membuat-pesanan"
-                ]
+                "pages": ["membuat-pesanan"]
               },
               {
                 "group": "Landing Pages",
-                "pages": [
-                  "runtime-html-mode"
-                ]
+                "pages": ["runtime-html-mode", "aksi-setelah-order-html-mode"]
               }
             ]
           },
@@ -104,14 +100,13 @@
               },
               {
                 "group": "Use Cases",
-                "pages": [
-                  "creating-orders"
-                ]
+                "pages": ["creating-orders"]
               },
               {
                 "group": "Landing Pages",
                 "pages": [
-                  "html-mode-runtime"
+                  "html-mode-runtime",
+                  "html-mode-checkout-success-paths"
                 ]
               }
             ]
@@ -124,9 +119,7 @@
           {
             "tab": "Changelog",
             "icon": "newspaper",
-            "pages": [
-              "changelog"
-            ]
+            "pages": ["changelog"]
           }
         ]
       }

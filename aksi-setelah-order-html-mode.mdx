@@ -1,0 +1,246 @@
+---
+title: "Aksi setelah order HTML Mode"
+description: "Tentukan aksi setelah Scalev.checkout.createOrder berhasil di checkout HTML Mode manual."
+---
+
+Saat kamu membuat form checkout sendiri di HTML Mode, `Scalev.checkout.createOrder(payload)` hanya membuat order. Method ini tidak otomatis menjalankan pengaturan form Builder bernama **After Submit Event**.
+
+Jika kamu ingin behavior yang sama dengan form checkout Builder, pilih salah satu dari enam jalur ini setelah `createOrder` berhasil.
+
+## Aturan parity dengan Builder
+
+Form Builder menerapkan aturan ini sebelum redirect:
+
+- Payment method e-payment selalu diarahkan ke halaman instruksi pembayaran. Ini mencakup `va`, `qris`, `card`, `invoice`, `alfamart`, `ovo`, `dana`, `shopeepay`, `linkaja`, dan `gopay`.
+- Submethod VA dari `store.sub_payment_methods` dianggap sebagai `va`.
+- Submethod bank transfer `BT_*` dianggap sebagai `bank_transfer`, bukan `va`.
+- Jika status order adalah `draft`, jalur instruksi pembayaran memakai **Self Hosted Orderan / Invoice** (`order_page`).
+- Jika halaman dirender di dalam iframe, Builder mengirim target URL ke parent window dan tidak langsung menavigasi iframe.
+
+Gunakan data order dari respons `createOrder`. Jangan hardcode URL API privat.
+
+`createOrder` mengembalikan response envelope standar Scalev:
+
+```json
+{
+  "code": 200,
+  "status": "Success",
+  "data": {
+    "secret_slug": "order-secret",
+    "public_order_url": "https://example.com/o/order-secret",
+    "payment_url": "https://example.com/o/order-secret/success",
+    "handler_phone": "6281200000000",
+    "chat_message": "..."
+  }
+}
+```
+
+```js
+const orderResponse = await Scalev.checkout.createOrder(payload);
+const order = orderResponse.data;
+```
+
+## Implementasi referensi
+
+Gunakan helper ini setelah `validateOrder` lolos dan `createOrder` berhasil.
+
+```js
+const PAYMENT_INSTRUCTION_METHODS = new Set([
+  "va",
+  "qris",
+  "card",
+  "invoice",
+  "alfamart",
+  "ovo",
+  "dana",
+  "shopeepay",
+  "linkaja",
+  "gopay",
+]);
+
+const SCALEV_QUERY_FORWARD_HOSTS = new Set([
+  "scalev.com",
+  "scalev.id",
+  "app.scalev.id",
+  "app.scalev.com",
+]);
+
+function paymentMethodForRedirect(paymentMethod, store) {
+  if (typeof paymentMethod === "string" && paymentMethod.startsWith("BT_")) {
+    return "bank_transfer";
+  }
+
+  if (
+    typeof paymentMethod === "string" &&
+    Array.isArray(store?.sub_payment_methods) &&
+    store.sub_payment_methods.includes(paymentMethod)
+  ) {
+    return "va";
+  }
+
+  return paymentMethod;
+}
+
+function publicOrderUrl(order) {
+  if (order.public_order_url) return order.public_order_url;
+  return new URL(`/o/${order.secret_slug}`, window.location.origin).toString();
+}
+
+function paymentInstructionUrl(order) {
+  if (order.status === "draft") return publicOrderUrl(order);
+  if (order.payment_url) return order.payment_url;
+
+  const url = new URL(publicOrderUrl(order));
+  url.pathname = `${url.pathname.replace(/\/$/, "")}/success`;
+  return url.toString();
+}
+
+function whatsappUrl(phone, order, fallbackMessage = "") {
+  const cleanPhone = String(phone || "").replace(/[^\d]/g, "");
+  const message = order.chat_message || encodeURIComponent(fallbackMessage);
+  return `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${message}`;
+}
+
+function withCurrentQuery(url) {
+  const nextUrl = new URL(url, window.location.href);
+  const currentParams = new URLSearchParams(window.location.search);
+
+  currentParams.forEach((value, key) => {
+    nextUrl.searchParams.set(key, value);
+  });
+
+  return nextUrl.toString();
+}
+
+function maybeForwardCurrentQuery(url) {
+  const nextUrl = new URL(url, window.location.href);
+  const shouldForward =
+    nextUrl.host === window.location.host ||
+    SCALEV_QUERY_FORWARD_HOSTS.has(nextUrl.host);
+
+  return shouldForward
+    ? withCurrentQuery(nextUrl.toString())
+    : nextUrl.toString();
+}
+
+function navigateAfterOrder(url) {
+  if (window.self !== window.top) {
+    window.parent.postMessage(url, "*");
+    return;
+  }
+
+  window.location.assign(url);
+}
+
+function redirectAfterOrder({
+  path,
+  orderResponse,
+  paymentMethod,
+  store,
+  customWhatsappPhone,
+  otherPagePath,
+  customUrl,
+}) {
+  const order = orderResponse.data;
+  const redirectPaymentMethod = paymentMethodForRedirect(
+    paymentMethod || order.payment_method,
+    store,
+  );
+  const finalPath = PAYMENT_INSTRUCTION_METHODS.has(redirectPaymentMethod)
+    ? "success_page"
+    : path;
+
+  if (finalPath === "success_page") {
+    return navigateAfterOrder(paymentInstructionUrl(order));
+  }
+
+  if (finalPath === "direct_to_whatsapp") {
+    const phone = order.handler_phone;
+    return navigateAfterOrder(
+      phone ? whatsappUrl(phone, order) : publicOrderUrl(order),
+    );
+  }
+
+  if (finalPath === "direct_to_custom_whatsapp") {
+    return navigateAfterOrder(whatsappUrl(customWhatsappPhone, order));
+  }
+
+  if (finalPath === "other_page") {
+    return navigateAfterOrder(withCurrentQuery(otherPagePath));
+  }
+
+  if (finalPath === "order_page") {
+    return navigateAfterOrder(publicOrderUrl(order));
+  }
+
+  if (finalPath === "custom_url") {
+    return navigateAfterOrder(maybeForwardCurrentQuery(customUrl));
+  }
+
+  return navigateAfterOrder(paymentInstructionUrl(order));
+}
+```
+
+Contoh penggunaan:
+
+```js
+const data = Scalev.data.get();
+const store = data.store;
+
+const payload = {
+  page: data.page.uniqueId,
+  store: store.unique_id,
+  customerName: form.customerName.value,
+  customerPhone: form.customerPhone.value,
+  ordervariants: [
+    { variant_unique_id: selectedVariant.unique_id, quantity: 1 },
+  ],
+  paymentMethod: selectedPaymentMethod,
+};
+
+const validation = await Scalev.checkout.validateOrder(payload);
+if (!validation.valid) {
+  showValidationWarnings(validation.warnings);
+  return;
+}
+
+const orderResponse = await Scalev.checkout.createOrder(payload);
+
+redirectAfterOrder({
+  path: "success_page",
+  orderResponse,
+  paymentMethod: payload.paymentMethod,
+  store,
+});
+```
+
+## Enam jalur setelah order
+
+| Label Builder                       | Value                       | Behavior HTML Mode                                                                                                                                                                                                                                      |
+| ----------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Halaman Instruksi Pembayaran        | `success_page`              | Redirect ke halaman instruksi pembayaran Scalev. Prioritaskan `order.payment_url`; jika tidak ada, gunakan `/o/{secret_slug}/success`. Jika `order.status` adalah `draft`, gunakan **Self Hosted Orderan / Invoice** (`order_page`).                    |
+| Langsung ke WhatsApp                | `direct_to_whatsapp`        | Buka WhatsApp memakai `order.handler_phone` dan `order.chat_message`. Nexus memilih handler dari assignment store atau halaman. Jika `handler_phone` tidak ada, arahkan ke **Self Hosted Orderan / Invoice** (`order_page`).                            |
+| Langsung ke Nomor WhatsApp tertentu | `direct_to_custom_whatsapp` | Buka WhatsApp memakai nomor yang kamu tentukan dan `order.chat_message`. Gunakan ini jika semua order harus masuk ke nomor sales atau admin tetap.                                                                                                      |
+| Landing Page Lainnya                | `other_page`                | Redirect ke path landing page lain di host yang sama dan pertahankan query string saat ini. HTML Mode tidak menyediakan page picker Builder, jadi kamu harus menentukan path tujuan sendiri.                                                            |
+| Self Hosted Orderan / Invoice       | `order_page`                | Redirect ke halaman publik order atau invoice. Prioritaskan `order.public_order_url`; jika tidak ada, gunakan `/o/{secret_slug}` di origin saat ini.                                                                                                    |
+| Custom URL                          | `custom_url`                | Redirect ke URL yang kamu tentukan. Untuk host saat ini atau host app Scalev yang dikenal, kamu bisa meneruskan query string saat ini agar attribution tetap tersambung. Untuk host eksternal, teruskan hanya parameter yang memang ingin kamu bagikan. |
+
+## Memilih jalur
+
+Gunakan `success_page` saat pembeli perlu melihat instruksi pembayaran atau status pembayaran Scalev paling lengkap.
+
+Gunakan `direct_to_whatsapp` saat langkah berikutnya ditangani sales yang diassign oleh store. Field pentingnya adalah `order.handler_phone` dan `order.chat_message`.
+
+Gunakan `direct_to_custom_whatsapp` saat langkah berikutnya selalu masuk ke nomor tetap. Simpan nomor tersebut di konfigurasi HTML atau script kamu.
+
+Gunakan `other_page` saat tujuan berikutnya adalah landing page Scalev lain di host yang sama, misalnya thank-you page atau upsell page.
+
+Gunakan `order_page` saat pembeli perlu melihat invoice publik atau detail order yang sudah dibuat.
+
+Gunakan `custom_url` untuk tujuan di luar flow halaman saat ini, seperti handoff ke CRM, thank-you page eksternal, atau pengalaman custom yang kamu hosting sendiri.
+
+## Catatan analytics dan attribution
+
+Builder mempertahankan query parameter untuk `other_page`. Builder juga meneruskan query parameter untuk `custom_url` hanya jika target host adalah host saat ini atau salah satu host app Scalev yang dikenal.
+
+Untuk halaman HTML Mode manual, tentukan ini secara eksplisit. Teruskan UTM, click, atau affiliate parameter saat kamu perlu menjaga continuity attribution. Jangan meneruskan nama customer, nomor telepon, alamat, atau data personal lain ke URL eksternal kecuali flow checkout membutuhkannya dan pembeli memang mengharapkannya.

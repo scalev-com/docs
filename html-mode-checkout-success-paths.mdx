@@ -1,0 +1,246 @@
+---
+title: "HTML Mode checkout success paths"
+description: "Choose what happens after Scalev.checkout.createOrder succeeds in a manual HTML Mode checkout."
+---
+
+When you build a checkout form manually in HTML Mode, `Scalev.checkout.createOrder(payload)` only creates the order. It does not automatically apply the Builder form setting named **After Submit Event**.
+
+If you want the same behavior as the Builder checkout form, choose one of these six paths after `createOrder` returns successfully.
+
+## Builder parity rules
+
+The Builder form applies these rules before redirecting:
+
+- E-payment methods always go to the payment instruction page. This includes `va`, `qris`, `card`, `invoice`, `alfamart`, `ovo`, `dana`, `shopeepay`, `linkaja`, and `gopay`.
+- VA submethods selected from `store.sub_payment_methods` are treated as `va`.
+- `BT_*` bank-transfer submethods are treated as `bank_transfer`, not `va`.
+- If the order status is `draft`, the payment instruction path falls back to **Self Hosted Orderan / Invoice** (`order_page`).
+- If the page is rendered inside an iframe, the Builder posts the target URL to the parent window instead of navigating the iframe directly.
+
+Use the order data returned by `createOrder`. Do not hardcode private API URLs.
+
+`createOrder` returns the standard Scalev response envelope:
+
+```json
+{
+  "code": 200,
+  "status": "Success",
+  "data": {
+    "secret_slug": "order-secret",
+    "public_order_url": "https://example.com/o/order-secret",
+    "payment_url": "https://example.com/o/order-secret/success",
+    "handler_phone": "6281200000000",
+    "chat_message": "..."
+  }
+}
+```
+
+```js
+const orderResponse = await Scalev.checkout.createOrder(payload);
+const order = orderResponse.data;
+```
+
+## Reference implementation
+
+Use this helper after `validateOrder` passes and `createOrder` succeeds.
+
+```js
+const PAYMENT_INSTRUCTION_METHODS = new Set([
+  "va",
+  "qris",
+  "card",
+  "invoice",
+  "alfamart",
+  "ovo",
+  "dana",
+  "shopeepay",
+  "linkaja",
+  "gopay",
+]);
+
+const SCALEV_QUERY_FORWARD_HOSTS = new Set([
+  "scalev.com",
+  "scalev.id",
+  "app.scalev.id",
+  "app.scalev.com",
+]);
+
+function paymentMethodForRedirect(paymentMethod, store) {
+  if (typeof paymentMethod === "string" && paymentMethod.startsWith("BT_")) {
+    return "bank_transfer";
+  }
+
+  if (
+    typeof paymentMethod === "string" &&
+    Array.isArray(store?.sub_payment_methods) &&
+    store.sub_payment_methods.includes(paymentMethod)
+  ) {
+    return "va";
+  }
+
+  return paymentMethod;
+}
+
+function publicOrderUrl(order) {
+  if (order.public_order_url) return order.public_order_url;
+  return new URL(`/o/${order.secret_slug}`, window.location.origin).toString();
+}
+
+function paymentInstructionUrl(order) {
+  if (order.status === "draft") return publicOrderUrl(order);
+  if (order.payment_url) return order.payment_url;
+
+  const url = new URL(publicOrderUrl(order));
+  url.pathname = `${url.pathname.replace(/\/$/, "")}/success`;
+  return url.toString();
+}
+
+function whatsappUrl(phone, order, fallbackMessage = "") {
+  const cleanPhone = String(phone || "").replace(/[^\d]/g, "");
+  const message = order.chat_message || encodeURIComponent(fallbackMessage);
+  return `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${message}`;
+}
+
+function withCurrentQuery(url) {
+  const nextUrl = new URL(url, window.location.href);
+  const currentParams = new URLSearchParams(window.location.search);
+
+  currentParams.forEach((value, key) => {
+    nextUrl.searchParams.set(key, value);
+  });
+
+  return nextUrl.toString();
+}
+
+function maybeForwardCurrentQuery(url) {
+  const nextUrl = new URL(url, window.location.href);
+  const shouldForward =
+    nextUrl.host === window.location.host ||
+    SCALEV_QUERY_FORWARD_HOSTS.has(nextUrl.host);
+
+  return shouldForward
+    ? withCurrentQuery(nextUrl.toString())
+    : nextUrl.toString();
+}
+
+function navigateAfterOrder(url) {
+  if (window.self !== window.top) {
+    window.parent.postMessage(url, "*");
+    return;
+  }
+
+  window.location.assign(url);
+}
+
+function redirectAfterOrder({
+  path,
+  orderResponse,
+  paymentMethod,
+  store,
+  customWhatsappPhone,
+  otherPagePath,
+  customUrl,
+}) {
+  const order = orderResponse.data;
+  const redirectPaymentMethod = paymentMethodForRedirect(
+    paymentMethod || order.payment_method,
+    store,
+  );
+  const finalPath = PAYMENT_INSTRUCTION_METHODS.has(redirectPaymentMethod)
+    ? "success_page"
+    : path;
+
+  if (finalPath === "success_page") {
+    return navigateAfterOrder(paymentInstructionUrl(order));
+  }
+
+  if (finalPath === "direct_to_whatsapp") {
+    const phone = order.handler_phone;
+    return navigateAfterOrder(
+      phone ? whatsappUrl(phone, order) : publicOrderUrl(order),
+    );
+  }
+
+  if (finalPath === "direct_to_custom_whatsapp") {
+    return navigateAfterOrder(whatsappUrl(customWhatsappPhone, order));
+  }
+
+  if (finalPath === "other_page") {
+    return navigateAfterOrder(withCurrentQuery(otherPagePath));
+  }
+
+  if (finalPath === "order_page") {
+    return navigateAfterOrder(publicOrderUrl(order));
+  }
+
+  if (finalPath === "custom_url") {
+    return navigateAfterOrder(maybeForwardCurrentQuery(customUrl));
+  }
+
+  return navigateAfterOrder(paymentInstructionUrl(order));
+}
+```
+
+Example usage:
+
+```js
+const data = Scalev.data.get();
+const store = data.store;
+
+const payload = {
+  page: data.page.uniqueId,
+  store: store.unique_id,
+  customerName: form.customerName.value,
+  customerPhone: form.customerPhone.value,
+  ordervariants: [
+    { variant_unique_id: selectedVariant.unique_id, quantity: 1 },
+  ],
+  paymentMethod: selectedPaymentMethod,
+};
+
+const validation = await Scalev.checkout.validateOrder(payload);
+if (!validation.valid) {
+  showValidationWarnings(validation.warnings);
+  return;
+}
+
+const orderResponse = await Scalev.checkout.createOrder(payload);
+
+redirectAfterOrder({
+  path: "success_page",
+  orderResponse,
+  paymentMethod: payload.paymentMethod,
+  store,
+});
+```
+
+## The six paths
+
+| Builder label                       | Value                       | HTML Mode behavior                                                                                                                                                                                                                |
+| ----------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Halaman Instruksi Pembayaran        | `success_page`              | Redirect to the Scalev payment instruction page. Prefer `order.payment_url`; otherwise use `/o/{secret_slug}/success`. If `order.status` is `draft`, use **Self Hosted Orderan / Invoice** (`order_page`) instead.                |
+| Langsung ke WhatsApp                | `direct_to_whatsapp`        | Open WhatsApp using `order.handler_phone` and `order.chat_message`. Nexus chooses the handler from the store or page assignment. If `handler_phone` is missing, fall back to **Self Hosted Orderan / Invoice** (`order_page`).    |
+| Langsung ke Nomor WhatsApp tertentu | `direct_to_custom_whatsapp` | Open WhatsApp using your own configured phone number and `order.chat_message`. Use this when every order should go to a fixed sales or admin number.                                                                              |
+| Landing Page Lainnya                | `other_page`                | Redirect to another landing page path on the current host and preserve the current query string. HTML Mode does not expose the Builder page picker, so you must provide the destination path yourself.                            |
+| Self Hosted Orderan / Invoice       | `order_page`                | Redirect to the public order or invoice page. Prefer `order.public_order_url`; otherwise use `/o/{secret_slug}` on the current origin.                                                                                            |
+| Custom URL                          | `custom_url`                | Redirect to a URL you provide. For the current host or known Scalev app hosts, you can forward the current query string to preserve attribution. For external hosts, forward only the parameters you intentionally want to share. |
+
+## Choosing a path
+
+Use `success_page` when the buyer needs payment instructions or the most complete Scalev-hosted payment state.
+
+Use `direct_to_whatsapp` when the next step is handled by the store's assigned sales person. The important fields are `order.handler_phone` and `order.chat_message`.
+
+Use `direct_to_custom_whatsapp` when the next step always goes to a fixed number. Store the phone number in your HTML or script configuration.
+
+Use `other_page` when the destination is another Scalev landing page on the same host, such as a thank-you page or upsell page.
+
+Use `order_page` when the buyer should see the generated public invoice or order detail page.
+
+Use `custom_url` for destinations outside the current page flow, such as a CRM handoff, external thank-you page, or custom hosted experience.
+
+## Notes for analytics and attribution
+
+The Builder preserves query parameters for `other_page`. It also forwards query parameters for `custom_url` only when the target host is the current host or one of the known Scalev app hosts.
+
+For manual HTML Mode pages, be explicit. Forward UTM, click, or affiliate parameters when you need attribution continuity. Do not forward customer names, phone numbers, addresses, or other personal data to external URLs unless your checkout flow requires it and the buyer expects it.
