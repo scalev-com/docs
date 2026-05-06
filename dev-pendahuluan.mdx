@@ -113,11 +113,13 @@ API menggunakan kode status HTTP standar:
 
 ## Rate Limiting
 
-Permintaan API dapat terkena rate limit. Ketika rate limit diterapkan, informasi limit dikembalikan dalam header respons seperti:
+Permintaan API dapat terkena rate limit. API Key dan OAuth access token menggunakan bucket berbasis kredensial: **10.000 permintaan per jam** plus **100 permintaan per 10 detik** untuk burst pendek per key atau instalasi OAuth. Ketika rate limit diterapkan, informasi limit dikembalikan dalam header respons seperti:
 
 - `X-Ratelimit-Limit`
 - `X-Ratelimit-Remaining`
 - `X-Ratelimit-Reset`
+
+Beberapa limit khusus endpoint lebih ketat. Respons rate-limit dapat berupa plain text, bukan bentuk error JSON normal.
 
 ## Paginasi
 

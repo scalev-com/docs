@@ -1,5 +1,5 @@
 ---
-title: 'Otorisasi dengan OAuth'
+title: "Otorisasi dengan OAuth"
 ---
 
 ## Ringkasan
@@ -123,14 +123,14 @@ https://app.scalev.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOU
 
 Parameter query wajib:
 
-| Parameter | Wajib | Deskripsi |
-| --- | --- | --- |
-| `client_id` | Ya | Client ID aplikasi OAuth Anda |
-| `redirect_uri` | Ya | Harus sama persis dengan redirect URI yang dikonfigurasi |
-| `response_type` | Ya | Harus `code` |
-| `state` | Ya | Nilai acak perlindungan CSRF yang dibuat oleh aplikasi Anda |
-| `code_challenge` | Ya | Hash SHA-256 dari code verifier yang di-encode dengan Base64 URL |
-| `code_challenge_method` | Ya | Harus `S256` |
+| Parameter               | Wajib | Deskripsi                                                        |
+| ----------------------- | ----- | ---------------------------------------------------------------- |
+| `client_id`             | Ya    | Client ID aplikasi OAuth Anda                                    |
+| `redirect_uri`          | Ya    | Harus sama persis dengan redirect URI yang dikonfigurasi         |
+| `response_type`         | Ya    | Harus `code`                                                     |
+| `state`                 | Ya    | Nilai acak perlindungan CSRF yang dibuat oleh aplikasi Anda      |
+| `code_challenge`        | Ya    | Hash SHA-256 dari code verifier yang di-encode dengan Base64 URL |
+| `code_challenge_method` | Ya    | Harus `S256`                                                     |
 
 Perilaku saat ini:
 
@@ -216,12 +216,12 @@ Respons sukses:
 
 Field respons:
 
-| Field | Deskripsi |
-| --- | --- |
-| `access_token` | Token yang digunakan untuk permintaan API `/v3` terautentikasi |
-| `refresh_token` | Token yang digunakan untuk memperoleh access token baru |
-| `token_type` | Selalu `Bearer` |
-| `expires_in` | Masa berlaku access token dalam detik |
+| Field           | Deskripsi                                                      |
+| --------------- | -------------------------------------------------------------- |
+| `access_token`  | Token yang digunakan untuk permintaan API `/v3` terautentikasi |
+| `refresh_token` | Token yang digunakan untuk memperoleh access token baru        |
+| `token_type`    | Selalu `Bearer`                                                |
+| `expires_in`    | Masa berlaku access token dalam detik                          |
 
 ## Langkah 6: Gunakan Access Token
 
@@ -397,17 +397,28 @@ Catatan penting:
 8. Gunakan `/v3/oauth/introspect` untuk diagnostik token runtime.
 9. Tangani instalasi yang dinonaktifkan secara terpisah dari instalasi yang dicabut.
 
+## Rate Limiting
+
+OAuth access token menggunakan rate limit yang di-scope ke aplikasi OAuth dan instalasi merchant.
+
+Default saat ini:
+
+- **10.000 permintaan per jam per instalasi**
+- **100 permintaan per 10 detik per instalasi** untuk burst pendek
+
+Respons rate-limit mengembalikan `429 Too Many Requests` dengan header `X-Ratelimit-Limit`, `X-Ratelimit-Remaining`, dan `X-Ratelimit-Reset`. Beberapa limit khusus endpoint lebih ketat, dan respons rate-limit dapat berupa plain text, bukan bentuk error JSON normal.
+
 ## Penanganan Error
 
 Endpoint OAuth dapat mengembalikan error seperti:
 
-| Kode Error | Deskripsi |
-| --- | --- |
-| `invalid_request` | Parameter permintaan hilang atau formatnya salah |
-| `invalid_client` | Autentikasi client gagal |
-| `invalid_grant` | Authorization code, refresh token, atau PKCE verifier tidak valid atau kedaluwarsa |
-| `unauthorized_client` | Client tidak diizinkan menggunakan grant type yang diminta |
-| `server_error` | Kegagalan sisi server yang tidak terduga |
+| Kode Error            | Deskripsi                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| `invalid_request`     | Parameter permintaan hilang atau formatnya salah                                   |
+| `invalid_client`      | Autentikasi client gagal                                                           |
+| `invalid_grant`       | Authorization code, refresh token, atau PKCE verifier tidak valid atau kedaluwarsa |
+| `unauthorized_client` | Client tidak diizinkan menggunakan grant type yang diminta                         |
+| `server_error`        | Kegagalan sisi server yang tidak terduga                                           |
 
 Bentuk respons error umum:
 
