@@ -1,0 +1,31 @@
+---
+title: "Why Is My Pagespeed Score Low or Inconsistent?"
+description: "Why does the score keep changing?"
+---
+Check speed here: [https://pagespeed.web.dev](https://pagespeed.web.dev/)
+
+Why does the score keep changing?
+
+1\. The score is checked through Google's random network. Sometimes their network isn't "friendly" with Indonesian ISPs. But generally it's fine.
+
+2\. The largest components loaded by a website are usually 2: pixel and image.
+
+Often Meta pixel is unstable, or stalls midway. If that's the case, only God knows. To check, sometimes pagespeed shows something like this:
+
+![Faq Pagespeed Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/faq-pagespeed-min.png)
+
+This case means the pixel stalled or failed to execute.
+
+If the case is the image, just follow the tutorial to treat the image.
+
+How do we know Scalev's actual performance without pixel issues interfering?
+
+1. Duplicate your landing page.
+
+3. Remove all installed pixels including their events.
+
+5. Save.
+
+7. Test with pagespeed.
+
+You'll find the actual performance result of the Scalev landing page.

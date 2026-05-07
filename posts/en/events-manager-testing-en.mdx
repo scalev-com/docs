@@ -1,0 +1,65 @@
+---
+title: "How to Test Your Pixel in Events Manager"
+description: "To verify that the dataset (pixel) events installed on your landing page are running correctly, they need to be tested first via Events Manager in Meta BM."
+---
+Important note:
+
+- The testing code is only entered when you're running a test event
+
+- Once you're ready to run ads, remove the testing code from Scalev
+
+To verify that the dataset (pixel) events installed on your landing page are running correctly, they need to be tested first via Events Manager in Meta BM.
+
+Follow the guide below.
+
+1\. Go to your Business Manager (BM) homepage in Meta, then open the Events Manager page
+
+![Events Manager 7 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-7-min-1024x612.png)
+
+2\. On the Events Manager page, check the left sidebar then click Data Sources
+
+![Events Manager 8 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-8-min.png)
+
+3\. Once on the Data Sources page:
+
+- Select the pixel to test
+
+- Click the Test events tab
+
+- Copy the test code
+
+![Events Manager 9 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-9-min-1024x559.png)
+
+4\. Then open the Scalev Analytics settings page at Setting > Analytics, then click the pixel you're using
+
+![Events Manager 3 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-3-min-1024x612.png)
+
+5\. The Analytics Account Detail dialog appears — paste the test code from Events Manager into the Testing Code field, then click Save
+
+![Events Manager 4 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-4-min-748x1024.png)
+
+After saving those settings, open your Scalev landing page in **Chrome/Edge** browser.
+
+⛔️ Testing landing pages with Safari is not recommended.
+
+Test your landing page funnel from opening the page to submitting the form.
+
+When the order is received in Scalev, change the order status to Paid.
+
+Then check the Events Manager page in the "Events Received" table.
+
+![Events Manager 10 Min](https://tutorial.scalev.id/wp-content/uploads/2024/07/events-manager-10-min-1024x749.png)
+
+Event status explanations:
+
+- **Processed** — a single event trigger was successfully received by Meta.
+
+- **Deduplicated** — the same event was triggered twice, but Meta received and counted it as a single trigger.
+
+Both event statuses are normal and expected.
+
+If all the events in your funnel appear through the Purchase event, your pixel testing is **CORRECT** and you're ready to run ads.
+
+NOTE:
+
+If your BM is in Indonesian, see the Indonesian version here → [https://tutorial.scalev.id/testing-events-manager-id/](https://tutorial.scalev.id/testing-events-manager-id/)

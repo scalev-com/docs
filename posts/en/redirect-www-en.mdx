@@ -1,0 +1,210 @@
+---
+title: "How to Redirect www to Your Main Domain with Cloudflare"
+description: "Or any paid Scalev user who wants to conserve their custom domain quota."
+---
+This is especially for Scalev Lite plan users whose [custom domain allowance](https://tutorial.scalev.id/customdomain/) is only 1 (one) active domain.
+
+Or any paid Scalev user who wants to conserve their custom domain quota.
+
+This trick is worth trying.
+
+Before following the instructions in this article, I'll assume you've already added a custom domain following this tutorial → [https://tutorial.scalev.id/azcustomdomain/](https://tutorial.scalev.id/azcustomdomain/)
+
+## Benefits of Redirecting www to Your Main Domain
+
+- **URL consistency**: Simplifies URLs so they always point to one version.
+
+- **Avoiding duplicate content**: Prevents search engines from treating the www and non-www versions as two separate sites.
+
+- **Improved SEO**: Consolidates authority and rankings to one URL version.
+
+- **More accurate analytics**: Makes it easier to track data and site performance in a single version.
+
+- **Consistent user experience**: Directs users to the same version every time they access the site.
+
+- **Saves your custom domain quota in Scalev.**
+
+## Why redirect?
+
+A domain name has two versions that visitors can use: the www version and the non-www version.
+
+Example:
+
+- army.id (non-www version)
+
+- www.army.id (www version)
+
+Both must be active to ensure no 404 errors (page not accessible) for visitors.
+
+If you only use one version of the domain, the other version will likely return a 404 error if not configured.
+
+So to avoid this 404 error, you need to set up a redirection on one of the versions.
+
+And designate one version as the primary domain that's always used.
+
+So you can benefit from all the advantages listed above.
+
+## How to Redirect www to Your Main Domain
+
+1\. Log in to your Cloudflare account
+
+2\. Select your active domain
+
+3\. In the left sidebar, find **Page Rules**
+
+4\. On the Page Rules page, click the blue **Create Page Rule** button
+
+<figure>
+
+![Redirect Www 1 Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/redirect-www-1-min-scaled.jpeg)
+
+<figcaption>
+
+Open the Page Rules page in Cloudflare
+
+</figcaption>
+
+</figure>
+
+5\. Fill in the rule settings exactly as shown in the screenshot below:
+
+<figure>
+
+![Redirect Www.2 Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/redirect-www.2-min.png)
+
+<figcaption>
+
+Page Rules settings for Redirection
+
+</figcaption>
+
+</figure>
+
+Adjust for your own domain.
+
+- URL (required): **www.army.id/**\*
+
+- Pick a Setting (required): **Forwarding URL**
+
+- Select status code (required): **301 - Permanent Redirect**
+
+- Enter destination URL (required): **https://army.id**
+
+6\. Then click the blue "Save and Deploy Page Rule" button
+
+## Adding new CNAME records
+
+After creating the Page Rule above, you need to make sure CNAME records for www and \* have been added.
+
+If they don't exist, create new records.
+
+You need to create 2 new CNAME records:
+
+- CNAME www pointing to @
+
+- CNAME \* pointing to @
+
+@ = your main domain without www  
+\* = wildcard (random subdomains that don't exist)
+
+Example:
+
+<figure>
+
+![Redirect Www 3 Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/redirect-www-3-min.png)
+
+<figcaption>
+
+Adding CNAME www and \* pointing to @
+
+</figcaption>
+
+</figure>
+
+The www redirect with Cloudflare is now set up.
+
+Test accessing your domain in both the www and non-www versions.
+
+If successful, the main page of your main domain will appear.
+
+The www version redirects to the non-www version.
+
+If not successful, check the FAQ below.
+
+## FAQ
+
+I've created the Page Rule as instructed but still can't access it. Why?
+
+There are several possible reasons you can't access the www version even after following the instructions above.
+
+Such as:
+
+- Browser cache
+
+- Internet network cache
+
+- CNAME not added yet, etc.
+
+- Page Rule status not yet enabled
+
+- Main domain page not set in Scalev
+
+After applying the www redirect settings, make sure you:
+
+- Clear the cache in your browser
+
+- Reset/restart your internet connection
+
+- CNAME for www and \* has been added to your active domain
+
+- Make sure the Page Rule is active (green)
+
+- Make sure you've set the main page for your domain in Scalev
+
+<figure>
+
+![Redirect Www 4 Min](https://tutorial.scalev.id/wp-content/uploads/2024/09/redirect-www-4-min.png)
+
+<figcaption>
+
+Page Rule active toggle showing green
+
+</figcaption>
+
+</figure>
+
+Another cause I'm aware of is an internet provider that blocks or restricts access to websites that use Cloudflare as their security system.
+
+Scalev uses Cloudflare.
+
+If everything in the list above checks out but you still can't access your domain —
+
+Try switching to a different internet provider.
+
+I want to use the www version as my main Scalev domain, how?
+
+In step 5 above, just reverse the conditions like this:
+
+- URL (required): **army.id/** (remove www)
+
+- Pick a Setting (required): **Forwarding URL**
+
+- Select status code (required): **301 - Permanent Redirect**
+
+- Enter destination URL (required): **https://www.army.id** (add www here)
+
+Adjust for your own domain.
+
+My CNAME www record already has a DNS entry. What should I do?
+
+If the CNAME www record points to @ (main domain), you don't need to add a new CNAME for this record.
+
+If it doesn't point to @, edit the record and point it to @.
+
+I'm not using Cloudflare. How do I do it?
+
+This tutorial is currently written specifically for Cloudflare users.
+
+If you're using a DNS Manager other than Cloudflare, the steps will differ from Cloudflare.
+
+Contact Scalev CS for further assistance.

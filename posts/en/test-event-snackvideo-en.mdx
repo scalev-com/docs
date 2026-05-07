@@ -1,0 +1,106 @@
+---
+title: "How to Test SnackVideo Pixel Events"
+description: "If you've already created the SnackVideo Event API pixel, you now need to test the pixel installation to verify the event flow is working correctly."
+---
+If you've already created the SnackVideo Event API pixel, you now need to test the pixel installation to verify the event flow is working correctly.
+
+Follow these steps.
+
+### 1\. Web Events
+
+Log in to your SnackVideo ad account at [https://ads.kwai.com/](https://ads.kwai.com/)
+
+Once in, click the Assets menu then select Web Events.
+
+<figure>
+
+![Membuat Pixel Eventapi 1](https://tutorial.scalev.id/wp-content/uploads/2024/12/membuat-pixel-eventapi-1-1024x640.png)
+
+<figcaption>
+
+Open the Web Events menu
+
+</figcaption>
+
+</figure>
+
+### 2\. Select Pixel
+
+Click on the name of the Events API pixel you've created. If you haven't created one yet, [see the guide here](https://tutorial.scalev.id/membuat-pixel-eventapi-snackvideo/ "Tutorial Cara Bikin Pixel Event API SnackVideo").
+
+### 3\. Test Events
+
+Click the Test Event tab to find the code you need to use during testing.
+
+You can also view the test results here on the right side.
+
+<figure>
+
+![Test event snackvideo 1](https://tutorial.scalev.id/wp-content/uploads/2025/03/test-event-snackvideo-1-1024x640.png)
+
+<figcaption>
+
+Copy the testing code
+
+</figcaption>
+
+</figure>
+
+### 4\. Test Mode
+
+**IMPORTANT!** Make sure you turn on the Test Mode toggle in your Scalev Analytics settings first.
+
+<figure>
+
+![Test event snackvideo 2](https://tutorial.scalev.id/wp-content/uploads/2025/03/test-event-snackvideo-2-706x1024.png)
+
+<figcaption>
+
+Enable the Test Mode toggle before starting the test
+
+</figcaption>
+
+</figure>
+
+### 5\. click\_id Parameter
+
+Take the testing code from step 3 above and append it as a **click\_id** parameter at the end of your landing page link.
+
+Example:
+
+Testing Code = rY3vrGB7ICRbG4poTCqDtA  
+Landing page link = https://yourdomain.com/new-landing-page**?click\_id=rY3vrGB7ICRbG4poTCqDtA**
+
+Use this full landing page link with the testing code appended for your test.
+
+### 6\. Test Order
+
+Open the full link in an incognito browser.
+
+Test your landing page all the way through.
+
+Fill out the checkout form to create a new order.
+
+Then change the order status to Confirmed & Paid.
+
+### 7\. Preview Event
+
+Go back to step 3 to see which events fired successfully.
+
+<figure>
+
+![Test event snackvideo 3 min](https://tutorial.scalev.id/wp-content/uploads/2025/03/test-event-snackvideo-3-min-1024x423.png)
+
+<figcaption>
+
+Events that fired successfully
+
+</figcaption>
+
+</figure>
+
+If the events you've set up on your landing page appear as shown in the screenshot above, the event testing is working correctly.
+
+Your SnackVideo pixel testing in Scalev is now complete and you're ready to run ads.
+
+Don't forget to turn off the Test Mode toggle from step 4 before you start running ads on SnackVideo.

@@ -1,0 +1,285 @@
+---
+title: "How to Set Up Google Ads with GTM"
+description: "To use Google Ads tracking with GTM in Scalev, follow the screenshot instructions below."
+---
+To use Google Ads tracking with GTM in Scalev, follow the screenshot instructions below.
+
+### **1\. Create a new conversion in your Google Ads account**
+
+How to:
+
+<figure>
+
+![Google ads gtm updated 1](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-1-1024x629.png)
+
+<figcaption>
+
+Click the **Goals** icon in the left menu
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Google ads gtm updated 2](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-2-1024x640.png)
+
+<figcaption>
+
+Scroll down then click the **Create conversion action** button
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Google ads gtm updated 3](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-3-1024x635.png)
+
+<figcaption>
+
+Click the **Website** box
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Google ads gtm updated 4](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-4-1024x638.png)
+
+<figcaption>
+
+Enter your main domain address
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Google ads gtm updated 5](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-5-1024x471.png)
+
+<figcaption>
+
+If a dialog like this appears, select the active main domain format you'll use for advertising
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Google ads gtm updated 6](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-6-1024x631.png)
+
+<figcaption>
+
+Then scroll to the bottom and click **Add a conversion action manually**
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Google ads gtm updated 7](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-7-1024x789.png)
+
+<figcaption>
+
+Adjust the sections in red boxes then click Done
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Google ads gtm updated 8](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-8-1024x632.png)
+
+<figcaption>
+
+Click the Save and continue button
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Google ads gtm updated 9](https://tutorial.scalev.id/wp-content/uploads/2024/05/google-ads-gtm-updated-9-1024x629.png)
+
+<figcaption>
+
+Note down the **Conversion ID** and **Conversion labels** shown here
+
+</figcaption>
+
+</figure>
+
+### 2\. Create your GTM account at https://tagmanager.google.com
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/SCR-20240510-myjx-1024x326.png)
+
+<figcaption>
+
+Click the Create Account button to create a new account in Google Tag Manager
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/SCR-20240510-mzem-1024x830.png)
+
+<figcaption>
+
+Fill in the required details as shown in this example screenshot
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/SCR-20240510-mzka-1024x644.png)
+
+<figcaption>
+
+Check the box then click the Yes button
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/SCR-20240510-natz-1024x511.png)
+
+<figcaption>
+
+Once created, click Add new tag
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/Screenshot-2024-05-10-at-14.42.33-1024x449.png)
+
+<figcaption>
+
+Add the Conversion Linker tag and configure the Trigger as shown in the screenshot
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/SCR-20240510-natz-1024x511.png)
+
+<figcaption>
+
+Add another new tag
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/Screenshot-2024-05-10-at-15.09.06-1024x631.png)
+
+<figcaption>
+
+Select the Google Ads Conversion Tracking tag, enter the Conversion ID and Conversion labels matching the details created when you set up the Google Ads conversion
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+[![](https://tutorial.scalev.id/wp-content/uploads/2024/05/Screenshot-2024-05-10-at-15.11.49-1024x570.png)](https://tutorial.scalev.id/wp-content/uploads/2024/05/Screenshot-2024-05-10-at-15.11.49.png)
+
+<figcaption>
+
+In the Trigger field, enter the event name exactly as shown in this screenshot
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/SCR-20240510-nmiz-1024x239.png)
+
+<figcaption>
+
+Once everything is done, save your final changes by clicking the Submit button in GTM
+
+</figcaption>
+
+</figure>
+
+### 3\. Integrate GTM with Scalev
+
+To do this, log in to your Scalev dashboard then follow these steps:
+
+- Click the **Setting** page
+
+- Click the dropdown next to the **Analytics** heading, then select **Google Tag Manager**
+
+- Click **\+ Add Analytics**
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/Screenshot-2024-05-10-at-22.05.04.png)
+
+<figcaption>
+
+Enter the Name and Container ID of the GTM you created
+
+</figcaption>
+
+</figure>
+
+- GTM Name can be anything you like
+
+- **Container ID**: enter the GTM ID you created, e.g.: GTM-ABCD1234
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/SCR-20240510-tihm-1024x337.png)
+
+<figcaption>
+
+Example Container ID for GTM — copy this text into Scalev Analytics
+
+</figcaption>
+
+</figure>
+
+GTM is now integrated with Scalev.
+
+To activate it, make sure every new landing page you create in Scalev uses the GTM analytics you've installed.
+
+<figure>
+
+![](https://tutorial.scalev.id/wp-content/uploads/2024/05/SCR-20240510-thhg-595x1024.png)
+
+<figcaption>
+
+Select the GTM connected to your Scalev account
+
+</figcaption>
+
+</figure>
+
+Save the landing page when you're done.
+
+Your Google Ads conversion setup for Scalev is now complete and you're ready to run Google ads.

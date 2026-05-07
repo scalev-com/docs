@@ -1,0 +1,129 @@
+---
+title: "How to Add an Identity in Mailev"
+description: "Then click Add Identity"
+---
+<iframe src="https://www.youtube.com/embed/6YPMOq058Sk" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+Log in to [https://app.mailev.co/login](https://app.mailev.co/login) first.
+
+Then click Add Identity.
+
+![CleanShot 2026 02 12 at 13.09.15@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-13.09.15@2x.png)
+
+Enter an Identity Name (this can be anything).
+
+Select the domain to use — the domains listed in Mailev are the custom domains you've already verified in Scalev.
+
+![CleanShot 2026 02 12 at 12.37.45@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-12.37.45@2x-1.png)
+
+Then click Create Identity — 5 DNS records will appear:
+
+- 3 DNS Type CNAME
+
+- 2 DNS Type TXT
+
+All five MUST be added to your Cloudflare.
+
+**IMPORTANT note:**
+
+When adding DNS to Cloudflare, you must enter the Host \[Name\] & Value \[Target/Content\] exactly as provided by Mailev.
+
+Changing the Host or Value will cause verification to fail.
+
+![Screen Shot 2026 02 12 at 13.12.57](https://tutorial.scalev.id/wp-content/uploads/2026/02/Screen-Shot-2026-02-12-at-13.12.57-1024x943.png)
+
+* * *
+
+Add the DNS records to Cloudflare.
+
+Go to your Cloudflare dashboard → Click the domain name → Click the DNS menu on the left & click Records.
+
+![CleanShot 2026 02 12 at 12.56.44@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-12.56.44@2x.png)
+
+Click Add Record.
+
+![CleanShot 2026 02 12 at 13.15.21@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-13.15.21@2x-1024x634.png)
+
+* * *
+
+Add the first CNAME DNS record, with these settings:
+
+- Host goes into Name
+
+- Value goes into Target
+
+- Proxy Status set to DNS Only
+
+- Save
+
+![CleanShot 2026 02 12 at 12.40.06@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-12.40.06@2x-1024x996.png)
+
+* * *
+
+Click Add Record again.
+
+Then add the second CNAME DNS record, with these settings:
+
+- Host goes into Name
+
+- Value goes into Target
+
+- Proxy Status set to DNS Only
+
+- Save
+
+![CleanShot 2026 02 12 at 12.59.53@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-12.59.53@2x-1024x954.png)
+
+* * *
+
+Click Add Record again.
+
+Then add the third CNAME DNS record, with these settings:
+
+- Host goes into Name
+
+- Value goes into Target
+
+- Proxy Status set to DNS Only
+
+- Save
+
+![CleanShot 2026 02 12 at 13.19.50@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-13.19.50@2x-1024x951.png)
+
+* * *
+
+Click Add Record again.
+
+Then add the first TXT DNS record, with these settings:
+
+- Host goes into Name
+
+- Value goes into Content
+
+- Save
+
+![CleanShot 2026 02 12 at 13.23.12@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-13.23.12@2x-1-1024x993.png)
+
+* * *
+
+Click Add Record again.
+
+Then add the second TXT DNS record, with these settings:
+
+- Host goes into Name
+
+- Value goes into Content
+
+- Save
+
+![CleanShot 2026 02 12 at 13.05.46@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-13.05.46@2x-971x1024.png)
+
+* * *
+
+Once all five DNS records are added, click Verify.
+
+![CleanShot 2026 02 12 at 13.06.44@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-13.06.44@2x-1024x951.png)
+
+If successful, your domain status in Mailev will become verified — meaning you're ready to use that email domain to send broadcasts in Mailev.
+
+![CleanShot 2026 02 12 at 13.27.53@2x](https://tutorial.scalev.id/wp-content/uploads/2026/02/CleanShot-2026-02-12-at-13.27.53@2x-1024x184.png)

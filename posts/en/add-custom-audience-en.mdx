@@ -1,0 +1,168 @@
+---
+title: "How to Add Meta Custom Audience to Scalev"
+description: "Before proceeding with this tutorial, make sure you've already:"
+---
+Before proceeding with this tutorial, make sure you've already:
+
+1. [Integrated your Meta ad account with Scalev](https://tutorial.scalev.id/integrasi-ad-account/).
+
+3. Created a Custom Audience with the [Customer List type in Meta](https://tutorial.scalev.id/custom-audience-meta/)
+
+5. Created custom audiences in your Meta Ads ad account for at least 2 events (WHEN AN ORDER IS PLACED & WHEN PAYMENT IS RECEIVED).
+
+.
+
+If done, follow these steps to add Meta Custom Audience (CA) to Scalev.
+
+1\. Open your Scalev dashboard then go to Store → Select the Store owned by your Business
+
+<figure>
+
+![Tambah Custom Audience 1](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-1-1024x615.png)
+
+<figcaption>
+
+Click your store name
+
+</figcaption>
+
+</figure>
+
+2\. On the Store page, check the "Meta Custom Audience" widget in the right sidebar then click the "View" link
+
+<figure>
+
+![Tambah Custom Audience 2](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-2-1024x572.png)
+
+<figcaption>
+
+Click the View link to open a new dialog
+
+</figcaption>
+
+</figure>
+
+3\. The following dialog appears — click the + Add Custom Audience link
+
+<figure>
+
+![Tambah Custom Audience 3](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-3.png)
+
+<figcaption>
+
+Click + Add Custom Audience
+
+</figcaption>
+
+</figure>
+
+4\. A dropdown of ad accounts connected to your Facebook account appears — select one
+
+<figure>
+
+![Tambah Custom Audience 4](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-4.png)
+
+<figcaption>
+
+Select an ad account from the dropdown
+
+</figcaption>
+
+</figure>
+
+5\. The Meta Custom Audience field then appears — select one (or more) CA that you've created in Meta to add to this field
+
+<figure>
+
+![Tambah Custom Audience 5](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-5.png)
+
+<figcaption>
+
+Select one or more Custom Audiences to add
+
+</figcaption>
+
+</figure>
+
+6\. After adding the CA, click Save
+
+<figure>
+
+![Tambah Custom Audience 6](https://tutorial.scalev.id/wp-content/uploads/2024/07/tambah-custom-audience-6.png)
+
+<figcaption>
+
+Don't forget to click Save
+
+</figcaption>
+
+</figure>
+
+There are 4 (four) CA condition tabs based on order status: Created, Pending, Confirmed, and Completed.
+
+_Before adding a CA to Scalev, make sure you've already created it in your Meta Business Manager matching those order statuses (point 2 in the opening of this article)._
+
+Once ready and the CAs exist, connect each CA to the matching tab in the dialog.
+
+1. Pending → CA for the event WHEN SOMEONE PLACES AN ORDER
+
+3. Confirmed → CA for the event WHEN THEIR PAYMENT IS RECEIVED (for COD, when the customer agrees to order via COD with your store's CS).
+
+5. "Created" → Can be ignored.
+
+7. Completed → Not required. But if you want, this is where you connect a CA indicating the transaction is fully complete. For digital products, it means they've paid and received the product. For physical products, it means you've received payment and the customer has received the item.
+
+At this point you've successfully added a CA to Scalev.
+
+* * *
+
+Say you have a long-running ad where the Purchase event has already collected a lot of audience data.
+
+You then create a new CA based on that ad (which has many Purchase events) and connect it to Scalev.
+
+That CA will collect audience data from what already exists and automatically sync with new Purchase events that occur in Scalev (adding and overwriting).
+
+Meaning: for each new order that triggers a Purchase event in Scalev, if the audience data in that order matches data in the new CA, Meta will try to overwrite it.
+
+But if the audience data is completely new with no match in that CA, it will be added as new data to the CA.
+
+## Types of Custom Audiences
+
+A Scalev user asked about best practices regarding the type of CA that works best in Scalev.
+
+Before continuing, note that there are quite a few CA types.
+
+Here are the CA types available in Meta:
+
+<figure>
+
+![Tipe Custom Audience Meta](https://tutorial.scalev.id/wp-content/uploads/2024/07/tipe-custom-audience-meta-1024x783.png)
+
+<figcaption>
+
+Types of Meta Custom Audiences
+
+</figcaption>
+
+</figure>
+
+Meta CAs come in many types as shown in the screenshot above.
+
+But what we'll cover here are the two most commonly used: Website and Customer list.
+
+- Website CA — collects website visitor data from triggered events
+
+- Customer list CA — collects buyer data from past purchases via manual data upload
+
+The difference between Website CA and Customer list CA:
+
+- Website CA has an audience retention time limit, e.g.: 30 days, 60 days, 90 days, up to a maximum of 180 days.  
+      
+    This means the audience data in that CA is limited by the duration you set. Audience data beyond the retention limit CANNOT BE REACHED to target in ads.  
+    
+
+- Customer list CA has no audience retention time limit. The audience data in this CA lasts ALL TIME.  
+      
+    So from the moment the Customer list CA is created onward, the audience CAN BE REACHED in ads.
+
+Understanding this difference lets you decide which type is best to sync with Scalev based on your business needs.

@@ -1,0 +1,171 @@
+---
+title: "Tutorial: How to Set Up Your Pixel According to Meta's Best Practices"
+description: "To address warnings that appear on the Diagnostics tab in Events Manager, it's a good idea to first make sure your Meta pixel settings follow Meta's Best Practices..."
+---
+To address warnings that appear on the Diagnostics tab in Events Manager, it's a good idea to first make sure your Meta pixel settings follow Meta's standard best practices.
+
+This applies to both newly created pixels and existing ones.
+
+![Best practices meta 1](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-1-1024x501.png)
+
+Warning message on the pixel Diagnostics tab in Events Manager
+
+<iframe src="https://www.youtube.com/embed/ket4Ct-08HU" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+You can watch the video above or follow the written instructions below:
+
+If you followed the instructions for creating a new pixel in this article: [](https://tutorial.scalev.id/tambah-pixel/ "Tutorial: How to Add a Pixel to Scalev")[Tutorial: How to Add a Pixel to Scalev](https://tutorial.scalev.id/tambah-pixel/)
+
+Then set up the Conversion API (CAPI) in this article: [](https://tutorial.scalev.id/conversionapi/ "Tutorial: How to Get the Conversion API Access Token (So It Can Be Integrated with Your Scalev Account)")[Tutorial: How to Get the Conversion API Access Token (So It Can Be Integrated with Your Scalev Account)](https://tutorial.scalev.id/conversionapi/)
+
+Next, you need to check and ensure that the parameter settings required by the CAPI pixel comply with Meta's standards.
+
+So that after following these Best Practices, your pixel will no longer display warning errors related to CAPI events in the Diagnostics tab.
+
+Follow these steps:
+
+1\. Open the Meta BM front page at [https://business.facebook.com](https://business.facebook.com)
+
+![Best practices meta 2](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-2-1024x717.png)
+
+Open Events Manager in BM
+
+2\. Click the Connect Data button to connect an existing pixel
+
+![Best practices meta 3](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-3-1024x480.png)
+
+Click Connect Data
+
+3\. Select Web then click the Next button
+
+![Best practices meta 4](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-4-1024x953.png)
+
+Select Web
+
+4\. Select the name of the active pixel you are using
+
+![Best practices meta 5](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-5-1024x484.png)
+
+Select active pixel
+
+5\. Check "Set up manually" then click the Next button
+
+![Best practices meta 6](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-6-1024x801.png)
+
+Set up manually
+
+6\. Check "Conversions API and Meta Pixel" then click the Next button.
+
+![Best practices meta 7](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-7-1024x910.png)
+
+Select the Recommended option
+
+7\. Next, click "Start CAPI setup" then click the "Finish" / "Close" button — either is fine
+
+![Best practices meta 8](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-8-1024x667.png)
+
+Click Start CAPI setup to begin
+
+8\. Next, there will be a "Manual Implementation Overview" page — click the Continue button to proceed
+
+![Best practices meta 9](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-9-1024x640.png)
+
+Manual Implementation Overview
+
+9\. Make sure all active events used on your pixel are checked
+
+![Best practices meta 10](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-10-1024x640.png)
+
+List of active pixel events
+
+10\. If any of your pixel events show a warning exclamation mark like this, it must be fixed immediately according to Meta's standards
+
+![Best practices meta 11](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-11-1024x1010.png)
+
+List of parameters that need to be fixed
+
+So the result looks like this:
+
+![Best practices meta 12](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-12.png)
+
+Meta Pixel Best Practices settings
+
+Here is the list of parameters that need to be fixed:
+
+- Event ID
+
+- Phone
+
+- Email
+
+- IP address
+
+These four parameters **MUST** be checked as shown in the following steps.
+
+11\. Check at least 4 parameters according to the list above
+
+![Best practices meta 13](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-13-1024x845.png)
+
+Check these 4 required parameters
+
+Apply the same parameter checks to other events.
+
+Such as ViewContent, AddToCart, InitiateCheckout, etc.
+
+All active events on your pixel.
+
+Then click the Next button.
+
+12\. Review Setup, then click the Continue button.
+
+![Best practices meta 14](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-14-1024x769.png)
+
+Review setup
+
+13\. Click the Continue button
+
+![Best practices meta 15](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-15-1024x768.png)
+
+Click the Continue button directly
+
+14\. Next, you will be taken to the following page — click the Get Started button.
+
+![Best practices meta 16](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-16-1024x640.png)
+
+Start by clicking the Get Started button
+
+15\. Click Continue until the next step, then click the "Generate an Access Token" button
+
+![Best practices meta 17](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-17-1024x640.png)
+
+Get the access token code for your pixel
+
+16\. After it is generated, copy your code to prepare it for adding to the pixel in Scalev
+
+![Best practices meta 18](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-18-1024x676.png)
+
+Copy the token code to Scalev
+
+17\. Go to the Analytics settings in Scalev at menu Settings > Analytics > Facebook Pixel
+
+Or you can click through this link: [https://app.scalev.id/setting/tracking](https://app.scalev.id/setting/tracking)
+
+18\. Edit your pixel and paste the token code in the "Conversion API Access Token" field
+
+![Best practices meta 19](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-19-730x1024.png)
+
+Update the Meta token code in Scalev
+
+19\. Click the Save button.
+
+20\. Return to Events Manager, click the Finish button to end the process
+
+![Best practices meta 20](https://tutorial.scalev.id/wp-content/uploads/2025/03/best-practices-meta-20-1024x640.png)
+
+End the implementation process
+
+At this point, the process of implementing the parameters recommended by Meta for your active pixel is complete.
+
+Please wait and periodically check the Diagnostics tab in Events Manager to find out which warning messages appear and which ones no longer appear after applying these best practices.
+
+Good luck!

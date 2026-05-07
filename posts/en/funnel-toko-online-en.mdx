@@ -1,0 +1,165 @@
+---
+title: "Online Store Funnel & Detailed Event Settings in Meta Ads"
+description: "In building an online store, the sequence of pages accessed by potential buyers is a very important element."
+---
+In building an online store, the sequence of pages accessed by potential buyers is a very important element.
+
+The common funnels we use:
+
+![Online Store Funnel](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-1024x576.jpeg)
+
+Types of online store funnels
+
+Description:
+
+1\. _Landing page views_ is the _event_ that is first fired when someone visits the website **exclusively from ads only**.
+
+Not everyone who visits your website will be tagged with LP views by Meta. Only people who came from ads are "entitled" to be tagged by this event.
+
+2\. _Add to cart_ _event_ is typically applied to pages that don't have a form on the landing page.
+
+3\. _Initiated checkout_ is an event attributed to the moment of decision-making by potential buyers.
+
+It usually occurs when the buyer has decided what they will purchase, before then filling in payment data.
+
+4\. _Add payment info_ is typically applied when a potential buyer has filled in their payment data on the website.
+
+It generally occurs when someone has entered credit card data.
+
+5\. _Purchase_ is applied when a purchase has been completed. It generally occurs when the buyer has paid.
+
+In the case of online transactions in Indonesia, there is a somewhat unique payment method, namely COD.
+
+Specifically for COD, this purchase event can be applied when the buyer has confirmed the purchase and agreed to the shipment of goods.
+
+![Scalev Event Flow](https://tutorial.scalev.id/wp-content/uploads/2024/07/alur-event-scalev-1024x576.jpeg)
+
+# How to place them?
+
+**Placing LP Views**
+
+![Online Store Funnel 2](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-2-515x1024.png)
+
+Installing the ViewContent event
+
+1\. Enter the Landing Page menu
+2\. Press the New Landing Page button
+3\. Find the Settings menu
+4\. Then select the "ViewContent" event (with the note that you have already set up FB Pixel on your Scalev)
+
+_I'm looking for the Landing Page View event using the Chrome Extension FB Pixel Helper but can't find it?_
+
+Remember that LP Views is View Content that is first accessed from an ad. You will only find the term Landing Page View on the ad dashboard.
+
+**Placing Add To Cart**
+
+There are 2 ways to install the add to cart event:
+
+1. On the button
+2. On the page that is targeted by the add to cart button
+
+You can choose between these two methods with the following considerations:
+
+1\. If you place it on the button, the event will fire the moment the button is clicked; regardless of whether the page after it works or not.
+
+Usually fans of event placement on buttons are online store owners with funnels no. 4 and 5. From me, not recommended.
+
+2\. If you place it on a certain page after the button is clicked, the data will be more integrity. This means the numbers that appear on our ads dashboard can truly be trusted.
+
+If there are 100 ATCs, that means the ATC page was genuinely opened 100 times from ads. I prefer the second method.
+
+To install an event on a button, open your Scalev Landing Page Studio (LPS), then find the button element. When setting it up, you will find this menu:
+
+![Online Store Funnel 3](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-3-704x1024.png)
+
+Adding an event to a button
+
+To install it on a certain page that is targeted after the add to cart button is clicked (funnels 1, 2, and 3), you can install it as usual.
+
+Here's an example:
+
+![Online Store Funnel 4](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-4.png)
+
+Installing an event when the page opens
+
+**Placing Initiated Checkout**
+
+This event will be placed right after the potential buyer (store visitor) fills out the form.
+
+To set it up in Scalev, you need to first configure what product you are offering to visitors and connect it in the form through the online order form component.
+
+![Online Store Funnel 5](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-5.png)
+
+Placing an event in the form component
+
+When the online order form component > order form is selected, your landing page editor will automatically display 2 contents as follows:
+
+![Online Store Funnel 6](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-6.png)
+
+Product / Bundle and Order Form Components
+
+- The Product/Bundle content is related to what product you will connect to the order form. You configure the product variants to be installed and so on.
+
+- While the Order Form content relates to the form field settings; whether to use sub-districts, addresses, coupon codes, etc.
+
+I won't explain too much about the product and order form elements.
+
+You can learn them directly in Scalev.
+
+Let's get back to the main topic.
+
+To set the initiated checkout event, you go to the gear button I marked with an arrow in the image above.
+
+Once there, scroll down, and you will find settings like this:
+
+![Online Store Funnel 7](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-7.png)
+
+Event settings on the form
+
+Please fill in with the appropriate event. Scalev's default is pre-filled with the Initiated Checkout event.
+
+But if you want to use the API, simply change the default to Add Payment Info.
+
+**Placing the Purchase Event**
+
+Purchase settings are a bit different in Scalev. We don't set it at the landing page level, but in the store area.
+
+![Online Store Funnel 8](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-8.png)
+
+Purchase event settings are located in the Store
+
+After you enter the Store menu, go into the store you already have.
+
+You will find a menu like the one below on the right side of the screen once you've entered the store.
+
+Click on the section I marked with an arrow.
+
+![Online Store Funnel 9](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-9-606x1024.png)
+
+Location of Trigger Event Purchase settings
+
+After that, you will see the following menu options:
+
+![Online Store Funnel 10](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-10-830x1024.png)
+
+Trigger Purchase for Bank Transfer
+
+![Online Store Funnel 11](https://tutorial.scalev.id/wp-content/uploads/2024/07/funnel-toko-online-11.png)
+
+Trigger Purchase for COD
+
+Pay close attention to the default settings in Scalev.
+
+If you think they already match your store, then there's no need to change anything.
+
+But if something is different according to you, please adjust it yourself.
+
+One checked condition will be enough to trigger a purchase in your store, which will then be sent back to Meta; with the note that your conversion API settings are correct.
+
+If you're not sure about your store's Conversion API settings, please contact Scalev Support.
+
+If you have set EVERYTHING (full event settings from arriving at your Landing Page - Try to Order - Purchase), you can test and ensure everything is correct by following the tutorial in this article: [How to Test Pixel in Events Manager.](https://tutorial.scalev.id/events-manager-testing/)
+
+* * *
+
+Your online store website funnel settings are complete. If there's anything you don't understand, please ask. Thank you.

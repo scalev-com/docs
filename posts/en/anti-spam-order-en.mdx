@@ -1,0 +1,115 @@
+---
+title: "How to Prevent Spam Orders"
+description: "Sometimes your sales landing page receives orders from spammers."
+---
+## Video Tutorial
+
+<iframe src="https://www.youtube.com/embed/YrH9bEU5jj0" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+\===
+
+## Text Tutorial
+
+Sometimes your sales landing page receives orders from spammers.
+
+Some place orders just to test your landing page funnel out of curiosity.
+
+Others submit fake orders without any intention of buying.
+
+A few times you can ignore it, but if the spam orders happen more than twice or even dozens of times every day.
+
+That becomes very disruptive.
+
+It must be prevented!
+
+In Scalev, you can prevent these spam orders by configuring additional validation in your store.
+
+Enable the following two **Order Validation** features:
+
+- Additional Order Form Validation
+
+- Spam Filter
+
+Here's how:
+
+In your Scalev dashboard, go to Stores **→** Your Store **→** Then check the right side for a widget named **Order Validation**
+
+<figure>
+
+![Anti spam order](https://tutorial.scalev.id/wp-content/uploads/2024/12/Anti-spam-order.png)
+
+<figcaption>
+
+Order Validation settings to prevent spam orders
+
+</figcaption>
+
+</figure>
+
+Click the _Enable Additional Validation on Order Form?_ dropdown.
+
+Select **Yes, enable additional validation**.
+
+Then under **Spam Filter**, click _Enable Spam Filter in this Store?_
+
+Select **Yes, enable spam filter**
+
+## Order Validation settings explained
+
+### **Minimum Character Count for Name**
+
+The minimum number of characters in the name field on the checkout form that can pass through as an order, for example 3 characters.
+
+If the name has fewer than 3 characters, the order will not go through.
+
+Examples of spam names: Aq, Km, Bp.
+
+### **Minimum Character Count for Address**
+
+The minimum number of characters in the address field on the checkout form that can pass through as an order, for example 7 characters.
+
+If the buyer's address has fewer than 7 characters, the order will not go through.
+
+### **Maximum Orders per Phone Number per Hour**
+
+The maximum number of orders a buyer can create per phone number within one hour.
+
+For example, 1 order.
+
+The buyer can check out with 1 order per hour per phone number; the second attempt will not go through.
+
+If the same buyer checks out again using a different phone number, the order will go through subject to the per-phone-number limit above.
+
+### **Maximum Orders per IP Address per Hour**
+
+The maximum number of orders a buyer can create per IP address within one hour.
+
+For example, 1 order.
+
+The buyer can check out with 1 order per hour from the same IP address; the second attempt will not go through.
+
+If the same buyer checks out again from another device with a different IP connection, the order will go through subject to the per-IP-address limit above.
+
+## Spam Filter settings explained
+
+The Scalev spam filter works in two main ways:
+
+### 1\. **IP Address Check**
+
+If someone places an order from an address already on the blacklist (a list of IPs frequently used for spam), the order is automatically flagged as suspicious and added to the blacklist.
+
+You can check the blacklisted IPs caught as spam on the "[Suppression IP List](https://app.scalev.id/setting/suppressed-ips)" page.
+
+### 2\. **AI-powered Name, Phone Number, and Email Check**
+
+The Scalev system also reviews the customer's name, phone number, and email.
+
+If anything looks odd or suspicious (such as a random name or an email that doesn't make sense), it will be flagged as spam.
+
+If it's confirmed as spam, the IP address is also immediately added to the blacklist.
+
+You can review every order flagged as spam directly in the "[Suspicious Order](https://app.scalev.id/suspicious-order)" menu.
+
+That's how you prevent spam orders by leveraging the additional order validation settings in your Scalev store.
+
+When this validation is active, it should help minimize the volume of spam-flagged orders from trolls who land on your sales landing page.

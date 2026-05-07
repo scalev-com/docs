@@ -1,0 +1,93 @@
+---
+title: "How to Track UTM from a Scalev Embedded Form"
+description: "Currently, Scalev embedded forms placed outside the Scalev platform cannot track UTM."
+---
+Currently, Scalev embedded forms placed outside the Scalev platform cannot track UTM.
+
+Example case:
+
+tokobaru.com is your main domain running WordPress as the landing page.
+
+tokobaru.myscalev.com is your Scalev subdomain.
+
+You're using the Scalev form by embedding it on tokobaru.com.
+
+You're running Google Ads and want to track ad performance with UTM.
+
+Right now, if a conversion occurs via the embedded form on tokobaru.com, UTM data won't be tracked when the order comes in to Scalev.
+
+**The solution:**
+
+Use the custom embed code below instead of Scalev's default embed.
+
+```
+<iframe id="myiframe" width="100%" frameborder="0" src="https://usernameanda.myscalev.com/landing-page-baru"></iframe><script>const iframe=document.getElementById("myiframe");function resizeIframe(e){iframe.style.height=e+"px"}function isUrl(e){try{return new URL(e),!0}catch{return!1}}function isJSONObject(e){try{const t=JSON.parse(e);return"object"==typeof t&&null!==t}catch{return!1}}function isIframeSameOrigin(){try{return iframe.contentDocument||iframe.contentWindow.document,!0}catch{return!1}}window.addEventListener("message",function(e){if("https://usernameanda.myscalev.com"===e.origin){if(isUrl(e.data))return void(location.href=e.data);if(isJSONObject(e.data)&&!isIframeSameOrigin()){const t=JSON.parse(e.data);"resize"===t.type&&resizeIframe(t.height)}e.data&&"form_submit"===e.data.event&&(window.dataLayer=window.dataLayer||[],window.dataLayer.push({event:"form_submit_embed"}))}},!1),document.addEventListener("DOMContentLoaded",function(){(new IntersectionObserver(function(e){e.forEach((t=>{if(t.isIntersecting){const e=new URL(iframe.src),t=new URLSearchParams(window.location.search);t.forEach(((t,r)=>e.searchParams.append(r,t))),iframe.src=e.toString(),observer.disconnect()}}))}).observe(iframe)});</script>
+```
+
+Simply modify the highlighted links.
+
+Replace them with your own landing page link and Scalev subdomain.
+
+Example:
+
+```
+https://usernameanda.myscalev.com/landing-page-baru 
+```
+
+Replace with:
+
+```
+https://tokoanda.com/landing-page-baru 
+```
+
+That's your Scalev landing page link that contains the checkout form.
+
+Then the second one,
+
+```
+https://usernameanda.myscalev.com
+```
+
+Replace with:
+
+```
+https://tokobaru.myscalev.com
+```
+
+That's your Scalev subdomain.
+
+Every Scalev user has this subdomain.
+
+Save & Publish your landing page.
+
+\===
+
+Then in Google Tag Manager, add a new Tag.
+
+Select Custom HTML for the Tag Type.
+
+Then enter the following script:
+
+```
+<script>
+window.parent.postMessage({ event: 'form_submit' }, 'https://domainutamaanda.com');
+</script>
+```
+
+Replace https://domainutamaanda.com with your own domain.
+
+For the trigger, select the Custom Event **form\_submit** you previously created.
+
+Save.
+
+Next, if you're using this custom embed form to run Google Ads, make sure the trigger is updated to **form\_submit\_embed**.
+
+Create a new trigger with the Custom Event value **form\_submit\_embed** in the existing **Google Ads Conversion Tracking** tag — if you previously used a Custom Event with the value form\_submit, change this new trigger to **form\_submit\_embed**.
+
+After that, your Scalev embedded form can track UTM as usual even without using a Scalev landing page for advertising.
+
+\===
+
+**NOTE:**
+
+Keep in mind that the embed code in this article modifies Scalev's default embed code and is **specifically** for tracking Google Ads conversions with UTM on **non-Scalev** landing pages.

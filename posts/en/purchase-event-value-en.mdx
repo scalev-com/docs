@@ -1,0 +1,120 @@
+---
+title: "Gross Revenue, Net Revenue, and Adjusted Revenue Explained"
+description: "Purchase Event Value"
+---
+<figure>
+
+![Nilai Purchase Event](https://tutorial.scalev.id/wp-content/uploads/2024/08/nilai-purchase-event-1024x308.jpeg)
+
+<figcaption>
+
+Purchase Event Value
+
+</figcaption>
+
+</figure>
+
+Gross Revenue = The final invoice amount paid by the customer
+
+Net Revenue = Product price minus product discount minus unique code
+
+Adjusted Gross = Product price minus product discount minus unique code minus shipping discount
+
+Example case:
+
+Agus checks out and buys a physical product — 1 plain t-shirt at Rp100,000 with a Rp15,000 discount and Rp25,000 shipping. Agus gets a Rp5,000 shipping discount, then chooses a Virtual Account (VA) for payment with a 5% VA fee.
+
+So:
+
+Product price Rp100,000  
+Product discount -Rp15,000  
+Unique code -Rp321  
+Shipping discount -Rp5,000  
+Shipping Rp25,000
+
+Subtotal Rp104,679  
+VA transaction fee (5%) Rp5,233
+
+Total Rp109,912
+
+From Agus's transaction, the purchase event values are:
+
+## Gross Revenue
+
+Rp100,000 - Rp15,000 - Rp321 - Rp5,000 + Rp25,000 + Rp5,233
+
+So:
+
+**Gross Revenue = Rp109,912** ← The purchase event value sent to Meta.
+
+## Net Revenue
+
+Rp100,000 - Rp15,000 - Rp321
+
+So:
+
+**Net Revenue = Rp84,679** ← The purchase event value sent to Meta.
+
+## Adjusted Gross Revenue
+
+Rp100,000 - Rp15,000 - Rp321 - Rp5,000
+
+So:
+
+**Adjusted Gross Revenue = Rp79,679** ← The purchase event value sent to Meta.
+
+Another example:
+
+Surti from Aceh checks out and buys 2 units of a skincare product at Rp150,000 each. Surti gets a free shipping promo for all of Indonesia.
+
+Lucy from Jayapura also checks out and buys the same skincare product as Surti, but buys 3 units. Lucy also gets the free shipping promo for all of Indonesia.
+
+The packages are shipped from Bandung via Ninja Express to each buyer's address.
+
+Surti and Lucy choose Virtual Account as their payment method with a 5% fee per transaction.
+
+So:
+
+**Surti's order**
+
+Product price Rp150,000 (×2) Rp300,000  
+Product discount Rp0  
+Unique code -Rp150  
+Shipping discount -Rp113,000  
+Shipping per package Rp56,500 (×2)
+
+Subtotal Rp186,850  
+VA transaction fee (5%) Rp9,342
+
+Total Rp196,192
+
+Surti's order purchase event values:
+
+Gross Revenue: Rp300,000 - Rp0 - Rp150 - Rp113,000 - Rp0 - Rp9,342 = **Rp177,508**  
+Net Revenue: Rp300,000 - Rp0 - Rp150 = **Rp299,850**  
+Adjusted Gross: Rp300,000 - Rp0 - Rp150 - Rp113,000 = **Rp186,850**
+
+**Lucy's order**
+
+Product price Rp150,000 (×3) Rp450,000  
+Product discount Rp0  
+Unique code -Rp550  
+Shipping discount -Rp313,500  
+Shipping per package Rp104,500 (×3)
+
+Subtotal Rp135,950  
+VA transaction fee (5%) Rp6,797
+
+Total Rp142,747
+
+Lucy's order purchase event values:
+
+Gross Revenue: Rp450,000 - Rp0 - Rp550 - Rp313,500 - Rp0 - Rp6,797 = **Rp135,950**  
+Net Revenue: Rp450,000 - Rp0 - Rp550 = **Rp449,450**  
+Adjusted Gross: Rp450,000 - Rp0 - Rp550 - Rp313,500 = **Rp135,950**
+
+The **bold** numbers above are the purchase event values that will be sent from Scalev to Meta.
+
+That's the difference between Gross Revenue, Net Revenue, and Adjusted Revenue found in the [Trigger Event Purchase](https://tutorial.scalev.id/triggerpurchase/) settings in Scalev.
+
+You can choose whichever of the 3 purchase event value options best fits your business.

@@ -1,0 +1,117 @@
+---
+title: "Advanced Landing Page Optimization with the Speed Boost Feature"
+description: "But if you've already followed all the optimization steps in that article and still feel the results aren't satisfying enough."
+---
+As covered in the [previous landing page optimization article](https://tutorial.scalev.id/optimasi-landingpage/ "Tutorial Cara Optimasi Speed Landing Page Scalev"), when you create a new landing page in Scalev its default settings are already optimized for speed.
+
+But if you've already followed all the optimization steps in that article and still feel the results aren't satisfying enough —
+
+You can try this Speed Boost feature.
+
+The Speed Boost I'm referring to in this article is the Client Analytics Config (Experimental) feature.
+
+This feature controls how the Analytics pixels you've added to Scalev (like Facebook Pixel, TikTok Pixel, SnackVideo Pixel, etc.) are loaded into your landing page when a visitor accesses it.
+
+I'll walk through how each option works below.
+
+<figure>
+
+![Speed boost 1](https://tutorial.scalev.id/wp-content/uploads/2025/03/speed-boost-1.png)
+
+<figcaption>
+
+Experimental settings
+
+</figcaption>
+
+</figure>
+
+This feature is located in your landing page settings.
+
+Landing Page Studio > Settings > Speed Boost
+
+There are 3 options:
+
+- Head
+
+- Body Close & 3-Second Delay
+
+- Web Worker
+
+## Head
+
+The most common default method used.
+
+The standard choice on the internet.
+
+How it works:
+
+- When a landing page is accessed, your browser waits for all scripts and pixels installed in `<head>` to load first (high priority) before anything else.
+
+- How long this wait takes depends on many factors: the browser being used, internet speed, the amount of content on the landing page, etc.
+
+- At best, when stable, it takes about 1 second.
+
+- On average, 1–3 seconds.
+
+- It becomes problematic when the duration reaches 4–5 seconds or more.
+
+This method ensures the Analytics pixel runs first so it can track visitor activity as quickly as possible when they interact with your landing page.
+
+Sometimes stable. Sometimes not.
+
+It depends on the factors mentioned above.
+
+## Body Close & 3-Second Delay
+
+This method places the Analytics pixel's execution not in `<head>`, but at the bottom of the landing page just before the closing `</body>` tag.
+
+The Analytics pixel doesn't load immediately when the landing page is accessed — it waits for a 3-second delay after all landing page content has finished rendering.
+
+Only then does the Analytics pixel run and start tracking visitor activity.
+
+## Web Worker
+
+This method places the Analytics pixel's execution separately from your landing page's rendering process.
+
+Not loaded in `<head>`, not in the closing `</body>` either.
+
+Instead, it runs in the background (background process) inside your browser.
+
+Doesn't interfere with content rendering, doesn't slow down the landing page.
+
+Starts tracking visitor activity when an event on your landing page fires.
+
+\===
+
+## Which method should you choose to optimize your Scalev landing page?
+
+Short answer:
+
+Web Worker.
+
+Conditional answer:
+
+1. Choose Web Worker if you:
+    - Use more than 1 Analytics pixel
+    
+    - Whether from the same type or a mix. Example: using Facebook Pixel yes, TikTok Pixel yes, SnackVideo yes too.
+    
+    - Especially if you've also added backup pixels of the same Analytics type.
+
+3. Choose Body Close & 3-Second Delay if you:
+    - Have lots of content components on your landing page like images, sliders, FAQ, animations, etc.
+    
+    - Only use 1 pixel from 1 type. Example: only one Facebook Pixel.
+    
+    - Use a Video / HTML component that displays a YouTube video or similar.
+
+This advanced setting doesn't need to be applied to every landing page.
+
+It's optional.
+
+Meaning you don't have to keep tinkering with the Speed Boost feature.
+
+The safest approach is to leave it on Scalev's default setting — the Head method.
+
+But if you feel the default Head method is starting to perform inconsistently, refer back to the conditional answer above.

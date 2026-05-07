@@ -1,0 +1,41 @@
+---
+title: "How to Enable Pinch-to-Zoom on a Scalev Landing Page"
+description: "By default, Scalev landing pages cannot be zoomed in, making small text hard to read."
+---
+By default, Scalev landing pages cannot be zoomed in, making small text hard to read.
+
+To enable pinch-to-zoom on your landing page, add this code to Custom Head Script in Scalev LPS:
+
+```
+<script>!function(){var e=document.querySelector("meta[name=viewport]");e&&e.remove();var a=document.createElement("meta");a.name="viewport",a.content="width=device-width, initial-scale=1.0, maximum-scale=2, user-scalable=yes",document.head.appendChild(a)}();</script>
+```
+
+<figure>
+
+![Zoom head script](https://tutorial.scalev.id/wp-content/uploads/2025/02/zoom-head-script.png)
+
+<figcaption>
+
+Script to enable zoom on Scalev landing page
+
+</figcaption>
+
+</figure>
+
+Steps:
+
+1. Open and edit the landing page you want to enable zoom on
+
+3. Check the **Settings** tab
+
+5. Find the setting in the left sidebar
+
+7. Enable the **Custom Head Script** toggle
+
+9. Copy and paste the code above into the box provided
+
+11. Save and Publish your landing page
+
+13. Done.
+
+Then try opening your landing page and pinch-to-zoom — if the landing page can be enlarged, the code is applied successfully.

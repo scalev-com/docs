@@ -1,0 +1,220 @@
+---
+title: "How to Add Your Personal Domain & Subdomain to Scalev"
+description: "Just like on the old server, you can add a domain / subdomain to this new server."
+---
+<iframe src="https://www.youtube.com/embed/4DN1nLc4Sbk" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+- [Move your domain's DNS Manager to Cloudflare!](https://tutorial.scalev.id/cloudflare/)
+
+- [Access your landing page using a personal domain!](https://tutorial.scalev.id/limit-lp/)
+
+* * *
+
+1. Go to the Setting menu.
+
+3. Click Domain.
+
+5. Click Add Domain.
+
+Just like on the old server, you can add a domain / subdomain to this new server.
+
+<figure>
+
+![Setting cloudflare 1](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-1-1024x640.png)
+
+<figcaption>
+
+Add domain page
+
+</figcaption>
+
+</figure>
+
+Then enter the domain/subdomain and click save.
+
+A DNS code will then appear that you'll need to add to your Cloudflare, like this:
+
+<figure>
+
+![Setting cloudflare 2](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-2-804x1024.png)
+
+<figcaption>
+
+Scalev DNS record
+
+</figcaption>
+
+</figure>
+
+Then go to your Cloudflare.
+
+Click DNS ⇢ Add Record
+
+<figure>
+
+![Setting cloudflare 3](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-3-1024x523.png)
+
+<figcaption>
+
+Add DNS record in Cloudflare
+
+</figcaption>
+
+</figure>
+
+Add those DNS entries to your Cloudflare one by one.
+
+Make sure all DNS codes (Type, Name, Target) match exactly what's shown in Scalev.
+
+And don't forget to change the Proxy Status to ⇢ **DNS Only**
+
+<figure>
+
+![Setting cloudflare 4](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-4-1024x323.png)
+
+<figcaption>
+
+DNS Only on the CNAME record
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Setting cloudflare 5](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-5-1024x437.png)
+
+<figcaption>
+
+Add the first TXT record
+
+</figcaption>
+
+</figure>
+
+<figure>
+
+![Setting cloudflare 6](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-6-1024x427.png)
+
+<figcaption>
+
+Add the second TXT record
+
+</figcaption>
+
+</figure>
+
+  
+  
+
+Once you've made sure the DNS data you entered into Cloudflare matches the DNS data from Scalev.
+
+Click verify in your Scalev.
+
+If successful, your domain status will be active like this:
+
+<figure>
+
+![Setting cloudflare 7](https://tutorial.scalev.id/wp-content/uploads/2024/03/setting-cloudflare-7-1024x976.png)
+
+<figcaption>
+
+Active domain status in Scalev
+
+</figcaption>
+
+</figure>
+
+At this point your domain is ready to use.
+
+You just need to swap the default Scalev domain with your personal domain.
+
+For example:
+
+- Originally ⇢ https://elpe.myscalev.com/ngebut 
+
+- Changed to ⇢ https://lpngebut.com/ngebut
+
+**Note:**
+
+1. If there is more than one DNS type A with your domain Name, delete the type A entries other than the type A from Scalev. 
+
+3. DNS Type A must have Proxy turned off / changed to DNS Only.
+
+5. Domain verification usually takes up to 2×24 hours, for both DNS Type TXT and DNS Type A. So if Scalev can't verify the DNS right after you add it to Cloudflare, please wait and click the verify button periodically.
+
+### Domain is active but can't be accessed?
+
+Your domain has been added per the instructions and confirmed correct, but you can't access it on your own laptop.
+
+Meanwhile, when others access your domain it's already active and can be accessed normally.
+
+The issue then lies in **your internet network and browser cache.**
+
+There are three solutions:
+
+1. Restart your modem/wifi
+
+3. Clear browser cache
+
+5. Flush DNS
+
+Restarting your modem/wifi usually gets your internet connection a fresh new IP address to access the internet.
+
+Also make sure your browser cache has been cleared.
+
+How:
+
+In Chrome / Firefox, press CTRL + SHIFT + DEL.
+
+Check:
+
+- Browsing history
+
+- Cached images and files
+
+For Time range, choose All time.
+
+<figure>
+
+![Delete Cache](https://tutorial.scalev.id/wp-content/uploads/2024/03/delete-cache-1024x954.png)
+
+<figcaption>
+
+Clear browser cache
+
+</figcaption>
+
+</figure>
+
+Then click the Delete Data button.
+
+To clear the internet connection cache on your laptop, follow the steps below.
+
+**Windows users:**
+
+1. Open CMD by pressing the Windows logo key combination WIN + R
+
+3. Type `ipconfig /flushdns`
+
+5. Press Enter
+
+7. Done
+
+**Mac users:**
+
+1. Open Terminal by pressing CMD + SPACE
+
+3. Type terminal, press Enter
+
+5. The Terminal window opens, type `dscacheutil -flushcache`
+
+7. Press Return (Enter)
+
+9. Done
+
+That's the solution for an active domain that can't be accessed on your laptop after adding a new domain in Scalev.
+
+If you've tried all the solutions above and still can't access it, please contact Scalev CS.
+
+Hope this helps.

@@ -1,0 +1,286 @@
+---
+title: "How to Optimize Scalev Landing Page Speed"
+description: "When you build a landing page in Scalev, the default settings are already optimized for speed."
+---
+When you build a landing page in Scalev, the default settings are already optimized for speed.
+
+Still fast without advanced configuration.
+
+So you don't have to fuss with various settings that might confuse you.
+
+But if you want to make sure the speed stays consistently fast and stable above 90+ when you test on [PageSpeed](https://pagespeed.web.dev/), you must follow this tutorial religiously.
+
+<figure>
+
+![Optimasi Speed](https://tutorial.scalev.id/wp-content/uploads/2024/08/optimasi-speed-1024x529.png)
+
+<figcaption>
+
+Default Scalev landing page speed
+
+</figcaption>
+
+</figure>
+
+The landing page test shown above uses the default Scalev template without any custom settings.
+
+## Use the Sales Page or Blank Page template
+
+To build a landing page with the Sales Page template from Scalev, follow these steps.
+
+1\. Go to the Scalev dashboard then click the Landing Page menu
+
+2\. Click the Add Landing Page button and the Scalev template options will appear
+
+3\. Choose the Sales Page template
+
+<figure>
+
+![Klik Tambah Lp](https://tutorial.scalev.id/wp-content/uploads/2024/08/klik-tambah-lp.gif)
+
+<figcaption>
+
+Choose the Sales Page template
+
+</figcaption>
+
+</figure>
+
+You can also choose Blank Page to build a landing page from scratch (empty).
+
+After that, you're free to design with that landing page template.
+
+When you've finished designing the landing page, before publishing you need to double-check the following settings:
+
+4\. On the Design tab in Landing Page Studio, make sure the Font setting uses **System Default**.
+
+<figure>
+
+![Optimasi Speed 3 Min](https://tutorial.scalev.id/wp-content/uploads/2024/08/optimasi-speed-3-min-451x1024.png)
+
+<figcaption>
+
+Font settings
+
+</figcaption>
+
+</figure>
+
+5\. Then on the settings tab in Landing Page Studio, make sure the Speed Boost feature on "Disable Custom Font" is set to ACTIVE (toggle is blue)
+
+<figure>
+
+![Optimasi Speed 4 Min](https://tutorial.scalev.id/wp-content/uploads/2024/08/optimasi-speed-4-min-662x1024.png)
+
+<figcaption>
+
+Disable Custom Font
+
+</figcaption>
+
+</figure>
+
+Make sure the very first / topmost image on your landing page uses Loading Type: **Direct**, here's how:
+
+6\. In the Landing Page Studio editor, find the image component placed at the very top / first, then click the gear icon
+
+<figure>
+
+![Klik Gear Gambar](https://tutorial.scalev.id/wp-content/uploads/2024/08/klik-gear-gambar.gif)
+
+<figcaption>
+
+Click the gear to open image component settings
+
+</figcaption>
+
+</figure>
+
+7\. The next dialog will appear; choose Loading Type: **Direct**
+
+<figure>
+
+![Optimasi Speed 5 Min](https://tutorial.scalev.id/wp-content/uploads/2024/08/optimasi-speed-5-min-553x1024.png)
+
+<figcaption>
+
+Choose **Direct** for Loading Type
+
+</figcaption>
+
+</figure>
+
+8\. Make sure every font you use in each Text component uses System Default.
+
+9\. Click the Save button
+
+Apply this Direct loading-type setting ONLY to the topmost image that appears first.
+
+The technical term is _Above The Fold_.
+
+So the image that first appears when opening the landing page without scrolling down is the one that must be set to Loading Type: Direct.
+
+You can configure more than one image if more than one appears at first.
+
+For all other images that appear after scrolling down, set the image component's Loading Type to: **Lazy Loading.**
+
+<figure>
+
+![Optimasi Speed 8 Min](https://tutorial.scalev.id/wp-content/uploads/2024/08/optimasi-speed-8-min-549x1024.png)
+
+<figcaption>
+
+Loading Type: Lazy Loading
+
+</figcaption>
+
+</figure>
+
+Apply this setting to other images (if any) below the _Above The Fold_, around the middle to the bottom of the landing page.
+
+## Optimize Image/Photo Size
+
+Image or photo assets uploaded to Scalev's Landing Page Studio are also automatically optimized _on-the-fly_ (the image is optimized as it's uploaded).
+
+But it's strongly recommended to optimize the original image size to make it lighter while maintaining visual quality.
+
+So when uploaded to Scalev the image becomes even more optimal.
+
+To optimize your images, follow these steps:
+
+1\. Open the image compressor website Optimizilla → [click here](https://imagecompressor.com/)
+
+<figure>
+
+![Optimizilla Min](https://tutorial.scalev.id/wp-content/uploads/2024/08/optimizilla-min-1024x656.png)
+
+<figcaption>
+
+Optimizilla web view
+
+</figcaption>
+
+</figure>
+
+2\. Click the Upload Files button or drag images into the upload area (you can upload more than one image)
+
+![Optimasi Speed 6 Min](https://tutorial.scalev.id/wp-content/uploads/2024/08/optimasi-speed-6-min-1024x373.png)
+
+3\. After upload and the compression process is done, click the Download button.
+
+<figure>
+
+![Optimasi Speed 7 Min](https://tutorial.scalev.id/wp-content/uploads/2024/08/optimasi-speed-7-min-1024x484.png)
+
+<figcaption>
+
+Comparison of original image and optimized image
+
+</figcaption>
+
+</figure>
+
+Example of image optimization based on the image above:
+
+- Original size: 220 KB
+
+- Optimized size: **62 KB**
+
+That image optimization successfully reduced the image size by 72%!
+
+If the visual of the compressed image doesn't quite suit you, you can adjust the quality by dragging the Colors toggle up or down as you wish.
+
+Compress other images too if you're using more than 1 image.
+
+But if you're satisfied with the result, you can download right away without any adjustments.
+
+Just upload and download the optimized image.
+
+Then put those images into the image components in Landing Page Studio.
+
+## Recommended Image Dimensions
+
+So the page loads more smoothly, it's recommended to use image dimensions suitable for mobile users (mobile-first).
+
+Recommended dimensions:
+
+- Width = max 585px
+
+- Height = max 640px
+
+- Size = approximately 200kb
+
+When compressing images, adjust the visual quality so it stays clear and not blurry.
+
+Use the sizes above as a guideline (not an absolute value) to determine the final dimensions of the images you optimize.
+
+## Common Mistakes
+
+**1\. Wrong Loading Type setting on images, namely:**
+
+❌ Image in the Above The Fold area set to Lazy Loading  
+❌ Image in the Below The Fold area set to Direct
+
+To understand the difference between Above The Fold and Below The Fold, look at the image below:
+
+<figure>
+
+![Above The Fold Min](https://tutorial.scalev.id/wp-content/uploads/2024/08/above-the-fold-min.jpeg)
+
+<figcaption>
+
+Illustration of Above The Fold and Below The Fold areas
+
+</figcaption>
+
+</figure>
+
+The area shaded in blue is Above The Fold.
+
+This is the view first loaded and seen by the visitor.
+
+If your landing page has an image in the Above The Fold area, that image's loading type must be set to **Direct**.
+
+Don't get it backwards.
+
+Then the visitor scrolls down your landing page...
+
+That's where the visitor enters the Below The Fold area.
+
+Set the loading type of images in the Below The Fold area to **Lazy Loading.**
+
+Don't get this one backwards either.
+
+**2\. Wrong Speed Boost settings**
+
+❌ Turning on the "Disable Custom Font" toggle but the font setting on the Design tab uses Custom Font
+
+✅ The correct setup is the "Disable Custom Font" toggle on AND the font setting on the Design tab must use System Default
+
+**3\. Forgetting to set the font on Text components to System Default**
+
+Because the default font used in Text components or other components containing text in LPS is Page Font.
+
+So please double-check and make sure you're using System Font.
+
+## Summary
+
+To summarize all the optimization steps above:
+
+- Choose the default Scalev landing page template, namely the Sales Page template
+
+- Edit that landing page to your needs
+
+- Set the font to System Default on the LP Design tab
+
+- Configure image components to use Loading Type Direct on the LP Settings tab
+
+- Compress image sizes using Optimizilla
+
+- Place the optimized images into image components on the LP
+
+- Use System Font on every Text component
+
+At this point, if you've done all the optimization steps correctly, you can publish your landing page and it's ready to go.
+
+If you have other questions about Scalev landing page optimization, please leave a comment below this article.

@@ -1,0 +1,163 @@
+---
+title: "How to Add a Custom Subdomain to Scalev"
+description: "In Scalev, you can add a custom subdomain and main custom domain at the same time."
+---
+In Scalev, you can add a custom subdomain and main custom domain at the same time.
+
+For example:
+
+- My main domain: elkareem.store
+
+- I want to use a subdomain of elkareem.store: lapak.elkareem.store
+
+That's possible.
+
+Before getting into the steps, note that the verification process takes between 5 minutes and 2×24 hours for your subdomain to become active.
+
+Here are the steps to add a subdomain to Scalev.
+
+### #1. Add the subdomain to Scalev
+
+- Go to the Settings menu.
+
+- Click Domain.
+
+- Click + Add Domain.
+
+![Cleanshot 2024 09 08 At 07.21.32](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.21.32-1024x584.png)
+
+- Enter the subdomain you want.
+
+- Click Save.
+
+![Cleanshot 2024 09 08 At 07.22.36](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.22.36.png)
+
+\*_The subdomain "lapak" can be any single word._  
+_For example, if your main domain is elkareem.store and you want to add "cart" in front, enter cart.elkareem.store into Scalev._
+
+- A list of DNS records will appear:
+
+![Cleanshot 2024 09 08 At 07.23.32](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.23.32.png)
+
+* * *
+
+### #2. Add Scalev's DNS records to Cloudflare / your DNS Manager.\*
+
+_\*We require you to use a DNS manager that supports CNAME, such as Cloudflare._
+
+- Open Cloudflare.
+
+- Select the domain to integrate.
+
+- Click DNS.
+
+- Click Add Record
+
+![Cleanshot 2024 09 08 At 07.24.17](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.24.17-1024x580.png)
+
+- Enter the CNAME DNS type from Scalev into Cloudflare
+
+- Follow the steps shown in this image:
+
+![1](https://tutorial.scalev.id/wp-content/uploads/2024/09/1.png)
+
+- Click Save.
+
+_\*Make sure to set the proxy status to DNS only.  
+If there are extra spaces or line breaks when pasting the name & target, delete them._
+
+⇣
+
+- Add the first TXT DNS record.
+
+- Follow the steps shown in this image:
+
+![2](https://tutorial.scalev.id/wp-content/uploads/2024/09/2.png)
+
+- Click Save.
+
+_\*Make sure the TTL is set to Auto.  
+If there are extra spaces or line breaks when pasting the name & target, delete them._
+
+⇣
+
+- Add the second TXT DNS record.
+
+- Follow the steps shown in this image:
+
+![3](https://tutorial.scalev.id/wp-content/uploads/2024/09/3.png)
+
+- Click Save.
+
+_\*Make sure the TTL is set to Auto.  
+If there are extra spaces or line breaks when pasting the name & target, delete them._
+
+* * *
+
+### #3. Wait for the subdomain to be verified.
+
+- Go back to Scalev.
+
+- Click the verify button.
+
+![Cleanshot 2024 09 08 At 07.29.04](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.29.04.png)
+
+Once successfully verified, your domain status will look like this:
+
+![Cleanshot 2024 09 08 At 07.46.09](https://tutorial.scalev.id/wp-content/uploads/2024/09/CleanShot-2024-09-08-at-07.46.09-1024x578.png)
+
+## #FAQ
+
+Can I use a custom subdomain with the Scalev Free plan?
+
+Sorry, to use a custom domain or custom subdomain, you need to be on at least the Scalev Lite plan.
+
+More details at: [https://home.scalev.id/plan](https://home.scalev.id/plan)
+
+What if I don't have Cloudflare?
+
+You can sign up for Cloudflare first.
+
+Use the FREE plan.
+
+Tutorial at: [https://tutorial.scalev.id/cloudflare/](https://tutorial.scalev.id/cloudflare/)
+
+How long does the custom subdomain verification take?
+
+Verification takes between 5 minutes and 2×24 hours — please refresh Scalev periodically.
+
+What if the first TXT DNS target doesn't appear in Scalev?
+
+Just add the CNAME DNS type and the second TXT DNS type to your DNS manager/Cloudflare.
+
+Then wait 5 minutes to 2×24 hours.
+
+⇣
+
+**IMPORTANT**:
+
+The status might show inactive, but your custom subdomain may still be accessible. Test it by:
+
+Example:
+
+- Your landing page link: https://mirza.scalev.id/bajuanak
+
+- Your custom subdomain: https://toko.mirza.com
+
+- Open your browser and enter https://toko.mirza.com/bajuanak
+
+If it loads, your custom subdomain is already active in Scalev.
+
+Can I use a DNS Manager other than Cloudflare?
+
+Yes,
+
+However, we strongly recommend using Cloudflare.
+
+Or a DNS manager that supports DNS type CNAME.
+
+This helps speed up your subdomain verification.
+
+How do I use an active subdomain?
+
+Once your subdomain is confirmed active in Scalev, follow this tutorial to use it: [https://tutorial.scalev.id/customdomain/](https://tutorial.scalev.id/customdomain/)
