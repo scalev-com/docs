@@ -3,33 +3,31 @@ title: "HTML Mode runtime"
 description: "Use the window.Scalev runtime methods available inside Scalev HTML Mode pages."
 ---
 
-Scalev HTML Mode pages can use `window.Scalev` from browser JavaScript. The runtime gives your page access to safe page context, selected store context, checkout helpers, analytics forwarding, form prefill helpers, and diagnostics while keeping private API tokens server-side.
+Scalev HTML Mode pages can use `window.Scalev` from browser JavaScript. The runtime gives your page safe page context, selected store context, checkout helpers, analytics forwarding, form prefill helpers, and diagnostics while keeping private API tokens server-side.
 
-This page is written for both developers and AI agents that generate HTML Mode files. If you are generating an HTML file for Scalev, use this reference instead of calling private Scalev URLs directly.
+This page is written for developers and AI agents that generate HTML Mode files. Use these methods instead of calling private Scalev URLs directly.
 
 ## Availability
 
 The runtime is available on rendered HTML Mode pages. In local editor previews, some methods can return stubbed preview data.
 
-Always guard runtime usage:
-
 ```js
 const scalev = window.Scalev;
 
 if (!scalev) {
-  // Render fallback content or keep the page usable while runtime data loads.
+  // Keep the page usable while runtime data loads.
 }
 ```
 
 Most methods are asynchronous and return a `Promise`. `Scalev.data.get()` and `Scalev.diagnostics.get()` are synchronous.
 
+Runtime methods return the JavaScript-visible result directly. The runtime uses page-scoped v3 public endpoints internally and removes backend collection containers such as `data` and `is_paginated` before returning arrays to page JavaScript.
+
 ## Store context
 
-An HTML Mode page can have Store Context selected in the Scalev editor.
+When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, products, and bundle price options. Treat it as the page-specific checkout catalog.
 
-When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, selected products, and selected bundle price options. Treat it as the page-specific checkout catalog.
-
-When HTML Checkout Page is selected, `Scalev.data.get().after_checkout` includes the selected after-checkout success type and its public destination config. This object is the editor config state. The runtime exposes it so your page can run the redirect after an order is created.
+When HTML Checkout Page is selected, `Scalev.data.get().after_checkout` includes the selected after-checkout success type and its public destination config.
 
 When Store Context is unselected, treat `store` as unavailable. Build a regular landing page and rely only on page-safe methods such as `Scalev.data.get()`, `Scalev.analytics.track()`, and `Scalev.prefill.get()`.
 
@@ -37,9 +35,8 @@ When Store Context is unselected, treat `store` as unavailable. Build a regular 
 
 - Keep API keys, business-user JWTs, storefront API keys, customer tokens, cookies, and credentials out of page JavaScript.
 - Use documented `window.Scalev` methods instead of private Scalev URLs or private APIs.
-- Use only documented `window.Scalev` methods.
 - Create orders only after a visitor intentionally submits a form.
-- Prefer `Scalev.checkout.createOrder()` on submit; `validateOrder()` is optional because `createOrder()` already validates the payload.
+- Prefer `Scalev.checkout.createOrder()` on submit; it validates the payload before the order is persisted.
 - Use only selected products, bundles, prices, inventory, payment methods, shipping options, and customer identity values present in the runtime data.
 
 ## `Scalev.data.get()`
@@ -50,27 +47,13 @@ Returns public page data injected into the rendered page.
 const data = Scalev.data.get();
 ```
 
-Return shape:
+Response example:
 
 ```json
 {
   "page": {
     "id": 1,
-    "uniqueId": "page_uid",
-    "username": "brand"
-  },
-  "store": null,
-  "after_checkout": null
-}
-```
-
-With Store Context selected, `store` contains selected context only:
-
-```json
-{
-  "page": {
-    "id": 1,
-    "uniqueId": "page_uid",
+    "unique_id": "page_uid",
     "username": "brand"
   },
   "store": {
@@ -80,34 +63,13 @@ With Store Context selected, `store` contains selected context only:
     "payment_method_options": [
       {
         "value": "bt:BCA:payment_account_uid",
-        "display": "Bank Central Asia (PT Interna Cipta Asia)",
+        "display": "Bank Central Asia",
         "logo_url": "https://cdn.scalev.com/icons/BT_BCA.png"
       },
       {
         "value": "cod",
         "display": "COD",
         "logo_url": "https://cdn.scalev.com/icons/cod.png"
-      },
-      {
-        "value": "va:BRI",
-        "display": "BRI Virtual Account",
-        "logo_url": "https://cdn.scalev.com/icons/BRI.png"
-      }
-    ],
-    "payment_methods": ["bank_transfer", "cod", "va"],
-    "sub_payment_methods": ["BRI"],
-    "payment_accounts": [
-      {
-        "id": 30,
-        "unique_id": "payment_account_uid",
-        "method": "bank_transfer",
-        "financial_entity": {
-          "id": 3,
-          "name": "Bank Central Asia",
-          "code": "BCA"
-        },
-        "account_holder": "PT Interna Cipta Asia",
-        "account_number": "1234567890"
       }
     ],
     "products": [
@@ -141,9 +103,7 @@ With Store Context selected, `store` contains selected context only:
 }
 ```
 
-Use it to render selected products, bundle options, enabled payment methods, and store-aware forms. Selected product variants are available at `store.products[].variants[]`. Treat this payload as the complete available context for the page.
-
-`store.payment_method_options` contains the final selectable payment option objects. Render `display` as the visitor-facing label, use `logo_url` as the payment image source, and submit `value` as `paymentMethod` or `payment_method`.
+Use `store.payment_method_options` to render payment choices. Render `display`, show `logo_url`, and submit the selected `value` as `payment_method`.
 
 Payment option values are already flattened:
 
@@ -151,220 +111,294 @@ Payment option values are already flattened:
 - `bt:BCA:payment_account_uid` means manual bank transfer for the BCA account represented by `payment_account_uid`.
 - Regular values such as `cod`, `qris`, `invoice`, `alfamart`, or `gopay` keep their original values.
 
-Payment option displays are ready for the client UI:
-
-- `va:BRI` displays as `BRI Virtual Account`.
-- `va:MANDIRI` displays as `Bank Mandiri Virtual Account`.
-- `va:SAHABAT_SAMPOERNA` displays as `Bank Sahabat Sampoerna Virtual Account`.
-- `qris` displays as `QRIS`.
-- `gopay` displays as `GoPay`.
-- `bt:BCA:payment_account_uid` displays as `Bank Central Asia (PT Interna Cipta Asia)` when the account holder is `PT Interna Cipta Asia`.
-
-Payment option logos are ready for the client UI:
-
-- `va:BRI` uses `https://cdn.scalev.com/icons/BRI.png`.
-- `bt:BCA:payment_account_uid` uses `https://cdn.scalev.com/icons/BT_BCA.png`.
-- `qris` uses `https://cdn.scalev.com/icons/qris.png`.
-
-Deprecated legacy fields are still exposed for older pages:
-
-- `store.payment_methods`
-- `store.sub_payment_methods`
-- `store.payment_accounts`
-
-Use only `store.payment_method_options` for new HTML Mode checkout development. Treat deprecated fields as legacy reference data for older pages.
-
-```js
-const paymentMethodOptions = store.payment_method_options || [];
-const selectedPaymentOption = paymentMethodOptions[0];
-
-const label = selectedPaymentOption.display;
-const logoUrl = selectedPaymentOption.logo_url;
-
-const payload = {
-  paymentMethod: selectedPaymentOption.value,
-};
-```
-
-### After checkout config
-
-`after_checkout` is present on HTML Checkout Pages. Use it after `Scalev.checkout.createOrder()` succeeds.
-
-| Field | Description |
-| --- | --- |
-| `type` | One of `success_page`, `direct_to_whatsapp`, `direct_to_custom_whatsapp`, `other_page`, `order_page`, or `custom_url`. |
-| `custom_whatsapp_phone` | Fixed WhatsApp destination for `direct_to_custom_whatsapp`, when configured. |
-| `other_page_path` | Path derived from the selected landing page slug, such as `/thank-you`. |
-| `custom_url` | Destination URL for `custom_url`, when configured. |
-| `handler_assignment` | Selected handler assignment mode for `direct_to_whatsapp`, such as `rotator` or `fixed`. |
-
-Your page runs this action after order creation. Follow [HTML Mode checkout success types](/en/html-mode-checkout-success-paths) and use this config state to choose the redirect. For `direct_to_whatsapp`, the selected sales person is resolved during order creation; use `handler_phone` from the created order response.
-
 ## Location methods
 
 Use these methods for address and shipping forms.
 
 ```js
 const provinces = await Scalev.location.provinces();
-const cities = await Scalev.location.cities(provinceId);
-const subdistricts = await Scalev.location.subdistricts(cityId);
-const postalCodes = await Scalev.location.postalCodes(subdistrictId);
+const cities = await Scalev.location.cities(province_id);
+const subdistricts = await Scalev.location.subdistricts(city_id);
+const postal_codes = await Scalev.location.postalCodes(subdistrict_id);
 ```
 
 `provinces`, `cities`, and `subdistricts` accept optional query objects:
 
 ```js
-const provinces = await Scalev.location.provinces({ q: "Jawa" });
-const cities = await Scalev.location.cities(provinceId, { q: "Bandung" });
-const subdistricts = await Scalev.location.subdistricts(cityId, {
-  q: "Coblong",
-});
+const provinces = await Scalev.location.provinces({ search: "Jawa" });
 ```
 
-Use IDs returned by each previous step. Use a hardcoded location ID only when the user explicitly provided it.
+Runtime requests:
+
+- `Scalev.location.provinces({ search })` sends `GET /v3/pages/{page_unique_id}/locations/provinces?search=...`
+- `Scalev.location.cities(province_id, { search })` sends `GET /v3/pages/{page_unique_id}/locations/cities?province_id=...&search=...`
+- `Scalev.location.subdistricts(city_id, { search })` sends `GET /v3/pages/{page_unique_id}/locations/subdistricts?city_id=...&search=...`
+- `Scalev.location.postalCodes(subdistrict_id)` sends `GET /v3/pages/{page_unique_id}/locations/{subdistrict_id}/postal-codes`
+
+Response examples:
+
+```json
+[
+  {
+    "province_id": 31,
+    "province_name": "DKI Jakarta"
+  }
+]
+```
+
+```json
+[
+  {
+    "city_id": 3171,
+    "city_name": "Kota Jakarta Pusat"
+  }
+]
+```
+
+```json
+[
+  {
+    "id": 9090,
+    "subdistrict_name": "Gambir",
+    "city_name": "Kota Jakarta Pusat",
+    "province_name": "DKI Jakarta",
+    "display": "Gambir, Kota Jakarta Pusat, DKI Jakarta"
+  }
+]
+```
+
+```json
+[
+  {
+    "postal_code": "10110"
+  }
+]
+```
 
 ## `Scalev.checkout.validateDiscount(payload)`
 
 Validates a discount code for a checkout payload.
 
 ```js
-const store = Scalev.data.get().store;
-
 const result = await Scalev.checkout.validateDiscount({
   code: "PROMO10",
-  grossRevenue: 179000,
-  netProductPrice: 179000,
-  shippingCost: 0,
-  paymentMethod: store.payment_method_options?.[0]?.value || "cod",
+  gross_revenue: 179000,
+  net_product_price: 179000,
+  shipping_cost: 0,
+  payment_method: store.payment_method_options?.[0]?.value || "cod",
 });
 ```
 
-Accepted field names can be camelCase or snake_case:
+Runtime request:
 
-- `code`
-- `grossRevenue` or `gross_revenue`
-- `netProductPrice` or `net_product_price`
-- `shippingCost` or `shipping_cost`
-- `pageUniqueId` or `page_unique_id`
-- `paymentMethod` or `payment_method`
-- `domain`
-
-`pageUniqueId` defaults to the current page, and `domain` defaults to the current hostname. If the selected option value is a flattened value such as `va:BRI` or `bt:BCA:payment_account_uid`, send that exact value as `paymentMethod`. The runtime normalizes it before calling Scalev APIs.
-
-Use this only for store-connected checkout flows.
-
-## `Scalev.checkout.searchWarehouses(payload)`
-
-Returns warehouse options for selected variants and destination.
-
-```js
-const data = Scalev.data.get();
-const firstVariant = data.store.products[0].variants[0];
-
-const warehouses = await Scalev.checkout.searchWarehouses({
-  destinationSubdistrictId: selectedSubdistrictId,
-  ordervariants: [{ variant_unique_id: firstVariant.unique_id, quantity: 1 }],
-});
-```
-
-Accepted field names:
-
-- `storeId`, `store_id`, or `store`; if omitted, the runtime uses the selected Store Context.
-- `destinationSubdistrictId`, `destination_subdistrict_id`, `subdistrictId`, `subdistrict_id`, `destinationId`, `destination_id`, `destination`, `locationId`, `location_id`, or `location`
-- `variants`, `orderVariants`, or `ordervariants`: array of `{ variantId | variant_id | id | variant_unique_id | variantUniqueId | unique_id | uniqueId, qty | quantity }`
-- `orderId`, `order_id`, or `order` when validating against an existing order flow
-
-Use selected variants from `Scalev.data.get().store.products`. You may pass public `variant_unique_id` values; the runtime resolves them to the numeric `variant_id` expected by the old landing-page warehouse endpoint.
-
-## `Scalev.checkout.searchCouriers(payload)`
-
-Returns courier service options for a store, destination, warehouse, and payment method.
-
-```js
-const firstWarehouse = warehouses.data?.[0] || warehouses[0];
-
-const couriers = await Scalev.checkout.searchCouriers({
-  paymentMethod: "cod",
-  destinationSubdistrictId: selectedSubdistrictId,
-  warehouse: firstWarehouse,
-  weight: 1200,
-});
-```
-
-Accepted field names:
-
-- `storeId`, `store_id`, or `store`; if omitted, the runtime uses the selected Store Context.
-- `paymentMethod` or `payment_method`
-- `destinationSubdistrictId`, `destination_subdistrict_id`, `subdistrictId`, `subdistrict_id`, `locationId`, `location_id`, `destinationId`, `destination_id`, `destination`, or `location`
-- `warehouseId`, `warehouse_id`, or `warehouse`. You can pass the warehouse object returned by `searchWarehouses`.
-- `weight`
-
-Use this after the visitor has chosen products and a shipping destination. Scalev expects a numeric `warehouse_id`; the runtime extracts it from the warehouse object when possible.
-
-Returned courier options include `logo_url` when a courier code is available. Use it as the courier image source. Example: Ninja Xpress returns `https://cdn.scalev.com/assets/images/kurir/ninja.png`.
-
-## `Scalev.checkout.validateOrder(payload)`
-
-Optionally validates order payload shape as a preflight check. This helper is useful for debugging. In normal submit flows, call `createOrder` and handle its validation errors.
-
-```js
-const data = Scalev.data.get();
-const store = data.store;
-const firstVariant = store.products[0].variants[0];
-
-const validation = await Scalev.checkout.validateOrder({
-  page: data.page.uniqueId,
-  store: store.unique_id,
-  customerName: "Customer Name",
-  customerPhone: "08123456789",
-  customerEmail: "customer@example.com",
-  address: "Customer address",
-  location: 12345,
-  ordervariants: [{ variant_unique_id: firstVariant.unique_id, quantity: 1 }],
-  paymentMethod: "cod",
-});
-```
-
-Response shape:
+`POST /v3/pages/{page_unique_id}/discount-codes/check`
 
 ```json
 {
-  "valid": true,
-  "normalized_payload": {
-    "page_unique_id": "page_uid",
-    "store_unique_id": "store_uid",
-    "customer_name": "Customer Name",
-    "customer_phone": "08123456789"
-  },
-  "warnings": []
+  "code": "PROMO10",
+  "gross_revenue": 179000,
+  "net_product_price": 179000,
+  "shipping_cost": 0,
+  "payment_method": "cod",
+  "domain": "brand.myscalev.com"
 }
 ```
 
-If `valid` is `false`, inspect `warnings` and fix the form payload before creating an order.
+Response example:
 
-Common warnings include missing page id, store id, customer name, customer phone, or order items.
+```json
+{
+  "discount_code": {
+    "code": "PROMO10",
+    "applied_to": "product_price",
+    "amount_type": "fixed",
+    "amount": 10000,
+    "is_enabled": true
+  },
+  "eligibility_details": {
+    "is_enabled": true,
+    "is_expiry_check": true,
+    "is_usage_limit_check": true,
+    "is_minimum_revenue_check": true,
+    "is_limited_to_pages_check": true,
+    "is_limited_to_payment_methods_check": true,
+    "is_page_discount_active": true,
+    "is_amount_not_zero": true
+  },
+  "is_eligible": true,
+  "discount_code_discount": 10000
+}
+```
+
+## `Scalev.checkout.shippingOptions(payload)`
+
+Returns shipping options for the selected items, destination, and payment method. Use this as the only shipping lookup method.
+
+```js
+const shipping_options = await Scalev.checkout.shippingOptions({
+  payment_method: selected_payment_option.value,
+  destination: {
+    subdistrict_id: selected_subdistrict_id,
+    postal_code: selected_postal_code,
+  },
+  items: [{ type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 }],
+});
+```
+
+Pass the chosen option back as one `shipping_option` field in `estimateSummary` and `createOrder`. The runtime prepares the checkout request from that option. Options include `logo_url` when a courier code is available.
+
+Response example:
+
+```json
+[
+  {
+    "courier_service_id": 48,
+    "courier_code": "anteraja",
+    "service_code": "ND",
+    "name": "Next Day",
+    "cost": 15300,
+    "etd": "1",
+    "is_cod": false,
+    "warehouse_unique_id": "warehouse_uid",
+    "courier_aggregator_code": null,
+    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+  }
+]
+```
+
+Runtime endpoint:
+
+`POST /v3/pages/{page_unique_id}/checkout/shipping-options`
+
+Recommended method payload:
+
+```json
+{
+  "items": [
+    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 },
+    {
+      "type": "bundle",
+      "bundle_price_option_unique_id": "bundle_option_uid",
+      "quantity": 1
+    }
+  ],
+  "destination": { "subdistrict_id": 12345, "postal_code": "10110" },
+  "payment_method": "cod"
+}
+```
+
+## `Scalev.checkout.estimateSummary(payload)`
+
+Returns a checkout summary for pages that show a buyer-facing breakdown before submit.
+
+This method is optional. Pass the same item, destination, payment, and `shipping_option` that you will send to `Scalev.checkout.createOrder(payload)`.
+
+The result does not replace order creation validation. Scalev still validates and applies final shipping, discount, extra-fee, and total amounts during order creation before the order is persisted.
+
+```js
+const shipping_option = shipping_options[0];
+
+const payload = {
+  destination: { subdistrict_id: 12345, postal_code: "10110" },
+  items: [
+    { type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 },
+    { type: "bundle", bundle_price_option_unique_id: first_bundle_price_option.unique_id, quantity: 1 },
+  ],
+  payment_method: selected_payment_option.value,
+  shipping_option,
+};
+
+const summary = await Scalev.checkout.estimateSummary(payload);
+```
+
+Runtime endpoint:
+
+`POST /v3/pages/{page_unique_id}/checkout/summary`
+
+Recommended method payload:
+
+```json
+{
+  "items": [
+    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 },
+    {
+      "type": "bundle",
+      "bundle_price_option_unique_id": "bundle_option_uid",
+      "quantity": 1
+    }
+  ],
+  "destination": { "subdistrict_id": 12345, "postal_code": "10110" },
+  "payment_method": "cod",
+  "shipping_option": {
+    "courier_service_id": 48,
+    "courier_code": "anteraja",
+    "service_code": "ND",
+    "name": "Next Day",
+    "cost": 15300,
+    "etd": "1",
+    "is_cod": false,
+    "warehouse_unique_id": "warehouse_uid",
+    "courier_aggregator_code": null,
+    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+  }
+}
+```
+
+Response example:
+
+```json
+{
+  "product_price": 268000,
+  "shipping_cost": 15300,
+  "other_income": 0,
+  "other_income_name": "Biaya Lainnya",
+  "gross_revenue": 273300
+}
+```
+
+Use `estimateSummary` only when the checkout UI displays totals before submit. Do not calculate or submit `other_income` or `other_income_name`; Scalev calculates store-configured extra fees in `estimateSummary` and applies them again during `createOrder`.
 
 ## `Scalev.checkout.createOrder(payload)`
 
-Creates a real public order and validates the payload. Call this only after a visitor intentionally submits the form. `validateOrder` is optional before `createOrder`.
+Creates a real public order and validates the payload. Call this only after a visitor intentionally submits the form.
 
 ```js
-async function submitOrder() {
+async function submit_order(event) {
+  event.preventDefault();
+
   const data = Scalev.data.get();
   const store = data.store;
-  const firstVariant = store.products[0].variants[0];
-  const selectedPaymentOption = store.payment_method_options[0];
+  const first_variant = store.products[0].variants[0];
+  const selected_payment_option = store.payment_method_options[0];
+  const selected_subdistrict_id = 12345;
+  const selected_postal_code = "10110";
+  const items = [
+    { type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 },
+  ];
+  const destination = {
+    subdistrict_id: selected_subdistrict_id,
+    postal_code: selected_postal_code,
+  };
+  const shipping_options = await Scalev.checkout.shippingOptions({
+    payment_method: selected_payment_option.value,
+    destination,
+    items,
+  });
+  const shipping_option = shipping_options[0];
 
   const payload = {
-    page: data.page.uniqueId,
-    store: store.unique_id,
-    customerName: "Customer Name",
-    customerPhone: "08123456789",
-    customerEmail: "customer@example.com",
-    address: "Customer address",
-    location: 12345,
-    ordervariants: [{ variant_unique_id: firstVariant.unique_id, quantity: 1 }],
-    paymentMethod: selectedPaymentOption.value,
+    customer: {
+      name: event.currentTarget.elements.customer_name.value,
+      phone: event.currentTarget.elements.customer_phone.value,
+      email: event.currentTarget.elements.customer_email.value,
+    },
+    destination: {
+      address: event.currentTarget.elements.address.value,
+      ...destination,
+    },
+    items,
+    payment_method: selected_payment_option.value,
+    shipping_option,
   };
 
   const order = await Scalev.checkout.createOrder(payload);
@@ -372,97 +406,163 @@ async function submitOrder() {
 }
 ```
 
-`createOrder` accepts the same public payload keys used by Scalev's regular editor checkout flow. The runtime normalizes them before sending the order request:
+Supported payload fields:
 
-- Customer fields: `customerName`, `customerPhone`, `customerEmail`, `name`, `phone`, `address`
-- Store and page fields: `store`, `page`, plus aliases such as `storeUniqueId`, `store_unique_id`, `pageUniqueId`, and `page_unique_id`
-- Location and shipping fields: `location`, `destinationSubdistrictId`, `subdistrictId`, `postalCode`, `shippingOrigin`, `courierService`, `shippingCost`, and `courierAggregator`
-- Payment field: `paymentMethod` or `payment_method`
-- Item fields: `ordervariants` with `{ variant_unique_id, quantity }`, `orderbundles` with `{ bundle_price_option_unique_id, quantity }`, or legacy `orderlines`
-- Discount and pricing fields: `discountCodeCode`, `productDiscount`, `shippingCost`, `shippingDiscount`
+- Customer object: `customer.name`, `customer.phone`, `customer.email`
+- Destination object: `destination.address`, `destination.subdistrict_id`, `destination.postal_code`
+- Payment field: `payment_method`
+- Items list: `items[]` with `{ type: "product", variant_unique_id, quantity }` or `{ type: "bundle", bundle_price_option_unique_id, quantity }`
+- Discount and pricing fields: `discount_code_code`, `product_discount`, `shipping_discount`
 
-Use `unique_id` values from `Scalev.data.get().store` as order item identifiers.
+For shipping selection, call `Scalev.checkout.shippingOptions(payload)`, let the visitor choose one option, then pass that whole option as `shipping_option` into summary and order calls.
 
-For shipping selection, pass the selected warehouse object as `shippingOrigin` or pass its `unique_id` as `warehouseUniqueId`. Pass the selected courier service object as `courierService` or pass its `id` as `courierServiceId`. Render courier images from `searchCouriers()` option `logo_url`. The runtime sends `warehouse_unique_id` and `courier_service_id` in the backend shape.
+Runtime endpoint:
 
-For payment selection, render `store.payment_method_options[].display`, render payment images from `store.payment_method_options[].logo_url`, and submit only the selected option `value`. The runtime turns `va:BRI` into `payment_method: "va"` plus `sub_payment_method: "BRI"` for the backend, and turns `bt:BCA:payment_account_uid` into `payment_method: "bank_transfer"` plus `payment_account_unique_id: "payment_account_uid"`.
+`POST /v3/pages/{page_unique_id}/orders`
 
-Create orders only from an intentional visitor submit action.
+Recommended method payload:
 
-After `createOrder` succeeds, HTML Checkout Pages automatically fire the configured form-submit analytics events on both client and server side. Events are only sent for analytics pixels configured on the page. New HTML Checkout Pages are prefilled in the editor with Meta and TikTok `InitiateCheckout`, SnackVideo client `formSubmit`, and SnackVideo server `EVENT_FORM_SUBMIT`; you can change them before saving. Add a separate analytics event only when you intentionally need an extra custom event.
+```json
+{
+  "customer": {
+    "name": "Customer Name",
+    "phone": "08123456789",
+    "email": "customer@example.com"
+  },
+  "destination": {
+    "address": "Customer address",
+    "subdistrict_id": 12345,
+    "postal_code": "10110"
+  },
+  "items": [
+    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 }
+  ],
+  "payment_method": "cod",
+  "shipping_option": {
+    "courier_service_id": 48,
+    "courier_code": "anteraja",
+    "service_code": "ND",
+    "name": "Next Day",
+    "cost": 15300,
+    "etd": "1",
+    "is_cod": false,
+    "warehouse_unique_id": "warehouse_uid",
+    "courier_aggregator_code": null,
+    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+  },
+  "discount_code_code": "PROMO10",
+  "event_source_url": "https://brand.myscalev.com/page",
+  "utm_source": "ads",
+  "recaptcha_token": "generated_by_runtime"
+}
+```
 
-Choose the post-order redirect yourself. The runtime creates the order and fires submit analytics; your page handles navigation. Read `Scalev.data.get().after_checkout` when present, then follow [HTML Mode checkout success types](/en/html-mode-checkout-success-paths).
+For payment selection, render `store.payment_method_options[].display`, render payment images from `store.payment_method_options[].logo_url`, and submit only the selected option `value` as `payment_method`.
 
-The returned order data is a slim public response for redirects and buyer-facing payment UI. Use `secret_slug`, `public_order_url`, `payment_url`, `handler_phone`, `chat_message`, totals, line items, payment fields, and the existing `variants` and `bundle_price_options` object maps. Internal order IDs, dashboard revenue fields, platform fees, and affiliate attribution are outside the public runtime contract.
+Response example:
+
+```json
+{
+  "order_id": "260601HPQSPBX",
+  "status": "pending",
+  "payment_status": "unpaid",
+  "secret_slug": "order-secret-slug",
+  "public_order_url": "https://brand.myscalev.com/order/order-secret-slug",
+  "payment_url": null,
+  "product_price": "90000.00",
+  "product_discount": "0.00",
+  "shipping_cost": "15300.00",
+  "shipping_discount": "0.00",
+  "discount_code_discount": "10000.00",
+  "other_income": "0.00",
+  "other_income_name": "Biaya Lainnya",
+  "gross_revenue": "95300.00",
+  "payment_method": "bank_transfer",
+  "payment_account": {
+    "unique_id": "payment_account_uid",
+    "financial_entity_name": "Bank Central Asia",
+    "account_number": "1234567890"
+  },
+  "courier_service": {
+    "id": 48,
+    "name": "Next Day",
+    "courier": {
+      "name": "AnterAja",
+      "code": "anteraja"
+    }
+  },
+  "variants": {},
+  "bundle_price_options": {
+    "Bundle": {
+      "bundle_price_option_unique_id": "bundle_option_uid",
+      "quantity": 1
+    }
+  },
+  "handler_phone": null,
+  "chat_message": null
+}
+```
 
 ### Error handling
 
-Runtime methods reject the `Promise` with a JavaScript `Error`. Use the JavaScript `Error` as the stable customer-facing error surface.
-
-Use `error.message` for UI copy. Use `error.status`, `error.data`, and `Scalev.diagnostics.get()` only for debugging or advanced handling. Keep raw `error.data.error` out of customer-facing UI because upstream failures can return a string, boolean, object, or field-error map.
+Runtime methods reject the `Promise` with a JavaScript `Error`. Use `error.message` for UI copy. Use `error.status`, `error.data`, and `Scalev.diagnostics.get()` only for debugging.
 
 ```js
 try {
   const order = await Scalev.checkout.createOrder(payload);
   return order;
 } catch (error) {
-  showFormError(error.message || "Order creation failed.");
-  console.debug("Scalev checkout error", {
-    status: error.status,
-    data: error.data,
-    diagnostics: Scalev.diagnostics.get(),
-  });
+  show_form_error(error.message || "Order creation failed.");
 }
 ```
 
-Use the `Scalev.checkout.*` methods instead of `/api/v2/...` runtime proxy URLs so validation errors are normalized before they reach your UI.
-
-## `Scalev.analytics.track(providerOrPayload, payload?)`
+## `Scalev.analytics.track(provider, payload)`
 
 Forwards configured analytics events through Scalev.
 
 ```js
 await Scalev.analytics.track("facebook", {
-  firstName: "Customer",
+  first_name: "Customer",
   phone: "08123456789",
   variants: [{ unique_id: "variant_uid", quantity: 1, price: 179000 }],
   events: [
     {
       event_name: "Lead",
-      parameters: { value: 179000, currency: "IDR" },
-    },
-  ],
-});
-```
-
-You can also pass one object:
-
-```js
-await Scalev.analytics.track({
-  provider: "tiktok",
-  payload: {
-    events: [
-      {
-        event: "CompletePayment",
-        parameters: { value: 179000, currency: "IDR" },
-      },
-    ],
-  },
+      parameters: { value: 179000, currency: "IDR" }
+    }
+  ]
 });
 ```
 
 Supported provider names:
 
-- `fb`
 - `facebook`
 - `tiktok`
 - `kwai`
 
-The runtime forwards the legacy Scalev analytics payload shapes for each provider. It adds the current page id, event source URL, referrer, and safe attribution values from browser cookies or URL parameters when available. For Facebook and TikTok events, `event_id` is generated automatically when omitted.
+Response example:
 
-For product attribution, pass `variants`, `orderVariants`, or `ordervariants` with `variant_unique_id` / `unique_id`, and `bundlePriceOptions`, `bundle_price_options`, or `orderbundles` with `bundle_price_option_unique_id` / `unique_id`.
+```json
+null
+```
 
-Only track events that match the page interaction. Keep credentials and private customer tokens out of analytics payloads.
+If no provider is passed, the runtime skips the call without contacting Scalev:
+
+```json
+{
+  "skipped": true,
+  "reason": "missing_analytics_provider"
+}
+```
+
+If the analytics request fails, the checkout flow should continue and the runtime returns:
+
+```json
+{
+  "skipped": true,
+  "reason": "analytics_request_failed"
+}
+```
 
 ## `Scalev.prefill.get()`
 
@@ -470,53 +570,59 @@ Reads safe browser-scoped form prefill data.
 
 ```js
 const prefill = await Scalev.prefill.get();
-const formData = prefill.data || {};
+const customerName = prefill.customer?.name || "";
+const customerPhone = prefill.customer?.phone || "";
+const destinationAddress = prefill.destination?.address || "";
 ```
 
-Return shape:
+Response example:
 
 ```json
 {
-  "data": {
-    "customerName": "Customer Name",
-    "customerPhone": "08123456789"
+  "customer": {
+    "name": "Customer Name",
+    "phone": "08123456789",
+    "email": "customer@example.com"
+  },
+  "destination": {
+    "address": "Jl. Contoh No. 1",
+    "subdistrict_id": 9104,
+    "postal_code": "12250"
   }
 }
 ```
 
-Use this to repopulate form fields. Treat all values as optional.
+## `Scalev.prefill.save(form, metadata)`
 
-## `Scalev.prefill.save(form, metadata?)`
-
-Saves safe form prefill data for later visits.
+Persists safe browser-scoped form prefill data in the encrypted `scv_fd` cookie. This is handled locally by fe-public and does not call a Storefront or page runtime API endpoint.
 
 ```js
 await Scalev.prefill.save(
   {
-    customerName: "Customer Name",
-    customerPhone: "08123456789",
+    customer: {
+      name: "Customer Name",
+      phone: "08123456789",
+      email: "customer@example.com"
+    },
+    destination: {
+      address: "Jl. Contoh No. 1",
+      subdistrict_id: 9104,
+      postal_code: "12250"
+    }
   },
   {
-    source: "html_mode",
-  },
+    source: "checkout_form"
+  }
 );
 ```
 
-Only save ordinary form values that are safe to remember. Keep passwords, tokens, payment secrets, and private credentials out of prefill storage.
+Response example:
 
-## `Scalev.customer.prefill()`
-
-Returns a mediated customer profile when the visitor has an active storefront customer session. The fallback result is `null`.
-
-```js
-const customer = await Scalev.customer.prefill();
-
-if (customer) {
-  // Use mediated customer data.
+```json
+{
+  "saved": true
 }
 ```
-
-The runtime calls a local Scalev endpoint so customer tokens stay server-side. Always handle `null`.
 
 ## `Scalev.diagnostics.get()`
 
@@ -526,65 +632,22 @@ Returns recent runtime diagnostics for debugging.
 const diagnostics = Scalev.diagnostics.get();
 ```
 
-Diagnostics can include failed runtime requests and, when `?agent_debug=1` is present, visual warnings such as horizontal overflow or unlabeled visible form controls. Use diagnostics for debugging and QA only.
+Response example:
 
-## Minimal non-store example
-
-Use this pattern when Store Context is unselected:
-
-```html
-<script>
-  async function init() {
-    const scalev = window.Scalev;
-    const data = scalev?.data?.get
-      ? scalev.data.get()
-      : { page: {}, store: null };
-    const prefill = scalev?.prefill?.get
-      ? await scalev.prefill.get()
-      : { data: {} };
-
-    document.querySelector("[name='name']").value =
-      prefill.data?.customerName || "";
-
-    document.querySelector("form").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const form = Object.fromEntries(new FormData(event.currentTarget));
-      await scalev?.prefill?.save?.(form, { source: "lead_form" });
-    });
+```json
+[
+  {
+    "level": "error",
+    "code": "runtime_request_failed",
+    "message": "Scalev runtime request failed.",
+    "details": {
+      "path": "/pages/page_uid/orders",
+      "status": 422,
+      "response": {
+        "message": "customer.phone: can't be blank"
+      }
+    },
+    "timestamp": "2026-06-01T08:00:00.000Z"
   }
-
-  init();
-</script>
-```
-
-## Minimal store checkout example
-
-Use this pattern only when Store Context is selected:
-
-```html
-<script>
-  async function submitOrder(event) {
-    event.preventDefault();
-
-    const scalev = window.Scalev;
-    const data = scalev.data.get();
-    const store = data.store;
-    const firstProduct = store.products[0];
-    const firstVariant = firstProduct.variants[0];
-
-    const payload = {
-      page: data.page.uniqueId,
-      store: store.unique_id,
-      customerName: event.currentTarget.elements.customerName.value,
-      customerPhone: event.currentTarget.elements.customerPhone.value,
-      ordervariants: [
-        { variant_unique_id: firstVariant.unique_id, quantity: 1 },
-      ],
-      paymentMethod: "cod",
-    };
-
-    const order = await scalev.checkout.createOrder(payload);
-    console.log(order);
-  }
-</script>
+]
 ```

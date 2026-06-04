@@ -19,7 +19,7 @@ const afterCheckout = Scalev.data.get().after_checkout || {
 
 Use these rules when deciding where to send the buyer after `createOrder` succeeds:
 
-- For new HTML Mode checkout pages, render payment labels from `Scalev.data.get().store.payment_method_options[].display` and submit the selected option `value` as `paymentMethod`.
+- For new HTML Mode checkout pages, render payment labels from `Scalev.data.get().store.payment_method_options[].display` and submit the selected option `value` as `payment_method`.
 - E-payment methods always go to the payment instruction page. This includes `va`, flattened VA values such as `va:BRI`, `qris`, `card`, `invoice`, `alfamart`, `ovo`, `dana`, `shopeepay`, `linkaja`, and `gopay`.
 - Manual bank-transfer values such as `bt:BCA:payment_account_uid` are treated as `bank_transfer`.
 - If the order status is `draft`, the payment instruction path falls back to **Self Hosted Orderan / Invoice** (`order_page`).
@@ -27,25 +27,20 @@ Use these rules when deciding where to send the buyer after `createOrder` succee
 
 Use the order data returned by `createOrder` and the public URLs in that response.
 
-`createOrder` returns the standard Scalev response envelope:
+`createOrder` returns the order object directly:
 
 ```json
 {
-  "code": 200,
-  "status": "Success",
-  "data": {
-    "secret_slug": "order-secret",
-    "public_order_url": "https://example.com/o/order-secret",
-    "payment_url": "https://example.com/o/order-secret/success",
-    "handler_phone": "6281200000000",
-    "chat_message": "..."
-  }
+  "secret_slug": "order-secret",
+  "public_order_url": "https://example.com/o/order-secret",
+  "payment_url": "https://example.com/o/order-secret/success",
+  "handler_phone": "6281200000000",
+  "chat_message": "..."
 }
 ```
 
 ```js
-const orderResponse = await Scalev.checkout.createOrder(payload);
-const order = orderResponse.data;
+const order = await Scalev.checkout.createOrder(payload);
 ```
 
 ## Reference implementation
@@ -73,58 +68,58 @@ const SCALEV_QUERY_FORWARD_HOSTS = new Set([
   "app.scalev.com",
 ]);
 
-function paymentMethodForRedirect(paymentMethod) {
-  if (typeof paymentMethod !== "string") return paymentMethod;
+function payment_method_for_redirect(payment_method) {
+  if (typeof payment_method !== "string") return payment_method;
 
-  if (paymentMethod.toLowerCase().startsWith("va:")) return "va";
-  if (paymentMethod.toLowerCase().startsWith("bt:")) return "bank_transfer";
+  if (payment_method.toLowerCase().startsWith("va:")) return "va";
+  if (payment_method.toLowerCase().startsWith("bt:")) return "bank_transfer";
 
-  return paymentMethod;
+  return payment_method;
 }
 
-function publicOrderUrl(order) {
+function public_order_url(order) {
   if (order.public_order_url) return order.public_order_url;
   return new URL(`/o/${order.secret_slug}`, window.location.origin).toString();
 }
 
-function paymentInstructionUrl(order) {
-  if (order.status === "draft") return publicOrderUrl(order);
+function payment_instruction_url(order) {
+  if (order.status === "draft") return public_order_url(order);
   if (order.payment_url) return order.payment_url;
 
-  const url = new URL(publicOrderUrl(order));
+  const url = new URL(public_order_url(order));
   url.pathname = `${url.pathname.replace(/\/$/, "")}/success`;
   return url.toString();
 }
 
-function whatsappUrl(phone, order, fallbackMessage = "") {
-  const cleanPhone = String(phone || "").replace(/[^\d]/g, "");
-  const message = order.chat_message || encodeURIComponent(fallbackMessage);
-  return `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${message}`;
+function whatsapp_url(phone, order, fallback_message = "") {
+  const clean_phone = String(phone || "").replace(/[^\d]/g, "");
+  const message = order.chat_message || encodeURIComponent(fallback_message);
+  return `https://api.whatsapp.com/send/?phone=${clean_phone}&text=${message}`;
 }
 
-function withCurrentQuery(url) {
-  const nextUrl = new URL(url, window.location.href);
-  const currentParams = new URLSearchParams(window.location.search);
+function with_current_query(url) {
+  const next_url = new URL(url, window.location.href);
+  const current_params = new URLSearchParams(window.location.search);
 
-  currentParams.forEach((value, key) => {
-    nextUrl.searchParams.set(key, value);
+  current_params.forEach((value, key) => {
+    next_url.searchParams.set(key, value);
   });
 
-  return nextUrl.toString();
+  return next_url.toString();
 }
 
-function maybeForwardCurrentQuery(url) {
-  const nextUrl = new URL(url, window.location.href);
-  const shouldForward =
-    nextUrl.host === window.location.host ||
-    SCALEV_QUERY_FORWARD_HOSTS.has(nextUrl.host);
+function maybe_forward_current_query(url) {
+  const next_url = new URL(url, window.location.href);
+  const should_forward =
+    next_url.host === window.location.host ||
+    SCALEV_QUERY_FORWARD_HOSTS.has(next_url.host);
 
-  return shouldForward
-    ? withCurrentQuery(nextUrl.toString())
-    : nextUrl.toString();
+  return should_forward
+    ? with_current_query(next_url.toString())
+    : next_url.toString();
 }
 
-function navigateAfterOrder(url) {
+function navigate_after_order(url) {
   if (window.self !== window.top) {
     window.parent.postMessage(url, "*");
     return;
@@ -133,50 +128,49 @@ function navigateAfterOrder(url) {
   window.location.assign(url);
 }
 
-function redirectAfterOrder({
+function redirect_after_order({
   type,
-  orderResponse,
-  paymentMethod,
-  customWhatsappPhone,
-  otherPagePath,
-  customUrl,
+  order,
+  payment_method,
+  custom_whatsapp_phone,
+  other_page_path,
+  custom_url,
 }) {
-  const order = orderResponse.data;
-  const redirectPaymentMethod = paymentMethodForRedirect(
-    paymentMethod || order.payment_method,
+  const redirect_payment_method = payment_method_for_redirect(
+    payment_method || order.payment_method,
   );
-  const finalType = PAYMENT_INSTRUCTION_METHODS.has(redirectPaymentMethod)
+  const final_type = PAYMENT_INSTRUCTION_METHODS.has(redirect_payment_method)
     ? "success_page"
     : type;
 
-  if (finalType === "success_page") {
-    return navigateAfterOrder(paymentInstructionUrl(order));
+  if (final_type === "success_page") {
+    return navigate_after_order(payment_instruction_url(order));
   }
 
-  if (finalType === "direct_to_whatsapp") {
+  if (final_type === "direct_to_whatsapp") {
     const phone = order.handler_phone;
-    return navigateAfterOrder(
-      phone ? whatsappUrl(phone, order) : publicOrderUrl(order),
+    return navigate_after_order(
+      phone ? whatsapp_url(phone, order) : public_order_url(order),
     );
   }
 
-  if (finalType === "direct_to_custom_whatsapp") {
-    return navigateAfterOrder(whatsappUrl(customWhatsappPhone, order));
+  if (final_type === "direct_to_custom_whatsapp") {
+    return navigate_after_order(whatsapp_url(custom_whatsapp_phone, order));
   }
 
-  if (finalType === "other_page") {
-    return navigateAfterOrder(withCurrentQuery(otherPagePath));
+  if (final_type === "other_page") {
+    return navigate_after_order(with_current_query(other_page_path));
   }
 
-  if (finalType === "order_page") {
-    return navigateAfterOrder(publicOrderUrl(order));
+  if (final_type === "order_page") {
+    return navigate_after_order(public_order_url(order));
   }
 
-  if (finalType === "custom_url") {
-    return navigateAfterOrder(maybeForwardCurrentQuery(customUrl));
+  if (final_type === "custom_url") {
+    return navigate_after_order(maybe_forward_current_query(custom_url));
   }
 
-  return navigateAfterOrder(paymentInstructionUrl(order));
+  return navigate_after_order(payment_instruction_url(order));
 }
 ```
 
@@ -185,31 +179,33 @@ Example usage:
 ```js
 const data = Scalev.data.get();
 const store = data.store;
-const afterCheckout = data.after_checkout || { type: "success_page" };
-const selectedPaymentOption = store.payment_method_options[0];
+const after_checkout = data.after_checkout || { type: "success_page" };
+const selected_payment_option = store.payment_method_options[0];
 
 const payload = {
-  page: data.page.uniqueId,
-  store: store.unique_id,
-  customerName: form.customerName.value,
-  customerPhone: form.customerPhone.value,
+  page_unique_id: data.page.unique_id,
+  store_unique_id: store.unique_id,
+  customer_name: form.customer_name.value,
+  customer_phone: form.customer_phone.value,
   ordervariants: [
-    { variant_unique_id: selectedVariant.unique_id, quantity: 1 },
+    { variant_unique_id: selected_variant.unique_id, quantity: 1 },
   ],
-  paymentMethod: selectedPaymentOption.value,
+  payment_method: selected_payment_option.value,
 };
 
-const orderResponse = await Scalev.checkout.createOrder(payload);
+const order = await Scalev.checkout.createOrder(payload);
 
-redirectAfterOrder({
-  type: afterCheckout.type,
-  orderResponse,
-  paymentMethod: payload.paymentMethod,
-  customWhatsappPhone: afterCheckout.custom_whatsapp_phone,
-  otherPagePath: afterCheckout.other_page_path,
-  customUrl: afterCheckout.custom_url,
+redirect_after_order({
+  type: after_checkout.type,
+  order,
+  payment_method: payload.payment_method,
+  custom_whatsapp_phone: after_checkout.custom_whatsapp_phone,
+  other_page_path: after_checkout.other_page_path,
+  custom_url: after_checkout.custom_url,
 });
 ```
+
+If the checkout includes store-configured extra fees, Scalev calculates them in `estimateSummary` and applies and validates them again during `createOrder`. Use `Scalev.checkout.estimateSummary()` only when the page needs to show an estimated fee and total before submit; pass the payload you will send to `createOrder`. The redirect logic after order creation does not change.
 
 ## The six types
 

@@ -269,6 +269,38 @@ Pola B:
 2. Gunakan location atau subdistrict yang dikembalikan.
 3. Kode pos: `GET /public/locations/{location_id}/postal-codes`
 
+Response lokasi hanya menyertakan field yang dibutuhkan untuk tampilan dan request berikutnya:
+
+```json
+{
+  "province_id": 31,
+  "province_name": "DKI Jakarta"
+}
+```
+
+```json
+{
+  "city_id": 3171,
+  "city_name": "Kota Jakarta Pusat"
+}
+```
+
+```json
+{
+  "id": 9090,
+  "subdistrict_name": "Gambir",
+  "city_name": "Kota Jakarta Pusat",
+  "province_name": "DKI Jakarta",
+  "display": "Gambir, Kota Jakarta Pusat, DKI Jakarta"
+}
+```
+
+```json
+{
+  "postal_code": "10110"
+}
+```
+
 ## Alur reset password
 
 Implementasikan reset password sebagai alur link di browser:

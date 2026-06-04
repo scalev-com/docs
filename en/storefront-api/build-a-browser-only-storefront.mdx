@@ -272,6 +272,38 @@ Pattern B:
 2. Use the returned location or subdistrict directly.
 3. Postal codes: `GET /public/locations/{location_id}/postal-codes`
 
+Location responses include only the fields needed for display and the next request:
+
+```json
+{
+  "province_id": 31,
+  "province_name": "DKI Jakarta"
+}
+```
+
+```json
+{
+  "city_id": 3171,
+  "city_name": "Kota Jakarta Pusat"
+}
+```
+
+```json
+{
+  "id": 9090,
+  "subdistrict_name": "Gambir",
+  "city_name": "Kota Jakarta Pusat",
+  "province_name": "DKI Jakarta",
+  "display": "Gambir, Kota Jakarta Pusat, DKI Jakarta"
+}
+```
+
+```json
+{
+  "postal_code": "10110"
+}
+```
+
 ## Password reset flow
 
 Implement password reset as a link-based browser flow:
