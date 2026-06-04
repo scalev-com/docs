@@ -119,9 +119,9 @@ Gunakan method ini untuk form alamat dan pengiriman.
 
 ```js
 const provinces = await Scalev.location.provinces();
-const cities = await Scalev.location.cities(provinceId);
-const subdistricts = await Scalev.location.subdistricts(cityId);
-const postalCodes = await Scalev.location.postalCodes(subdistrictId);
+const cities = await Scalev.location.cities(provinces[0].id);
+const subdistricts = await Scalev.location.subdistricts(cities[0].id);
+const postalCodes = await Scalev.location.postalCodes(subdistricts[0].id);
 ```
 
 `provinces`, `cities`, dan `subdistricts` menerima query object opsional:
@@ -135,8 +135,8 @@ Contoh response:
 ```json
 [
   {
-    "provinceId": 31,
-    "provinceName": "DKI Jakarta"
+    "id": 31,
+    "name": "DKI Jakarta"
   }
 ]
 ```
@@ -144,8 +144,8 @@ Contoh response:
 ```json
 [
   {
-    "cityId": 3171,
-    "cityName": "Kota Jakarta Pusat"
+    "id": 3171,
+    "name": "Kota Jakarta Pusat"
   }
 ]
 ```
@@ -154,7 +154,7 @@ Contoh response:
 [
   {
     "id": 9090,
-    "subdistrictName": "Gambir",
+    "name": "Gambir",
     "cityName": "Kota Jakarta Pusat",
     "provinceName": "DKI Jakarta",
     "display": "Gambir, Kota Jakarta Pusat, DKI Jakarta"
