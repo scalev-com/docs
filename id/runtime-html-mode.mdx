@@ -1,11 +1,11 @@
 ---
 title: "Runtime HTML Mode"
-description: "Gunakan method runtime window.Scalev yang tersedia di halaman Scalev HTML Mode."
+description: "Gunakan method window.Scalev yang tersedia di halaman HTML Mode Scalev."
 ---
 
-Halaman Scalev HTML Mode dapat memakai `window.Scalev` dari JavaScript browser. Runtime ini memberi akses ke konteks halaman yang aman, Store Context terpilih, helper checkout, analytics forwarding, helper prefill form, dan diagnostics sambil menjaga token API privat tetap di server.
+Halaman HTML Mode Scalev dapat memakai `window.Scalev` dari JavaScript browser. Runtime ini memberi konteks halaman yang aman, konteks store terpilih, helper checkout, forwarding analytics, helper prefill form, dan diagnostics tanpa mengekspos token API privat ke browser.
 
-Halaman ini ditulis untuk developer dan AI agent yang membuat file HTML Mode. Gunakan method ini sebagai pengganti URL privat Scalev.
+Halaman ini ditulis untuk developer dan AI agent yang membuat file HTML Mode. Gunakan method ini daripada memanggil URL Scalev privat secara langsung.
 
 ## Ketersediaan
 
@@ -15,33 +15,35 @@ Runtime tersedia di halaman HTML Mode yang sudah dirender. Di preview editor lok
 const scalev = window.Scalev;
 
 if (!scalev) {
-  // Jaga halaman tetap bisa dipakai saat runtime data belum siap.
+  // Jaga halaman tetap bisa dipakai saat data runtime dimuat.
 }
 ```
 
-Sebagian besar method asynchronous dan mengembalikan `Promise`. `Scalev.data.get()` dan `Scalev.diagnostics.get()` synchronous.
+Sebagian besar method asynchronous dan mengembalikan `Promise`. `Scalev.data.get()` dan `Scalev.diagnostics.get()` bersifat synchronous.
 
-Method runtime mengembalikan hasil yang terlihat oleh JavaScript secara langsung. Runtime memakai endpoint publik v3 berbasis page secara internal dan menghapus container collection backend seperti `data` dan `is_paginated` sebelum mengembalikan array ke JavaScript halaman.
+Payload dan response method runtime memakai key object camelCase. Runtime menangani casing backend secara internal, jadi JavaScript halaman tidak perlu mengirim key snake_case. Runtime method juga mengembalikan hasil yang terlihat oleh JavaScript secara langsung. Container backend seperti `data` dan `is_paginated` dihapus sebelum array dikembalikan.
 
-## Store context
+String enum dan blob milik provider tidak diubah. Contohnya `success_page`, `direct_to_whatsapp`, analytics `parameters`, `metadata`, dan `customData` tetap memakai nilai aslinya.
 
-Jika Store Context dipilih, `Scalev.data.get().store` berisi ringkasan store, produk, dan bundle price option terpilih. Perlakukan data ini sebagai katalog checkout khusus halaman.
+## Konteks store
 
-Jika HTML Checkout Page dipilih, `Scalev.data.get().after_checkout` berisi type sukses checkout dan konfigurasi tujuan publiknya.
+Saat Store Context dipilih, `Scalev.data.get().store` berisi ringkasan store terpilih, produk, dan bundle price option yang dipilih. Perlakukan data ini sebagai katalog checkout khusus halaman.
 
-Jika Store Context belum dipilih, perlakukan `store` sebagai data yang belum tersedia. Buat landing page biasa dan pakai method aman seperti `Scalev.data.get()`, `Scalev.analytics.track()`, dan `Scalev.prefill.get()`.
+Saat HTML Checkout Page dipilih, `Scalev.data.get().afterCheckout` berisi tipe sukses setelah checkout yang dipilih dan konfigurasi tujuan publiknya.
+
+Saat Store Context tidak dipilih, perlakukan `store` sebagai data yang tidak tersedia. Buat landing page biasa dan gunakan hanya method aman seperti `Scalev.data.get()`, `Scalev.analytics.track()`, dan `Scalev.prefill.get()`.
 
 ## Aturan keamanan
 
-- Jangan menaruh API key, JWT business user, Storefront API key, customer token, cookie, atau kredensial di JavaScript halaman.
-- Gunakan method `window.Scalev` yang terdokumentasi, bukan URL privat Scalev.
-- Buat order hanya setelah visitor sengaja submit form.
+- Jangan taruh API key, JWT business user, storefront API key, customer token, cookie, atau credential di JavaScript halaman.
+- Gunakan method `window.Scalev` yang terdokumentasi, bukan URL Scalev privat atau API privat.
+- Buat order hanya setelah pengunjung sengaja submit form.
 - Utamakan `Scalev.checkout.createOrder()` saat submit; method ini memvalidasi payload sebelum order disimpan.
-- Gunakan hanya produk, bundle, harga, inventory, payment method, shipping option, dan identitas customer yang tersedia di runtime data.
+- Gunakan hanya produk, bundle, harga, inventory, payment method, opsi pengiriman, dan identitas customer yang ada di runtime data.
 
 ## `Scalev.data.get()`
 
-Mengembalikan data publik halaman yang diinject ke halaman render.
+Mengembalikan data publik halaman yang diinjeksi ke halaman yang dirender.
 
 ```js
 const data = Scalev.data.get();
@@ -53,23 +55,23 @@ Contoh response:
 {
   "page": {
     "id": 1,
-    "unique_id": "page_uid",
+    "uniqueId": "pageUid",
     "username": "brand"
   },
   "store": {
     "id": 1,
-    "unique_id": "store_uid",
+    "uniqueId": "storeUid",
     "name": "Main Store",
-    "payment_method_options": [
+    "paymentMethodOptions": [
       {
-        "value": "bt:BCA:payment_account_uid",
+        "value": "bt:BCA:paymentAccountUid",
         "display": "Bank Central Asia",
-        "logo_url": "https://cdn.scalev.com/icons/BT_BCA.png"
+        "logoUrl": "https://cdn.scalev.com/icons/BT_BCA.png"
       },
       {
         "value": "cod",
         "display": "COD",
-        "logo_url": "https://cdn.scalev.com/icons/cod.png"
+        "logoUrl": "https://cdn.scalev.com/icons/cod.png"
       }
     ],
     "products": [
@@ -79,37 +81,37 @@ Contoh response:
         "variants": [
           {
             "id": 10,
-            "unique_id": "variant_uid",
+            "uniqueId": "variantUid",
             "name": "Default",
             "price": 99000,
-            "available_qty": 12
+            "availableQty": 12
           }
         ]
       }
     ],
-    "bundle_price_options": [
+    "bundlePriceOptions": [
       {
         "id": 20,
-        "unique_id": "bundle_option_uid",
+        "uniqueId": "bundleOptionUid",
         "name": "Bundle",
         "price": 179000
       }
     ]
   },
-  "after_checkout": {
+  "afterCheckout": {
     "type": "other_page",
-    "other_page_path": "/thank-you"
+    "otherPagePath": "/thank-you"
   }
 }
 ```
 
-Gunakan `store.payment_method_options` untuk pilihan payment. Render `display`, tampilkan `logo_url`, dan submit `value` terpilih sebagai `payment_method`.
+Gunakan `store.paymentMethodOptions` untuk render pilihan payment. Render `display`, tampilkan `logoUrl`, dan submit `value` yang dipilih sebagai `paymentMethod`.
 
-Value payment sudah berbentuk flat:
+Value payment option sudah diratakan:
 
 - `va:BRI` berarti virtual account BRI.
-- `bt:BCA:payment_account_uid` berarti bank transfer manual untuk akun BCA dengan `payment_account_uid`.
-- Value biasa seperti `cod`, `qris`, `invoice`, `alfamart`, atau `gopay` dipakai apa adanya.
+- `bt:BCA:paymentAccountUid` berarti bank transfer manual untuk akun BCA tersebut.
+- Value seperti `cod`, `qris`, `invoice`, `alfamart`, atau `gopay` tetap memakai nilai aslinya.
 
 ## Method lokasi
 
@@ -117,31 +119,24 @@ Gunakan method ini untuk form alamat dan pengiriman.
 
 ```js
 const provinces = await Scalev.location.provinces();
-const cities = await Scalev.location.cities(province_id);
-const subdistricts = await Scalev.location.subdistricts(city_id);
-const postal_codes = await Scalev.location.postalCodes(subdistrict_id);
+const cities = await Scalev.location.cities(provinceId);
+const subdistricts = await Scalev.location.subdistricts(cityId);
+const postalCodes = await Scalev.location.postalCodes(subdistrictId);
 ```
 
-`provinces`, `cities`, dan `subdistricts` menerima object query opsional:
+`provinces`, `cities`, dan `subdistricts` menerima query object opsional:
 
 ```js
 const provinces = await Scalev.location.provinces({ search: "Jawa" });
 ```
-
-Request runtime:
-
-- `Scalev.location.provinces({ search })` mengirim `GET /v3/pages/{page_unique_id}/locations/provinces?search=...`
-- `Scalev.location.cities(province_id, { search })` mengirim `GET /v3/pages/{page_unique_id}/locations/cities?province_id=...&search=...`
-- `Scalev.location.subdistricts(city_id, { search })` mengirim `GET /v3/pages/{page_unique_id}/locations/subdistricts?city_id=...&search=...`
-- `Scalev.location.postalCodes(subdistrict_id)` mengirim `GET /v3/pages/{page_unique_id}/locations/{subdistrict_id}/postal-codes`
 
 Contoh response:
 
 ```json
 [
   {
-    "province_id": 31,
-    "province_name": "DKI Jakarta"
+    "provinceId": 31,
+    "provinceName": "DKI Jakarta"
   }
 ]
 ```
@@ -149,8 +144,8 @@ Contoh response:
 ```json
 [
   {
-    "city_id": 3171,
-    "city_name": "Kota Jakarta Pusat"
+    "cityId": 3171,
+    "cityName": "Kota Jakarta Pusat"
   }
 ]
 ```
@@ -159,9 +154,9 @@ Contoh response:
 [
   {
     "id": 9090,
-    "subdistrict_name": "Gambir",
-    "city_name": "Kota Jakarta Pusat",
-    "province_name": "DKI Jakarta",
+    "subdistrictName": "Gambir",
+    "cityName": "Kota Jakarta Pusat",
+    "provinceName": "DKI Jakarta",
     "display": "Gambir, Kota Jakarta Pusat, DKI Jakarta"
   }
 ]
@@ -170,7 +165,7 @@ Contoh response:
 ```json
 [
   {
-    "postal_code": "10110"
+    "postalCode": "10110"
   }
 ]
 ```
@@ -182,164 +177,151 @@ Memvalidasi kode diskon untuk payload checkout.
 ```js
 const result = await Scalev.checkout.validateDiscount({
   code: "PROMO10",
-  gross_revenue: 179000,
-  net_product_price: 179000,
-  shipping_cost: 0,
-  payment_method: store.payment_method_options?.[0]?.value || "cod",
+  grossRevenue: 179000,
+  netProductPrice: 179000,
+  shippingCost: 0,
+  paymentMethod: store.paymentMethodOptions?.[0]?.value || "cod"
 });
-```
-
-Request runtime:
-
-`POST /v3/pages/{page_unique_id}/discount-codes/check`
-
-```json
-{
-  "code": "PROMO10",
-  "gross_revenue": 179000,
-  "net_product_price": 179000,
-  "shipping_cost": 0,
-  "payment_method": "cod",
-  "domain": "brand.myscalev.com"
-}
 ```
 
 Contoh response:
 
 ```json
 {
-  "discount_code": {
+  "discountCode": {
     "code": "PROMO10",
-    "applied_to": "product_price",
-    "amount_type": "fixed",
+    "appliedTo": "product_price",
+    "amountType": "fixed",
     "amount": 10000,
-    "is_enabled": true
+    "isEnabled": true
   },
-  "eligibility_details": {
-    "is_enabled": true,
-    "is_expiry_check": true,
-    "is_usage_limit_check": true,
-    "is_minimum_revenue_check": true,
-    "is_limited_to_pages_check": true,
-    "is_limited_to_payment_methods_check": true,
-    "is_page_discount_active": true,
-    "is_amount_not_zero": true
+  "eligibilityDetails": {
+    "isEnabled": true,
+    "isExpiryCheck": true,
+    "isUsageLimitCheck": true,
+    "isMinimumRevenueCheck": true,
+    "isLimitedToPagesCheck": true,
+    "isLimitedToPaymentMethodsCheck": true,
+    "isPageDiscountActive": true,
+    "isAmountNotZero": true
   },
-  "is_eligible": true,
-  "discount_code_discount": 10000
+  "isEligible": true,
+  "discountCodeDiscount": 10000
 }
 ```
 
 ## `Scalev.checkout.shippingOptions(payload)`
 
-Mengembalikan opsi pengiriman untuk item, tujuan, dan payment method terpilih. Gunakan method ini sebagai satu-satunya lookup pengiriman.
+Mengembalikan opsi pengiriman untuk item, tujuan, dan payment method yang dipilih. Gunakan ini sebagai satu-satunya method lookup pengiriman.
 
 ```js
-const shipping_options = await Scalev.checkout.shippingOptions({
-  payment_method: selected_payment_option.value,
+const shippingOptions = await Scalev.checkout.shippingOptions({
+  paymentMethod: selectedPaymentOption.value,
   destination: {
-    subdistrict_id: selected_subdistrict_id,
-    postal_code: selected_postal_code,
+    subdistrictId: selectedSubdistrictId,
+    postalCode: selectedPostalCode
   },
-  items: [{ type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 }],
+  items: [
+    {
+      type: "product",
+      variantUniqueId: firstVariant.uniqueId,
+      quantity: 1
+    }
+  ]
 });
 ```
 
-Kirim option yang dipilih sebagai satu field `shipping_option` di `estimateSummary` dan `createOrder`. Runtime menyiapkan request checkout dari option tersebut. Option menyertakan `logo_url` saat courier code tersedia.
+Kirim option yang dipilih sebagai satu field `shippingOption` di `estimateSummary` dan `createOrder`. Runtime akan menyiapkan request checkout dari option tersebut. Opsi dapat berisi `logoUrl` saat courier code tersedia.
 
 Contoh response:
 
 ```json
 [
   {
-    "courier_service_id": 48,
-    "courier_code": "anteraja",
-    "service_code": "ND",
+    "courierServiceId": 48,
+    "courierCode": "anteraja",
+    "serviceCode": "ND",
     "name": "Next Day",
     "cost": 15300,
     "etd": "1",
-    "is_cod": false,
-    "warehouse_unique_id": "warehouse_uid",
-    "courier_aggregator_code": null,
-    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+    "isCod": false,
+    "warehouseUniqueId": "warehouseUid",
+    "courierAggregatorCode": null,
+    "logoUrl": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
   }
 ]
 ```
-
-Endpoint runtime:
-
-`POST /v3/pages/{page_unique_id}/checkout/shipping-options`
 
 Payload method yang direkomendasikan:
 
 ```json
 {
   "items": [
-    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 },
+    { "type": "product", "variantUniqueId": "variantUid", "quantity": 1 },
     {
       "type": "bundle",
-      "bundle_price_option_unique_id": "bundle_option_uid",
+      "bundlePriceOptionUniqueId": "bundleOptionUid",
       "quantity": 1
     }
   ],
-  "destination": { "subdistrict_id": 12345, "postal_code": "10110" },
-  "payment_method": "cod"
+  "destination": { "subdistrictId": 12345, "postalCode": "10110" },
+  "paymentMethod": "cod"
 }
 ```
 
 ## `Scalev.checkout.estimateSummary(payload)`
 
-Mengembalikan ringkasan checkout untuk halaman yang menampilkan rincian total sebelum submit.
+Mengembalikan ringkasan checkout untuk halaman yang menampilkan breakdown biaya sebelum submit.
 
-Method ini opsional. Kirim field item, tujuan, payment, dan `shipping_option` yang sama seperti payload yang akan dikirim ke `Scalev.checkout.createOrder(payload)`.
+Method ini opsional. Kirim item, destination, payment, dan `shippingOption` yang sama seperti payload yang akan dikirim ke `Scalev.checkout.createOrder(payload)`.
 
-Hasil ini tidak menggantikan validasi order creation. Scalev tetap memvalidasi dan menerapkan shipping, diskon, biaya tambahan, dan total final saat order dibuat sebelum order disimpan.
+Hasil method ini tidak menggantikan validasi pembuatan order. Scalev tetap memvalidasi dan menerapkan shipping final, discount, biaya tambahan, dan total saat order dibuat.
 
 ```js
-const shipping_option = shipping_options[0];
+const shippingOption = shippingOptions[0];
 
 const payload = {
-  destination: { subdistrict_id: 12345, postal_code: "10110" },
+  destination: { subdistrictId: 12345, postalCode: "10110" },
   items: [
-    { type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 },
-    { type: "bundle", bundle_price_option_unique_id: first_bundle_price_option.unique_id, quantity: 1 },
+    { type: "product", variantUniqueId: firstVariant.uniqueId, quantity: 1 },
+    {
+      type: "bundle",
+      bundlePriceOptionUniqueId: firstBundlePriceOption.uniqueId,
+      quantity: 1
+    }
   ],
-  payment_method: selected_payment_option.value,
-  shipping_option,
+  paymentMethod: selectedPaymentOption.value,
+  shippingOption
 };
 
 const summary = await Scalev.checkout.estimateSummary(payload);
 ```
-
-Endpoint runtime:
-
-`POST /v3/pages/{page_unique_id}/checkout/summary`
 
 Payload method yang direkomendasikan:
 
 ```json
 {
   "items": [
-    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 },
+    { "type": "product", "variantUniqueId": "variantUid", "quantity": 1 },
     {
       "type": "bundle",
-      "bundle_price_option_unique_id": "bundle_option_uid",
+      "bundlePriceOptionUniqueId": "bundleOptionUid",
       "quantity": 1
     }
   ],
-  "destination": { "subdistrict_id": 12345, "postal_code": "10110" },
-  "payment_method": "cod",
-  "shipping_option": {
-    "courier_service_id": 48,
-    "courier_code": "anteraja",
-    "service_code": "ND",
+  "destination": { "subdistrictId": 12345, "postalCode": "10110" },
+  "paymentMethod": "cod",
+  "shippingOption": {
+    "courierServiceId": 48,
+    "courierCode": "anteraja",
+    "serviceCode": "ND",
     "name": "Next Day",
     "cost": 15300,
     "etd": "1",
-    "is_cod": false,
-    "warehouse_unique_id": "warehouse_uid",
-    "courier_aggregator_code": null,
-    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+    "isCod": false,
+    "warehouseUniqueId": "warehouseUid",
+    "courierAggregatorCode": null,
+    "logoUrl": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
   }
 }
 ```
@@ -348,57 +330,57 @@ Contoh response:
 
 ```json
 {
-  "product_price": 268000,
-  "shipping_cost": 15300,
-  "other_income": 0,
-  "other_income_name": "Biaya Lainnya",
-  "gross_revenue": 273300
+  "productPrice": 268000,
+  "shippingCost": 15300,
+  "otherIncome": 0,
+  "otherIncomeName": "Biaya Lainnya",
+  "grossRevenue": 273300
 }
 ```
 
-Gunakan `estimateSummary` hanya saat UI checkout menampilkan total sebelum submit. Jangan hitung atau submit `other_income` atau `other_income_name`; Scalev menghitung biaya tambahan dari konfigurasi store di `estimateSummary` dan menerapkannya lagi saat `createOrder`.
+Gunakan `estimateSummary` hanya saat UI checkout menampilkan total sebelum submit. Jangan hitung atau submit `otherIncome` atau `otherIncomeName`; Scalev menghitung biaya tambahan yang dikonfigurasi di store pada `estimateSummary` dan menerapkannya lagi saat `createOrder`.
 
 ## `Scalev.checkout.createOrder(payload)`
 
-Membuat public order sungguhan dan memvalidasi payload. Panggil method ini hanya setelah visitor sengaja submit form.
+Membuat public order sungguhan dan memvalidasi payload. Panggil method ini hanya setelah pengunjung sengaja submit form.
 
 ```js
-async function submit_order(event) {
+async function submitOrder(event) {
   event.preventDefault();
 
   const data = Scalev.data.get();
   const store = data.store;
-  const first_variant = store.products[0].variants[0];
-  const selected_payment_option = store.payment_method_options[0];
-  const selected_subdistrict_id = 12345;
-  const selected_postal_code = "10110";
+  const firstVariant = store.products[0].variants[0];
+  const selectedPaymentOption = store.paymentMethodOptions[0];
+  const selectedSubdistrictId = 12345;
+  const selectedPostalCode = "10110";
   const items = [
-    { type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 },
+    { type: "product", variantUniqueId: firstVariant.uniqueId, quantity: 1 }
   ];
   const destination = {
-    subdistrict_id: selected_subdistrict_id,
-    postal_code: selected_postal_code,
+    subdistrictId: selectedSubdistrictId,
+    postalCode: selectedPostalCode
   };
-  const shipping_options = await Scalev.checkout.shippingOptions({
-    payment_method: selected_payment_option.value,
+  const shippingOptions = await Scalev.checkout.shippingOptions({
+    paymentMethod: selectedPaymentOption.value,
     destination,
-    items,
+    items
   });
-  const shipping_option = shipping_options[0];
+  const shippingOption = shippingOptions[0];
 
   const payload = {
     customer: {
-      name: event.currentTarget.elements.customer_name.value,
-      phone: event.currentTarget.elements.customer_phone.value,
-      email: event.currentTarget.elements.customer_email.value,
+      name: event.currentTarget.elements.customerName.value,
+      phone: event.currentTarget.elements.customerPhone.value,
+      email: event.currentTarget.elements.customerEmail.value
     },
     destination: {
       address: event.currentTarget.elements.address.value,
-      ...destination,
+      ...destination
     },
     items,
-    payment_method: selected_payment_option.value,
-    shipping_option,
+    paymentMethod: selectedPaymentOption.value,
+    shippingOption
   };
 
   const order = await Scalev.checkout.createOrder(payload);
@@ -408,17 +390,13 @@ async function submit_order(event) {
 
 Field payload yang didukung:
 
-- Customer object: `customer.name`, `customer.phone`, `customer.email`
-- Destination object: `destination.address`, `destination.subdistrict_id`, `destination.postal_code`
-- Payment field: `payment_method`
-- Items list: `items[]` dengan `{ type: "product", variant_unique_id, quantity }` atau `{ type: "bundle", bundle_price_option_unique_id, quantity }`
-- Diskon dan pricing fields: `discount_code_code`, `product_discount`, `shipping_discount`
+- Object customer: `customer.name`, `customer.phone`, `customer.email`
+- Object destination: `destination.address`, `destination.subdistrictId`, `destination.postalCode`
+- Field payment: `paymentMethod`
+- List item: `items[]` dengan `{ type: "product", variantUniqueId, quantity }` atau `{ type: "bundle", bundlePriceOptionUniqueId, quantity }`
+- Field discount dan pricing: `discountCodeCode`, `productDiscount`, `shippingDiscount`
 
-Untuk pilihan shipping, panggil `Scalev.checkout.shippingOptions(payload)`, minta visitor memilih satu option, lalu kirim seluruh option itu sebagai `shipping_option` ke summary dan order call.
-
-Endpoint runtime:
-
-`POST /v3/pages/{page_unique_id}/orders`
+Untuk pilihan pengiriman, panggil `Scalev.checkout.shippingOptions(payload)`, biarkan pengunjung memilih satu option, lalu kirim seluruh option itu sebagai `shippingOption` ke summary dan order.
 
 Payload method yang direkomendasikan:
 
@@ -431,59 +409,58 @@ Payload method yang direkomendasikan:
   },
   "destination": {
     "address": "Customer address",
-    "subdistrict_id": 12345,
-    "postal_code": "10110"
+    "subdistrictId": 12345,
+    "postalCode": "10110"
   },
   "items": [
-    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 }
+    { "type": "product", "variantUniqueId": "variantUid", "quantity": 1 }
   ],
-  "payment_method": "cod",
-  "shipping_option": {
-    "courier_service_id": 48,
-    "courier_code": "anteraja",
-    "service_code": "ND",
+  "paymentMethod": "cod",
+  "shippingOption": {
+    "courierServiceId": 48,
+    "courierCode": "anteraja",
+    "serviceCode": "ND",
     "name": "Next Day",
     "cost": 15300,
     "etd": "1",
-    "is_cod": false,
-    "warehouse_unique_id": "warehouse_uid",
-    "courier_aggregator_code": null,
-    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+    "isCod": false,
+    "warehouseUniqueId": "warehouseUid",
+    "courierAggregatorCode": null,
+    "logoUrl": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
   },
-  "discount_code_code": "PROMO10",
-  "event_source_url": "https://brand.myscalev.com/page",
-  "utm_source": "ads",
-  "recaptcha_token": "generated_by_runtime"
+  "discountCodeCode": "PROMO10",
+  "eventSourceUrl": "https://brand.myscalev.com/page",
+  "utmSource": "ads"
 }
 ```
 
-Untuk pilihan payment, render `store.payment_method_options[].display`, render image dari `store.payment_method_options[].logo_url`, dan submit hanya `value` option terpilih sebagai `payment_method`.
+Untuk payment selection, render `store.paymentMethodOptions[].display`, render gambar payment dari `store.paymentMethodOptions[].logoUrl`, dan submit hanya `value` option terpilih sebagai `paymentMethod`.
 
 Contoh response:
 
 ```json
 {
-  "order_id": "260601HPQSPBX",
+  "orderId": "260601HPQSPBX",
   "status": "pending",
-  "payment_status": "unpaid",
-  "secret_slug": "order-secret-slug",
-  "public_order_url": "https://brand.myscalev.com/order/order-secret-slug",
-  "payment_url": null,
-  "product_price": "90000.00",
-  "product_discount": "0.00",
-  "shipping_cost": "15300.00",
-  "shipping_discount": "0.00",
-  "discount_code_discount": "10000.00",
-  "other_income": "0.00",
-  "other_income_name": "Biaya Lainnya",
-  "gross_revenue": "95300.00",
-  "payment_method": "bank_transfer",
-  "payment_account": {
-    "unique_id": "payment_account_uid",
-    "financial_entity_name": "Bank Central Asia",
-    "account_number": "1234567890"
+  "paymentStatus": "unpaid",
+  "secretSlug": "orderSecretSlug",
+  "publicOrderUrl": "https://brand.myscalev.com/order/orderSecretSlug",
+  "paymentUrl": null,
+  "productPrice": "90000.00",
+  "productDiscount": "0.00",
+  "shippingCost": "15300.00",
+  "shippingDiscount": "0.00",
+  "discountCodeDiscount": "10000.00",
+  "otherIncome": "0.00",
+  "otherIncomeName": "Biaya Lainnya",
+  "grossRevenue": "95300.00",
+  "paymentMethod": "bank_transfer",
+  "paymentAccount": {
+    "uniqueId": "paymentAccountUid",
+    "financialEntityName": "Bank Central Asia",
+    "accountNumber": "1234567890"
   },
-  "courier_service": {
+  "courierService": {
     "id": 48,
     "name": "Next Day",
     "courier": {
@@ -492,27 +469,27 @@ Contoh response:
     }
   },
   "variants": {},
-  "bundle_price_options": {
+  "bundlePriceOptions": {
     "Bundle": {
-      "bundle_price_option_unique_id": "bundle_option_uid",
+      "bundlePriceOptionUniqueId": "bundleOptionUid",
       "quantity": 1
     }
   },
-  "handler_phone": null,
-  "chat_message": null
+  "handlerPhone": null,
+  "chatMessage": null
 }
 ```
 
 ### Error handling
 
-Method runtime me-reject `Promise` dengan JavaScript `Error`. Gunakan `error.message` untuk copy UI. Gunakan `error.status`, `error.data`, dan `Scalev.diagnostics.get()` hanya untuk debugging.
+Runtime method menolak `Promise` dengan JavaScript `Error`. Gunakan `error.message` untuk copy UI. Gunakan `error.status`, `error.data`, dan `Scalev.diagnostics.get()` hanya untuk debugging.
 
 ```js
 try {
   const order = await Scalev.checkout.createOrder(payload);
   return order;
 } catch (error) {
-  show_form_error(error.message || "Order creation failed.");
+  showFormError(error.message || "Order creation failed.");
 }
 ```
 
@@ -522,19 +499,19 @@ Meneruskan event analytics yang dikonfigurasi melalui Scalev.
 
 ```js
 await Scalev.analytics.track("facebook", {
-  first_name: "Customer",
+  firstName: "Customer",
   phone: "08123456789",
-  variants: [{ unique_id: "variant_uid", quantity: 1, price: 179000 }],
+  variants: [{ uniqueId: "variantUid", quantity: 1, price: 179000 }],
   events: [
     {
-      event_name: "Lead",
+      eventName: "Lead",
       parameters: { value: 179000, currency: "IDR" }
     }
   ]
 });
 ```
 
-Provider yang didukung:
+Nama provider yang didukung:
 
 - `facebook`
 - `tiktok`
@@ -555,7 +532,7 @@ Jika provider tidak dikirim, runtime melewati call tanpa menghubungi Scalev:
 }
 ```
 
-Jika request analytics gagal, flow checkout tetap bisa lanjut dan runtime mengembalikan:
+Jika request analytics gagal, checkout flow harus tetap berjalan dan runtime mengembalikan:
 
 ```json
 {
@@ -566,7 +543,7 @@ Jika request analytics gagal, flow checkout tetap bisa lanjut dan runtime mengem
 
 ## `Scalev.prefill.get()`
 
-Membaca data prefill form yang aman dan tersimpan di browser.
+Membaca data prefill form yang aman untuk browser ini.
 
 ```js
 const prefill = await Scalev.prefill.get();
@@ -586,15 +563,15 @@ Contoh response:
   },
   "destination": {
     "address": "Jl. Contoh No. 1",
-    "subdistrict_id": 9104,
-    "postal_code": "12250"
+    "subdistrictId": 9104,
+    "postalCode": "12250"
   }
 }
 ```
 
 ## `Scalev.prefill.save(form, metadata)`
 
-Menyimpan data prefill form yang aman ke cookie terenkripsi `scv_fd` di browser. Operasi ini ditangani lokal oleh fe-public dan tidak memanggil endpoint API Storefront atau endpoint runtime page.
+Menyimpan data prefill form yang aman di cookie terenkripsi `scv_fd`. Ini ditangani lokal oleh fe-public dan tidak memanggil Storefront atau page runtime API endpoint.
 
 ```js
 await Scalev.prefill.save(
@@ -606,8 +583,8 @@ await Scalev.prefill.save(
     },
     destination: {
       address: "Jl. Contoh No. 1",
-      subdistrict_id: 9104,
-      postal_code: "12250"
+      subdistrictId: 9104,
+      postalCode: "12250"
     }
   },
   {
@@ -626,7 +603,7 @@ Contoh response:
 
 ## `Scalev.diagnostics.get()`
 
-Mengembalikan diagnostics runtime terbaru untuk debugging.
+Mengembalikan runtime diagnostics terbaru untuk debugging.
 
 ```js
 const diagnostics = Scalev.diagnostics.get();
@@ -641,7 +618,7 @@ Contoh response:
     "code": "runtime_request_failed",
     "message": "Scalev runtime request failed.",
     "details": {
-      "path": "/pages/page_uid/orders",
+      "path": "/pages/pageUid/orders",
       "status": 422,
       "response": {
         "message": "customer.phone: can't be blank"

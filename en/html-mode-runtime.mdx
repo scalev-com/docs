@@ -21,13 +21,15 @@ if (!scalev) {
 
 Most methods are asynchronous and return a `Promise`. `Scalev.data.get()` and `Scalev.diagnostics.get()` are synchronous.
 
-Runtime methods return the JavaScript-visible result directly. The runtime uses page-scoped v3 public endpoints internally and removes backend collection containers such as `data` and `is_paginated` before returning arrays to page JavaScript.
+Runtime method payloads and responses use camelCase object keys. The runtime handles the backend casing internally, so page JavaScript should not send snake_case keys. Runtime methods also return the JavaScript-visible result directly. They remove backend collection containers such as `data` and `is_paginated` before returning arrays.
+
+String enum values and provider-owned blobs keep their original values. For example, `success_page`, `direct_to_whatsapp`, analytics `parameters`, `metadata`, and `customData` are not renamed.
 
 ## Store context
 
 When Store Context is selected, `Scalev.data.get().store` includes only the selected store summary, products, and bundle price options. Treat it as the page-specific checkout catalog.
 
-When HTML Checkout Page is selected, `Scalev.data.get().after_checkout` includes the selected after-checkout success type and its public destination config.
+When HTML Checkout Page is selected, `Scalev.data.get().afterCheckout` includes the selected after-checkout success type and its public destination config.
 
 When Store Context is unselected, treat `store` as unavailable. Build a regular landing page and rely only on page-safe methods such as `Scalev.data.get()`, `Scalev.analytics.track()`, and `Scalev.prefill.get()`.
 
@@ -53,23 +55,23 @@ Response example:
 {
   "page": {
     "id": 1,
-    "unique_id": "page_uid",
+    "uniqueId": "pageUid",
     "username": "brand"
   },
   "store": {
     "id": 1,
-    "unique_id": "store_uid",
+    "uniqueId": "storeUid",
     "name": "Main Store",
-    "payment_method_options": [
+    "paymentMethodOptions": [
       {
-        "value": "bt:BCA:payment_account_uid",
+        "value": "bt:BCA:paymentAccountUid",
         "display": "Bank Central Asia",
-        "logo_url": "https://cdn.scalev.com/icons/BT_BCA.png"
+        "logoUrl": "https://cdn.scalev.com/icons/BT_BCA.png"
       },
       {
         "value": "cod",
         "display": "COD",
-        "logo_url": "https://cdn.scalev.com/icons/cod.png"
+        "logoUrl": "https://cdn.scalev.com/icons/cod.png"
       }
     ],
     "products": [
@@ -79,36 +81,36 @@ Response example:
         "variants": [
           {
             "id": 10,
-            "unique_id": "variant_uid",
+            "uniqueId": "variantUid",
             "name": "Default",
             "price": 99000,
-            "available_qty": 12
+            "availableQty": 12
           }
         ]
       }
     ],
-    "bundle_price_options": [
+    "bundlePriceOptions": [
       {
         "id": 20,
-        "unique_id": "bundle_option_uid",
+        "uniqueId": "bundleOptionUid",
         "name": "Bundle",
         "price": 179000
       }
     ]
   },
-  "after_checkout": {
+  "afterCheckout": {
     "type": "other_page",
-    "other_page_path": "/thank-you"
+    "otherPagePath": "/thank-you"
   }
 }
 ```
 
-Use `store.payment_method_options` to render payment choices. Render `display`, show `logo_url`, and submit the selected `value` as `payment_method`.
+Use `store.paymentMethodOptions` to render payment choices. Render `display`, show `logoUrl`, and submit the selected `value` as `paymentMethod`.
 
 Payment option values are already flattened:
 
 - `va:BRI` means virtual account for BRI.
-- `bt:BCA:payment_account_uid` means manual bank transfer for the BCA account represented by `payment_account_uid`.
+- `bt:BCA:paymentAccountUid` means manual bank transfer for the represented BCA account.
 - Regular values such as `cod`, `qris`, `invoice`, `alfamart`, or `gopay` keep their original values.
 
 ## Location methods
@@ -117,9 +119,9 @@ Use these methods for address and shipping forms.
 
 ```js
 const provinces = await Scalev.location.provinces();
-const cities = await Scalev.location.cities(province_id);
-const subdistricts = await Scalev.location.subdistricts(city_id);
-const postal_codes = await Scalev.location.postalCodes(subdistrict_id);
+const cities = await Scalev.location.cities(provinceId);
+const subdistricts = await Scalev.location.subdistricts(cityId);
+const postalCodes = await Scalev.location.postalCodes(subdistrictId);
 ```
 
 `provinces`, `cities`, and `subdistricts` accept optional query objects:
@@ -128,20 +130,13 @@ const postal_codes = await Scalev.location.postalCodes(subdistrict_id);
 const provinces = await Scalev.location.provinces({ search: "Jawa" });
 ```
 
-Runtime requests:
-
-- `Scalev.location.provinces({ search })` sends `GET /v3/pages/{page_unique_id}/locations/provinces?search=...`
-- `Scalev.location.cities(province_id, { search })` sends `GET /v3/pages/{page_unique_id}/locations/cities?province_id=...&search=...`
-- `Scalev.location.subdistricts(city_id, { search })` sends `GET /v3/pages/{page_unique_id}/locations/subdistricts?city_id=...&search=...`
-- `Scalev.location.postalCodes(subdistrict_id)` sends `GET /v3/pages/{page_unique_id}/locations/{subdistrict_id}/postal-codes`
-
 Response examples:
 
 ```json
 [
   {
-    "province_id": 31,
-    "province_name": "DKI Jakarta"
+    "provinceId": 31,
+    "provinceName": "DKI Jakarta"
   }
 ]
 ```
@@ -149,8 +144,8 @@ Response examples:
 ```json
 [
   {
-    "city_id": 3171,
-    "city_name": "Kota Jakarta Pusat"
+    "cityId": 3171,
+    "cityName": "Kota Jakarta Pusat"
   }
 ]
 ```
@@ -159,9 +154,9 @@ Response examples:
 [
   {
     "id": 9090,
-    "subdistrict_name": "Gambir",
-    "city_name": "Kota Jakarta Pusat",
-    "province_name": "DKI Jakarta",
+    "subdistrictName": "Gambir",
+    "cityName": "Kota Jakarta Pusat",
+    "provinceName": "DKI Jakarta",
     "display": "Gambir, Kota Jakarta Pusat, DKI Jakarta"
   }
 ]
@@ -170,7 +165,7 @@ Response examples:
 ```json
 [
   {
-    "postal_code": "10110"
+    "postalCode": "10110"
   }
 ]
 ```
@@ -182,51 +177,36 @@ Validates a discount code for a checkout payload.
 ```js
 const result = await Scalev.checkout.validateDiscount({
   code: "PROMO10",
-  gross_revenue: 179000,
-  net_product_price: 179000,
-  shipping_cost: 0,
-  payment_method: store.payment_method_options?.[0]?.value || "cod",
+  grossRevenue: 179000,
+  netProductPrice: 179000,
+  shippingCost: 0,
+  paymentMethod: store.paymentMethodOptions?.[0]?.value || "cod"
 });
-```
-
-Runtime request:
-
-`POST /v3/pages/{page_unique_id}/discount-codes/check`
-
-```json
-{
-  "code": "PROMO10",
-  "gross_revenue": 179000,
-  "net_product_price": 179000,
-  "shipping_cost": 0,
-  "payment_method": "cod",
-  "domain": "brand.myscalev.com"
-}
 ```
 
 Response example:
 
 ```json
 {
-  "discount_code": {
+  "discountCode": {
     "code": "PROMO10",
-    "applied_to": "product_price",
-    "amount_type": "fixed",
+    "appliedTo": "product_price",
+    "amountType": "fixed",
     "amount": 10000,
-    "is_enabled": true
+    "isEnabled": true
   },
-  "eligibility_details": {
-    "is_enabled": true,
-    "is_expiry_check": true,
-    "is_usage_limit_check": true,
-    "is_minimum_revenue_check": true,
-    "is_limited_to_pages_check": true,
-    "is_limited_to_payment_methods_check": true,
-    "is_page_discount_active": true,
-    "is_amount_not_zero": true
+  "eligibilityDetails": {
+    "isEnabled": true,
+    "isExpiryCheck": true,
+    "isUsageLimitCheck": true,
+    "isMinimumRevenueCheck": true,
+    "isLimitedToPagesCheck": true,
+    "isLimitedToPaymentMethodsCheck": true,
+    "isPageDiscountActive": true,
+    "isAmountNotZero": true
   },
-  "is_eligible": true,
-  "discount_code_discount": 10000
+  "isEligible": true,
+  "discountCodeDiscount": 10000
 }
 ```
 
@@ -235,55 +215,57 @@ Response example:
 Returns shipping options for the selected items, destination, and payment method. Use this as the only shipping lookup method.
 
 ```js
-const shipping_options = await Scalev.checkout.shippingOptions({
-  payment_method: selected_payment_option.value,
+const shippingOptions = await Scalev.checkout.shippingOptions({
+  paymentMethod: selectedPaymentOption.value,
   destination: {
-    subdistrict_id: selected_subdistrict_id,
-    postal_code: selected_postal_code,
+    subdistrictId: selectedSubdistrictId,
+    postalCode: selectedPostalCode
   },
-  items: [{ type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 }],
+  items: [
+    {
+      type: "product",
+      variantUniqueId: firstVariant.uniqueId,
+      quantity: 1
+    }
+  ]
 });
 ```
 
-Pass the chosen option back as one `shipping_option` field in `estimateSummary` and `createOrder`. The runtime prepares the checkout request from that option. Options include `logo_url` when a courier code is available.
+Pass the chosen option back as one `shippingOption` field in `estimateSummary` and `createOrder`. The runtime prepares the checkout request from that option. Options include `logoUrl` when a courier code is available.
 
 Response example:
 
 ```json
 [
   {
-    "courier_service_id": 48,
-    "courier_code": "anteraja",
-    "service_code": "ND",
+    "courierServiceId": 48,
+    "courierCode": "anteraja",
+    "serviceCode": "ND",
     "name": "Next Day",
     "cost": 15300,
     "etd": "1",
-    "is_cod": false,
-    "warehouse_unique_id": "warehouse_uid",
-    "courier_aggregator_code": null,
-    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+    "isCod": false,
+    "warehouseUniqueId": "warehouseUid",
+    "courierAggregatorCode": null,
+    "logoUrl": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
   }
 ]
 ```
-
-Runtime endpoint:
-
-`POST /v3/pages/{page_unique_id}/checkout/shipping-options`
 
 Recommended method payload:
 
 ```json
 {
   "items": [
-    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 },
+    { "type": "product", "variantUniqueId": "variantUid", "quantity": 1 },
     {
       "type": "bundle",
-      "bundle_price_option_unique_id": "bundle_option_uid",
+      "bundlePriceOptionUniqueId": "bundleOptionUid",
       "quantity": 1
     }
   ],
-  "destination": { "subdistrict_id": 12345, "postal_code": "10110" },
-  "payment_method": "cod"
+  "destination": { "subdistrictId": 12345, "postalCode": "10110" },
+  "paymentMethod": "cod"
 }
 ```
 
@@ -291,55 +273,55 @@ Recommended method payload:
 
 Returns a checkout summary for pages that show a buyer-facing breakdown before submit.
 
-This method is optional. Pass the same item, destination, payment, and `shipping_option` that you will send to `Scalev.checkout.createOrder(payload)`.
+This method is optional. Pass the same item, destination, payment, and `shippingOption` that you will send to `Scalev.checkout.createOrder(payload)`.
 
 The result does not replace order creation validation. Scalev still validates and applies final shipping, discount, extra-fee, and total amounts during order creation before the order is persisted.
 
 ```js
-const shipping_option = shipping_options[0];
+const shippingOption = shippingOptions[0];
 
 const payload = {
-  destination: { subdistrict_id: 12345, postal_code: "10110" },
+  destination: { subdistrictId: 12345, postalCode: "10110" },
   items: [
-    { type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 },
-    { type: "bundle", bundle_price_option_unique_id: first_bundle_price_option.unique_id, quantity: 1 },
+    { type: "product", variantUniqueId: firstVariant.uniqueId, quantity: 1 },
+    {
+      type: "bundle",
+      bundlePriceOptionUniqueId: firstBundlePriceOption.uniqueId,
+      quantity: 1
+    }
   ],
-  payment_method: selected_payment_option.value,
-  shipping_option,
+  paymentMethod: selectedPaymentOption.value,
+  shippingOption
 };
 
 const summary = await Scalev.checkout.estimateSummary(payload);
 ```
-
-Runtime endpoint:
-
-`POST /v3/pages/{page_unique_id}/checkout/summary`
 
 Recommended method payload:
 
 ```json
 {
   "items": [
-    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 },
+    { "type": "product", "variantUniqueId": "variantUid", "quantity": 1 },
     {
       "type": "bundle",
-      "bundle_price_option_unique_id": "bundle_option_uid",
+      "bundlePriceOptionUniqueId": "bundleOptionUid",
       "quantity": 1
     }
   ],
-  "destination": { "subdistrict_id": 12345, "postal_code": "10110" },
-  "payment_method": "cod",
-  "shipping_option": {
-    "courier_service_id": 48,
-    "courier_code": "anteraja",
-    "service_code": "ND",
+  "destination": { "subdistrictId": 12345, "postalCode": "10110" },
+  "paymentMethod": "cod",
+  "shippingOption": {
+    "courierServiceId": 48,
+    "courierCode": "anteraja",
+    "serviceCode": "ND",
     "name": "Next Day",
     "cost": 15300,
     "etd": "1",
-    "is_cod": false,
-    "warehouse_unique_id": "warehouse_uid",
-    "courier_aggregator_code": null,
-    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+    "isCod": false,
+    "warehouseUniqueId": "warehouseUid",
+    "courierAggregatorCode": null,
+    "logoUrl": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
   }
 }
 ```
@@ -348,57 +330,57 @@ Response example:
 
 ```json
 {
-  "product_price": 268000,
-  "shipping_cost": 15300,
-  "other_income": 0,
-  "other_income_name": "Biaya Lainnya",
-  "gross_revenue": 273300
+  "productPrice": 268000,
+  "shippingCost": 15300,
+  "otherIncome": 0,
+  "otherIncomeName": "Biaya Lainnya",
+  "grossRevenue": 273300
 }
 ```
 
-Use `estimateSummary` only when the checkout UI displays totals before submit. Do not calculate or submit `other_income` or `other_income_name`; Scalev calculates store-configured extra fees in `estimateSummary` and applies them again during `createOrder`.
+Use `estimateSummary` only when the checkout UI displays totals before submit. Do not calculate or submit `otherIncome` or `otherIncomeName`; Scalev calculates store-configured extra fees in `estimateSummary` and applies them again during `createOrder`.
 
 ## `Scalev.checkout.createOrder(payload)`
 
 Creates a real public order and validates the payload. Call this only after a visitor intentionally submits the form.
 
 ```js
-async function submit_order(event) {
+async function submitOrder(event) {
   event.preventDefault();
 
   const data = Scalev.data.get();
   const store = data.store;
-  const first_variant = store.products[0].variants[0];
-  const selected_payment_option = store.payment_method_options[0];
-  const selected_subdistrict_id = 12345;
-  const selected_postal_code = "10110";
+  const firstVariant = store.products[0].variants[0];
+  const selectedPaymentOption = store.paymentMethodOptions[0];
+  const selectedSubdistrictId = 12345;
+  const selectedPostalCode = "10110";
   const items = [
-    { type: "product", variant_unique_id: first_variant.unique_id, quantity: 1 },
+    { type: "product", variantUniqueId: firstVariant.uniqueId, quantity: 1 }
   ];
   const destination = {
-    subdistrict_id: selected_subdistrict_id,
-    postal_code: selected_postal_code,
+    subdistrictId: selectedSubdistrictId,
+    postalCode: selectedPostalCode
   };
-  const shipping_options = await Scalev.checkout.shippingOptions({
-    payment_method: selected_payment_option.value,
+  const shippingOptions = await Scalev.checkout.shippingOptions({
+    paymentMethod: selectedPaymentOption.value,
     destination,
-    items,
+    items
   });
-  const shipping_option = shipping_options[0];
+  const shippingOption = shippingOptions[0];
 
   const payload = {
     customer: {
-      name: event.currentTarget.elements.customer_name.value,
-      phone: event.currentTarget.elements.customer_phone.value,
-      email: event.currentTarget.elements.customer_email.value,
+      name: event.currentTarget.elements.customerName.value,
+      phone: event.currentTarget.elements.customerPhone.value,
+      email: event.currentTarget.elements.customerEmail.value
     },
     destination: {
       address: event.currentTarget.elements.address.value,
-      ...destination,
+      ...destination
     },
     items,
-    payment_method: selected_payment_option.value,
-    shipping_option,
+    paymentMethod: selectedPaymentOption.value,
+    shippingOption
   };
 
   const order = await Scalev.checkout.createOrder(payload);
@@ -409,16 +391,12 @@ async function submit_order(event) {
 Supported payload fields:
 
 - Customer object: `customer.name`, `customer.phone`, `customer.email`
-- Destination object: `destination.address`, `destination.subdistrict_id`, `destination.postal_code`
-- Payment field: `payment_method`
-- Items list: `items[]` with `{ type: "product", variant_unique_id, quantity }` or `{ type: "bundle", bundle_price_option_unique_id, quantity }`
-- Discount and pricing fields: `discount_code_code`, `product_discount`, `shipping_discount`
+- Destination object: `destination.address`, `destination.subdistrictId`, `destination.postalCode`
+- Payment field: `paymentMethod`
+- Items list: `items[]` with `{ type: "product", variantUniqueId, quantity }` or `{ type: "bundle", bundlePriceOptionUniqueId, quantity }`
+- Discount and pricing fields: `discountCodeCode`, `productDiscount`, `shippingDiscount`
 
-For shipping selection, call `Scalev.checkout.shippingOptions(payload)`, let the visitor choose one option, then pass that whole option as `shipping_option` into summary and order calls.
-
-Runtime endpoint:
-
-`POST /v3/pages/{page_unique_id}/orders`
+For shipping selection, call `Scalev.checkout.shippingOptions(payload)`, let the visitor choose one option, then pass that whole option as `shippingOption` into summary and order calls.
 
 Recommended method payload:
 
@@ -431,59 +409,58 @@ Recommended method payload:
   },
   "destination": {
     "address": "Customer address",
-    "subdistrict_id": 12345,
-    "postal_code": "10110"
+    "subdistrictId": 12345,
+    "postalCode": "10110"
   },
   "items": [
-    { "type": "product", "variant_unique_id": "variant_uid", "quantity": 1 }
+    { "type": "product", "variantUniqueId": "variantUid", "quantity": 1 }
   ],
-  "payment_method": "cod",
-  "shipping_option": {
-    "courier_service_id": 48,
-    "courier_code": "anteraja",
-    "service_code": "ND",
+  "paymentMethod": "cod",
+  "shippingOption": {
+    "courierServiceId": 48,
+    "courierCode": "anteraja",
+    "serviceCode": "ND",
     "name": "Next Day",
     "cost": 15300,
     "etd": "1",
-    "is_cod": false,
-    "warehouse_unique_id": "warehouse_uid",
-    "courier_aggregator_code": null,
-    "logo_url": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
+    "isCod": false,
+    "warehouseUniqueId": "warehouseUid",
+    "courierAggregatorCode": null,
+    "logoUrl": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
   },
-  "discount_code_code": "PROMO10",
-  "event_source_url": "https://brand.myscalev.com/page",
-  "utm_source": "ads",
-  "recaptcha_token": "generated_by_runtime"
+  "discountCodeCode": "PROMO10",
+  "eventSourceUrl": "https://brand.myscalev.com/page",
+  "utmSource": "ads"
 }
 ```
 
-For payment selection, render `store.payment_method_options[].display`, render payment images from `store.payment_method_options[].logo_url`, and submit only the selected option `value` as `payment_method`.
+For payment selection, render `store.paymentMethodOptions[].display`, render payment images from `store.paymentMethodOptions[].logoUrl`, and submit only the selected option `value` as `paymentMethod`.
 
 Response example:
 
 ```json
 {
-  "order_id": "260601HPQSPBX",
+  "orderId": "260601HPQSPBX",
   "status": "pending",
-  "payment_status": "unpaid",
-  "secret_slug": "order-secret-slug",
-  "public_order_url": "https://brand.myscalev.com/order/order-secret-slug",
-  "payment_url": null,
-  "product_price": "90000.00",
-  "product_discount": "0.00",
-  "shipping_cost": "15300.00",
-  "shipping_discount": "0.00",
-  "discount_code_discount": "10000.00",
-  "other_income": "0.00",
-  "other_income_name": "Biaya Lainnya",
-  "gross_revenue": "95300.00",
-  "payment_method": "bank_transfer",
-  "payment_account": {
-    "unique_id": "payment_account_uid",
-    "financial_entity_name": "Bank Central Asia",
-    "account_number": "1234567890"
+  "paymentStatus": "unpaid",
+  "secretSlug": "orderSecretSlug",
+  "publicOrderUrl": "https://brand.myscalev.com/order/orderSecretSlug",
+  "paymentUrl": null,
+  "productPrice": "90000.00",
+  "productDiscount": "0.00",
+  "shippingCost": "15300.00",
+  "shippingDiscount": "0.00",
+  "discountCodeDiscount": "10000.00",
+  "otherIncome": "0.00",
+  "otherIncomeName": "Biaya Lainnya",
+  "grossRevenue": "95300.00",
+  "paymentMethod": "bank_transfer",
+  "paymentAccount": {
+    "uniqueId": "paymentAccountUid",
+    "financialEntityName": "Bank Central Asia",
+    "accountNumber": "1234567890"
   },
-  "courier_service": {
+  "courierService": {
     "id": 48,
     "name": "Next Day",
     "courier": {
@@ -492,14 +469,14 @@ Response example:
     }
   },
   "variants": {},
-  "bundle_price_options": {
+  "bundlePriceOptions": {
     "Bundle": {
-      "bundle_price_option_unique_id": "bundle_option_uid",
+      "bundlePriceOptionUniqueId": "bundleOptionUid",
       "quantity": 1
     }
   },
-  "handler_phone": null,
-  "chat_message": null
+  "handlerPhone": null,
+  "chatMessage": null
 }
 ```
 
@@ -512,7 +489,7 @@ try {
   const order = await Scalev.checkout.createOrder(payload);
   return order;
 } catch (error) {
-  show_form_error(error.message || "Order creation failed.");
+  showFormError(error.message || "Order creation failed.");
 }
 ```
 
@@ -522,12 +499,12 @@ Forwards configured analytics events through Scalev.
 
 ```js
 await Scalev.analytics.track("facebook", {
-  first_name: "Customer",
+  firstName: "Customer",
   phone: "08123456789",
-  variants: [{ unique_id: "variant_uid", quantity: 1, price: 179000 }],
+  variants: [{ uniqueId: "variantUid", quantity: 1, price: 179000 }],
   events: [
     {
-      event_name: "Lead",
+      eventName: "Lead",
       parameters: { value: 179000, currency: "IDR" }
     }
   ]
@@ -586,8 +563,8 @@ Response example:
   },
   "destination": {
     "address": "Jl. Contoh No. 1",
-    "subdistrict_id": 9104,
-    "postal_code": "12250"
+    "subdistrictId": 9104,
+    "postalCode": "12250"
   }
 }
 ```
@@ -606,8 +583,8 @@ await Scalev.prefill.save(
     },
     destination: {
       address: "Jl. Contoh No. 1",
-      subdistrict_id: 9104,
-      postal_code: "12250"
+      subdistrictId: 9104,
+      postalCode: "12250"
     }
   },
   {
@@ -641,7 +618,7 @@ Response example:
     "code": "runtime_request_failed",
     "message": "Scalev runtime request failed.",
     "details": {
-      "path": "/pages/page_uid/orders",
+      "path": "/pages/pageUid/orders",
       "status": 422,
       "response": {
         "message": "customer.phone: can't be blank"
