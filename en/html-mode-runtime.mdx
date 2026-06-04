@@ -130,6 +130,8 @@ const postalCodes = await Scalev.location.postalCodes(subdistricts[0].id);
 const provinces = await Scalev.location.provinces({ search: "Jawa" });
 ```
 
+Province and city responses use `{ id, name }`. Subdistrict responses use `id` and `name` for the subdistrict, plus `cityName`, `provinceName`, and `display` for address labels.
+
 Response examples:
 
 ```json

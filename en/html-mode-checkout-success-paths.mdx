@@ -182,16 +182,30 @@ const store = data.store;
 const afterCheckout = data.afterCheckout || { type: "success_page" };
 const selectedPaymentOption = store.paymentMethodOptions[0];
 const selectedVariant = store.products[0].variants[0];
+const destination = {
+  address: form.address.value,
+  subdistrictId: Number(form.subdistrictId.value),
+  postalCode: form.postalCode.value
+};
+const items = [
+  { type: "product", variantUniqueId: selectedVariant.uniqueId, quantity: 1 }
+];
+const shippingOptions = await Scalev.checkout.shippingOptions({
+  items,
+  destination,
+  paymentMethod: selectedPaymentOption.value
+});
+const shippingOption = shippingOptions[0];
 
 const payload = {
   customer: {
     name: form.customerName.value,
     phone: form.customerPhone.value
   },
-  items: [
-    { type: "product", variantUniqueId: selectedVariant.uniqueId, quantity: 1 }
-  ],
-  paymentMethod: selectedPaymentOption.value
+  destination,
+  items,
+  paymentMethod: selectedPaymentOption.value,
+  shippingOption
 };
 
 const order = await Scalev.checkout.createOrder(payload);
