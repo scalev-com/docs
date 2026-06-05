@@ -178,7 +178,7 @@ Memvalidasi kode diskon untuk payload checkout.
 
 ```js
 const result = await Scalev.checkout.validateDiscount({
-  code: "PROMO10",
+  discountCode: "PROMO10",
   grossRevenue: 179000,
   netProductPrice: 179000,
   shippingCost: 0,
@@ -396,7 +396,9 @@ Field payload yang didukung:
 - Object destination: `destination.address`, `destination.subdistrictId`, `destination.postalCode`
 - Field payment: `paymentMethod`
 - List item: `items[]` dengan `{ type: "product", variantUniqueId, quantity }` atau `{ type: "bundle", bundlePriceOptionUniqueId, quantity }`
-- Field discount dan pricing: `discountCodeCode`, `productDiscount`, `shippingDiscount`
+- Field discount: `discountCode`
+
+Jangan submit field product discount atau shipping discount di level atas. Harga produk dan penyesuaian item-level berada di `items[]` saat dibutuhkan. Gunakan `validateDiscount` untuk melihat estimasi discount code yang eligible, lalu kirim kode terpilih sebagai `discountCode` ke `createOrder`.
 
 Untuk pilihan pengiriman, panggil `Scalev.checkout.shippingOptions(payload)`, biarkan pengunjung memilih satu option, lalu kirim seluruh option itu sebagai `shipping` ke summary dan order.
 
@@ -430,7 +432,7 @@ Payload method yang direkomendasikan:
     "courierAggregatorCode": null,
     "logoUrl": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
   },
-  "discountCodeCode": "PROMO10",
+  "discountCode": "PROMO10",
   "eventSourceUrl": "https://brand.myscalev.com/page",
   "utmSource": "ads"
 }

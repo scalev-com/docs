@@ -178,7 +178,7 @@ Validates a discount code for a checkout payload.
 
 ```js
 const result = await Scalev.checkout.validateDiscount({
-  code: "PROMO10",
+  discountCode: "PROMO10",
   grossRevenue: 179000,
   netProductPrice: 179000,
   shippingCost: 0,
@@ -396,7 +396,9 @@ Supported payload fields:
 - Destination object: `destination.address`, `destination.subdistrictId`, `destination.postalCode`
 - Payment field: `paymentMethod`
 - Items list: `items[]` with `{ type: "product", variantUniqueId, quantity }` or `{ type: "bundle", bundlePriceOptionUniqueId, quantity }`
-- Discount and pricing fields: `discountCodeCode`, `productDiscount`, `shippingDiscount`
+- Discount field: `discountCode`
+
+Do not submit top-level product or shipping discount fields. Product price and item-level adjustments belong on `items[]` when needed. Use `validateDiscount` to preview eligible discount code amounts, then pass the selected code as `discountCode` to `createOrder`.
 
 For shipping selection, call `Scalev.checkout.shippingOptions(payload)`, let the visitor choose one option, then pass that whole option as `shipping` into summary and order calls.
 
@@ -430,7 +432,7 @@ Recommended method payload:
     "courierAggregatorCode": null,
     "logoUrl": "https://cdn.scalev.com/assets/images/kurir/anteraja.png"
   },
-  "discountCodeCode": "PROMO10",
+  "discountCode": "PROMO10",
   "eventSourceUrl": "https://brand.myscalev.com/page",
   "utmSource": "ads"
 }
