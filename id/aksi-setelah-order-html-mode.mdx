@@ -195,7 +195,7 @@ const shippingOptions = await Scalev.checkout.shippingOptions({
   destination,
   paymentMethod: selectedPaymentOption.value
 });
-const shippingOption = shippingOptions[0];
+const shipping = shippingOptions[0];
 
 const payload = {
   customer: {
@@ -205,7 +205,7 @@ const payload = {
   destination,
   items,
   paymentMethod: selectedPaymentOption.value,
-  shippingOption
+  shipping
 };
 
 const order = await Scalev.checkout.createOrder(payload);

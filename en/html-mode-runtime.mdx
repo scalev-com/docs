@@ -233,7 +233,7 @@ const shippingOptions = await Scalev.checkout.shippingOptions({
 });
 ```
 
-Pass the chosen option back as one `shippingOption` field in `estimateSummary` and `createOrder`. The runtime prepares the checkout request from that option. Options include `logoUrl` when a courier code is available.
+Pass the chosen option back as one `shipping` field in `estimateSummary` and `createOrder`. The runtime prepares the checkout request from that option. Options include `logoUrl` when a courier code is available.
 
 Response example:
 
@@ -275,12 +275,12 @@ Recommended method payload:
 
 Returns a checkout summary for pages that show a buyer-facing breakdown before submit.
 
-This method is optional. Pass the same item, destination, payment, and `shippingOption` that you will send to `Scalev.checkout.createOrder(payload)`.
+This method is optional. Pass the same item, destination, payment, and `shipping` that you will send to `Scalev.checkout.createOrder(payload)`.
 
 The result does not replace order creation validation. Scalev still validates and applies final shipping, discount, extra-fee, and total amounts during order creation before the order is persisted.
 
 ```js
-const shippingOption = shippingOptions[0];
+const shipping = shippingOptions[0];
 
 const payload = {
   destination: { subdistrictId: 12345, postalCode: "10110" },
@@ -293,7 +293,7 @@ const payload = {
     }
   ],
   paymentMethod: selectedPaymentOption.value,
-  shippingOption
+  shipping
 };
 
 const summary = await Scalev.checkout.estimateSummary(payload);
@@ -313,7 +313,7 @@ Recommended method payload:
   ],
   "destination": { "subdistrictId": 12345, "postalCode": "10110" },
   "paymentMethod": "cod",
-  "shippingOption": {
+  "shipping": {
     "courierServiceId": 48,
     "courierCode": "anteraja",
     "serviceCode": "ND",
@@ -368,7 +368,7 @@ async function submitOrder(event) {
     destination,
     items
   });
-  const shippingOption = shippingOptions[0];
+  const shipping = shippingOptions[0];
 
   const payload = {
     customer: {
@@ -382,7 +382,7 @@ async function submitOrder(event) {
     },
     items,
     paymentMethod: selectedPaymentOption.value,
-    shippingOption
+    shipping
   };
 
   const order = await Scalev.checkout.createOrder(payload);
@@ -398,7 +398,7 @@ Supported payload fields:
 - Items list: `items[]` with `{ type: "product", variantUniqueId, quantity }` or `{ type: "bundle", bundlePriceOptionUniqueId, quantity }`
 - Discount and pricing fields: `discountCodeCode`, `productDiscount`, `shippingDiscount`
 
-For shipping selection, call `Scalev.checkout.shippingOptions(payload)`, let the visitor choose one option, then pass that whole option as `shippingOption` into summary and order calls.
+For shipping selection, call `Scalev.checkout.shippingOptions(payload)`, let the visitor choose one option, then pass that whole option as `shipping` into summary and order calls.
 
 Recommended method payload:
 
@@ -418,7 +418,7 @@ Recommended method payload:
     { "type": "product", "variantUniqueId": "variantUid", "quantity": 1 }
   ],
   "paymentMethod": "cod",
-  "shippingOption": {
+  "shipping": {
     "courierServiceId": 48,
     "courierCode": "anteraja",
     "serviceCode": "ND",

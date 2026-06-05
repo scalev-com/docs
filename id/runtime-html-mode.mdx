@@ -233,7 +233,7 @@ const shippingOptions = await Scalev.checkout.shippingOptions({
 });
 ```
 
-Kirim option yang dipilih sebagai satu field `shippingOption` di `estimateSummary` dan `createOrder`. Runtime akan menyiapkan request checkout dari option tersebut. Opsi dapat berisi `logoUrl` saat courier code tersedia.
+Kirim option yang dipilih sebagai satu field `shipping` di `estimateSummary` dan `createOrder`. Runtime akan menyiapkan request checkout dari option tersebut. Opsi dapat berisi `logoUrl` saat courier code tersedia.
 
 Contoh response:
 
@@ -275,12 +275,12 @@ Payload method yang direkomendasikan:
 
 Mengembalikan ringkasan checkout untuk halaman yang menampilkan breakdown biaya sebelum submit.
 
-Method ini opsional. Kirim item, destination, payment, dan `shippingOption` yang sama seperti payload yang akan dikirim ke `Scalev.checkout.createOrder(payload)`.
+Method ini opsional. Kirim item, destination, payment, dan `shipping` yang sama seperti payload yang akan dikirim ke `Scalev.checkout.createOrder(payload)`.
 
 Hasil method ini tidak menggantikan validasi pembuatan order. Scalev tetap memvalidasi dan menerapkan shipping final, discount, biaya tambahan, dan total saat order dibuat.
 
 ```js
-const shippingOption = shippingOptions[0];
+const shipping = shippingOptions[0];
 
 const payload = {
   destination: { subdistrictId: 12345, postalCode: "10110" },
@@ -293,7 +293,7 @@ const payload = {
     }
   ],
   paymentMethod: selectedPaymentOption.value,
-  shippingOption
+  shipping
 };
 
 const summary = await Scalev.checkout.estimateSummary(payload);
@@ -313,7 +313,7 @@ Payload method yang direkomendasikan:
   ],
   "destination": { "subdistrictId": 12345, "postalCode": "10110" },
   "paymentMethod": "cod",
-  "shippingOption": {
+  "shipping": {
     "courierServiceId": 48,
     "courierCode": "anteraja",
     "serviceCode": "ND",
@@ -368,7 +368,7 @@ async function submitOrder(event) {
     destination,
     items
   });
-  const shippingOption = shippingOptions[0];
+  const shipping = shippingOptions[0];
 
   const payload = {
     customer: {
@@ -382,7 +382,7 @@ async function submitOrder(event) {
     },
     items,
     paymentMethod: selectedPaymentOption.value,
-    shippingOption
+    shipping
   };
 
   const order = await Scalev.checkout.createOrder(payload);
@@ -398,7 +398,7 @@ Field payload yang didukung:
 - List item: `items[]` dengan `{ type: "product", variantUniqueId, quantity }` atau `{ type: "bundle", bundlePriceOptionUniqueId, quantity }`
 - Field discount dan pricing: `discountCodeCode`, `productDiscount`, `shippingDiscount`
 
-Untuk pilihan pengiriman, panggil `Scalev.checkout.shippingOptions(payload)`, biarkan pengunjung memilih satu option, lalu kirim seluruh option itu sebagai `shippingOption` ke summary dan order.
+Untuk pilihan pengiriman, panggil `Scalev.checkout.shippingOptions(payload)`, biarkan pengunjung memilih satu option, lalu kirim seluruh option itu sebagai `shipping` ke summary dan order.
 
 Payload method yang direkomendasikan:
 
@@ -418,7 +418,7 @@ Payload method yang direkomendasikan:
     { "type": "product", "variantUniqueId": "variantUid", "quantity": 1 }
   ],
   "paymentMethod": "cod",
-  "shippingOption": {
+  "shipping": {
     "courierServiceId": 48,
     "courierCode": "anteraja",
     "serviceCode": "ND",
