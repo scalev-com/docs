@@ -14,586 +14,12 @@
   "navigation": {
     "languages": [
       {
-        "language": "id",
-        "default": true,
-        "tabs": [
-          {
-            "tab": "Umum",
-            "icon": "house",
-            "pages": [
-              "id/index",
-              {
-                "group": "Metode Pembayaran",
-                "pages": [
-                  "id/dropdown-payment-method",
-                  {
-                    "group": "E-Payment & withdrawal",
-                    "pages": [
-                      "id/a-z-e-payment",
-                      "id/skemaepaymentscalev-old",
-                      "id/2-jenis-fee-epayment",
-                      "id/menambahkan-e-payment",
-                      "id/alur-epayment",
-                      "id/scalevfeedi4tempat",
-                      "id/detailepayment",
-                      "id/a-z-withdrawal-scalev",
-                      "id/epayment-net-revenue",
-                      "id/perhitungan-pajak-scalev",
-                      "id/pajak-scalev",
-                      "id/payment-waba",
-                      "id/tambah-epayment",
-                      {
-                        "group": "Troubleshot E-Payment",
-                        "pages": [
-                          "id/tidak-masuk-balance",
-                          "id/instruksi-pembayaran-tidak-muncul",
-                          "id/ovo-shopeepay-cepet-expired",
-                          "id/cek-manual-epayment",
-                          "id/ewallet-to-qris"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "group": "Bank Transfer",
-                    "pages": ["id/rekening", "id/conflict"]
-                  }
-                ]
-              },
-              {
-                "group": "Toko, checkout & pesanan",
-                "pages": [
-                  "id/storefront-homepage",
-                  "id/wa-order-notification",
-                  "id/diskon-metode-pembayaran-tertentu",
-                  "id/toko",
-                  "id/cara-menambahkan-whatsapp-business-ke-dalam-toko-mengatur-greeting-message-auto-reply-dan-mengatur-sales-person-cs",
-                  "id/custom-warehouse-produk",
-                  "id/import-berdu",
-                  "id/importoo",
-                  "id/nilai-purchase-event",
-                  "id/daftar-pembeli-generator",
-                  "id/autodiskon",
-                  "id/order-shield",
-                  "id/diskon"
-                ]
-              },
-              {
-                "group": "A-Z Produk Di Scalev",
-                "pages": [
-                  {
-                    "group": "Produk Fisik",
-                    "pages": [
-                      "id/produkfisik",
-                      "id/pembayaran-cod",
-                      "id/gudang",
-                      "id/unavailable-courier",
-                      "id/selisih-ongkir"
-                    ]
-                  },
-                  {
-                    "group": "LMS & produk digital",
-                    "pages": [
-                      "id/lms",
-                      "id/jualandigital",
-                      "id/mailev-identity",
-                      "id/send-lms-access-manual",
-                      "id/link-akses-404",
-                      "id/login-lms-as-owner",
-                      "id/member-area-pwa",
-                      "id/powered-by-scalev",
-                      "id/whitelist",
-                      "id/mailketing",
-                      "id/broadcast-di-mailev",
-                      "id/not-bounced"
-                    ]
-                  },
-                  "id/variant"
-                ]
-              },
-              {
-                "group": "A-Z Orderan di Scalev",
-                "pages": [
-                  "id/az-ngurus-order",
-                  "id/salah-input-email",
-                  "id/wa-invoice",
-                  "id/manual-order",
-                  "id/duplicate-order",
-                  "id/hard-filter",
-                  "id/require-courier-selection",
-                  "id/ban-this-customer",
-                  "id/ordermasuk",
-                  "id/utm-form-embed",
-                  "id/search-customer-order",
-                  "id/anti-spam-order"
-                ]
-              },
-              {
-                "group": "Landing pages",
-                "pages": [
-                  "id/landing-page",
-                  "id/checkoutsekaliguslistbuilding",
-                  "id/upsell",
-                  "id/submite",
-                  "id/submit-to-wa",
-                  "id/edit-after-submit",
-                  "id/harga-coret",
-                  "id/externalembed",
-                  "id/exportimportlp",
-                  "id/hapus-landingpage",
-                  "id/slug",
-                  "id/scroll",
-                  "id/hapus-form",
-                  {
-                    "group": "Tips & Trick Landingpage",
-                    "pages": [
-                      "id/popup-sales",
-                      "id/anti-copas",
-                      "id/autotext-tombol",
-                      "id/countdown-timer",
-                      "id/embed-reels-ig",
-                      "id/embed-youtube-shorts",
-                      "id/floating-button-cta",
-                      "id/floating-button-wa",
-                      "id/swap-slug",
-                      "id/optimasi-landingpage",
-                      "id/share-lp",
-                      "id/zoom"
-                    ]
-                  },
-                  {
-                    "group": "Troubleshot Landingpage",
-                    "pages": [
-                      "id/payment-required",
-                      "id/kenapa-oclp-rendah",
-                      "id/kenapa-lp-lemot",
-                      "id/skor-pagespeed-rendah",
-                      "id/field-telepon-tetap-muncul"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Tracking & iklan",
-                "pages": [
-                  {
-                    "group": "Meta Pixel",
-                    "pages": [
-                      "id/setting-meta-ads-user",
-                      "id/custom-audience-meta",
-                      "id/tambah-custom-audience",
-                      "id/tambah-pixel",
-                      "id/triggerpurchase",
-                      "id/conversionapi",
-                      "id/cek-notifikasi-event",
-                      "id/testing-events-manager-id",
-                      "id/events-manager-testing",
-                      "id/verifikasimeta",
-                      "id/manual-trigger-purchase",
-                      "id/funnel-toko-online",
-                      "id/best-practices-meta",
-                      "id/funnel-analysis",
-                      "id/real-purchase-tidak-muncul"
-                    ]
-                  },
-                  {
-                    "group": "Snack Video Pixel",
-                    "pages": [
-                      "id/snackvideouser",
-                      "id/setting-pixel-snackvideo",
-                      "id/membuat-pixel-eventapi-snackvideo",
-                      "id/pastikantiktok",
-                      "id/test-event-snackvideo"
-                    ]
-                  },
-                  {
-                    "group": "TikTok Pixel",
-                    "pages": [
-                      "id/setting-tiktok-ads-user",
-                      "id/setting-pixel-tiktok",
-                      "id/tambah-pixel-tiktok",
-                      "id/test-event-tiktok"
-                    ]
-                  },
-                  "id/tracking-email",
-                  "id/default-events",
-                  "id/autofill",
-                  "id/speed-boost",
-                  "id/google-ads-gtm",
-                  {
-                    "group": "Google ads",
-                    "pages": [
-                      "gtm"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Domain & pengiriman",
-                "pages": [
-                  "id/azcustomdomain",
-                  "id/customdomain",
-                  "id/integrasi-lincah-mengantar",
-                  "id/cloudflare",
-                  "id/subdomain",
-                  "id/domain",
-                  "id/domain-manual-mailev",
-                  "id/redirect-www",
-                  "id/switchdns",
-                  "id/limit-lp",
-                  "id/multiple-homepage"
-                ]
-              },
-              {
-                "group": "Integrasi",
-                "pages": [
-                  "id/aktifkan-collaboration",
-                  "id/broadcast-waba",
-                  "id/plugin-ninja",
-                  "id/kontak-collaborations",
-                  "id/external-plugin",
-                  "id/failed-reg-waba",
-                  "id/broadcast-wa",
-                  "id/integrasi-ad-account",
-                  "id/birdsend",
-                  "id/balesotomatis",
-                  "id/watzap",
-                  "id/integrasimoota",
-                  "id/starsender",
-                  "id/woowa",
-                  "id/multiwagateway",
-                  "id/waba"
-                ]
-              },
-              {
-                "group": "Pengaturan & tim",
-                "pages": [
-                  "id/custom-jualan",
-                  "id/satset-jualan",
-                  "id/change-owner",
-                  "id/tambahbisnis",
-                  "id/quicktour",
-                  "id/role",
-                  "id/logout-scalev",
-                  "id/anggota",
-                  "id/otp",
-                  "id/user-setting",
-                  "id/gantiusername",
-                  "id/setting-biaya-khusus",
-                  "id/setting-fu",
-                  "id/followuptext",
-                  "id/jadwal-cs",
-                  "id/upgrade",
-                  "id/membuat-privacy-policy",
-                  "id/membuat-terms-of-service",
-                  "id/rapatscalev"
-                ]
-              },
-              {
-                "group": "Troubleshooting",
-                "pages": [
-                  "id/diblokir-negara",
-                  "id/notif-telegram-tidak-masuk",
-                  "id/abu-abu",
-                  "id/siapayangerror"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Developers",
-            "icon": "code-branch",
-            "pages": [
-              "id/dev-pendahuluan",
-              "id/otorisasi-dengan-o-auth",
-              "id/autentikasi-dengan-api-key",
-              "id/konektor-scalev-mcp",
-              {
-                "group": "Storefront API",
-                "pages": [
-                  "id/storefront-api-id/introduction",
-                  "id/storefront-api-id/auth",
-                  "id/storefront-api-id/checkout-payments",
-                  "id/storefront-api-id/advertising-conversion-events",
-                  "id/storefront-api-id/build-a-browser-only-storefront"
-                ]
-              },
-              {
-                "group": "Webhooks",
-                "pages": [
-                  "id/ringkasan-webhooks",
-                  "id/mengaktifkan-webhooks",
-                  "id/verifikasi-request-webhook",
-                  "id/webhooks-aplikasi",
-                  "id/event-webhook",
-                  "id/contoh-payload-webhook"
-                ]
-              },
-              {
-                "group": "Contoh penggunaan",
-                "pages": ["id/membuat-pesanan"]
-              },
-              {
-                "group": "Landing Pages",
-                "pages": [
-                  "id/api-landing-pages",
-                  "id/runtime-html-mode",
-                  "id/aksi-setelah-order-html-mode"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Referensi API",
-            "icon": "code",
-            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
-          },
-          {
-            "tab": "Changelog",
-            "icon": "newspaper",
-            "pages": ["id/changelog"]
-          }
-        ]
-      },
-      {
         "language": "en",
         "tabs": [
           {
-            "tab": "General",
-            "icon": "house",
+            "tab": "Guide",
             "pages": [
-              "en/index",
-              {
-                "group": "Payments & withdrawals",
-                "pages": [
-                  "en/2-types-of-epayment-fee-en",
-                  "en/pembayaran-cod-en",
-                  "en/detailepayment-en",
-                  "en/skemaepaymentscalev-old-en",
-                  "en/skemaepaymentscalev-en",
-                  "en/e-payment-fees",
-                  "en/e-payment-fee-example",
-                  "en/complete-guide-withdrawal-en",
-                  "en/withdrawal-at-scalev",
-                  "en/complete-guide-withdrawal-scalev-en",
-                  "en/tidak-masuk-balance-en",
-                  "en/instruksi-pembayaran-tidak-muncul-en",
-                  "en/check-manual-epayment-en",
-                  "en/rekening-en",
-                  "en/payment-waba-en",
-                  "en/add-epayment-en",
-                  "en/discount-specific-payment-method-en",
-                  "en/tokoepay-en",
-                  "en/add-e-payment",
-                  "en/epayment-net-revenue-en",
-                  "en/wa-invoice-en",
-                  "en/dropdown-payment-method-en",
-                  "en/conflict-en",
-                  "en/ewallet-to-qris-en",
-                  "en/scalevfeedi4tempat-en",
-                  "en/perhitungan-pajak-scalev-en",
-                  "en/pajak-scalev-en",
-                  "en/epayment-flow-en",
-                  "en/ovo-shopeepay-cepet-expired-en",
-                  "en/payment-required-en"
-                ]
-              },
-              {
-                "group": "Store, checkout & orders",
-                "pages": [
-                  "en/storefront-homepage-en",
-                  "en/produkfisik-en",
-                  "en/complete-guide-manage-order-en",
-                  "en/custom-warehouse-produk-en",
-                  "en/checkoutsekaliguslistbuilding-en",
-                  "en/importoo-en",
-                  "en/import-berdu-en",
-                  "en/purchase-event-value-en",
-                  "en/discount-manual-en",
-                  "en/warehouse-en",
-                  "en/variant-en",
-                  "en/add-whatsapp-business-store-en",
-                  "en/autodiscount-en",
-                  "en/ban-this-customer-en",
-                  "en/manual-order-en",
-                  "en/delete-form-en",
-                  "en/submit-to-wa-en",
-                  "en/wa-order-notification-en",
-                  "en/hard-filter-en",
-                  "en/ordermasuk-en",
-                  "en/anti-spam-order-en",
-                  "en/search-customer-order-en",
-                  "en/submite-en",
-                  "en/toko-en",
-                  "en/utm-form-embed-en",
-                  "en/funnel-toko-online-en",
-                  "en/field-telepon-tetap-muncul-en",
-                  "en/unavailable-courier-en",
-                  "en/require-courier-selection-en",
-                  "en/shipping-cost-difference-en",
-                  "en/order-shield-en",
-                  "en/duplicate-order-en"
-                ]
-              },
-              {
-                "group": "Landing pages",
-                "pages": [
-                  "en/edit-after-submit-en",
-                  "en/countdown-timer-en",
-                  "en/autotext-button-en",
-                  "en/landing-page-en",
-                  "en/countdown-en",
-                  "en/floating-button-cta-en",
-                  "en/floating-button-wa-en",
-                  "en/delete-landing-page-en",
-                  "en/popup-sales-en",
-                  "en/embed-reels-ig-en",
-                  "en/externalembed-en",
-                  "en/embed-youtube-shorts-en",
-                  "en/zoom-en",
-                  "en/exportimportlp-en",
-                  "en/limit-lp-en",
-                  "en/strikethrough-price-en",
-                  "en/optimize-landing-page-en",
-                  "en/swap-slug-en",
-                  "en/anti-copy-paste-en",
-                  "en/multiple-homepage-en",
-                  "en/slug-en",
-                  "en/scroll-en",
-                  "en/share-lp-en",
-                  "en/upsell-en",
-                  "en/kenapa-lp-lemot-en",
-                  "en/kenapa-oclp-rendah-en",
-                  "en/skor-pagespeed-rendah-en"
-                ]
-              },
-              {
-                "group": "Tracking & ads",
-                "pages": [
-                  "en/setting-meta-ads-user-en",
-                  "en/snackvideouser-en",
-                  "en/setting-tiktok-ads-user-en",
-                  "en/speed-boost-en",
-                  "en/tracking-email-en",
-                  "en/default-events-en",
-                  "en/autofill-en",
-                  "en/add-pixel-en",
-                  "en/add-custom-audience-en",
-                  "en/check-event-notification-en",
-                  "en/custom-audience-meta-en",
-                  "en/create-snackvideo-event-api-pixel-en",
-                  "en/funnel-analysis-en",
-                  "en/manual-trigger-purchase-en",
-                  "en/google-ads-gtm-en",
-                  "en/setting-pixel-snackvideo-en",
-                  "en/setting-pixel-tiktok-en",
-                  "en/testing-events-manager-id-en",
-                  "en/test-event-snackvideo-en",
-                  "en/test-event-tiktok-en",
-                  "en/events-manager-testing-en",
-                  "en/track-ads-utm-en",
-                  "en/verifikasimeta-en",
-                  "en/triggerpurchase-en",
-                  "en/pastikantiktok-en",
-                  "en/tambah-pixel-tiktok-en",
-                  "en/conversionapi-en",
-                  "en/best-practices-meta-en",
-                  "en/real-purchase-tidak-muncul-en"
-                ]
-              },
-              {
-                "group": "Domains & delivery",
-                "pages": [
-                  "en/complete-guide-custom-domain-en",
-                  "en/subdomain-en",
-                  "en/domain-manual-mailev-en",
-                  "en/domain-en",
-                  "en/integrasi-lincah-mengantar-en",
-                  "en/cloudflare-en",
-                  "en/redirect-www-en",
-                  "en/switchdns-en",
-                  "en/customdomain-en"
-                ]
-              },
-              {
-                "group": "LMS & digital products",
-                "pages": [
-                  "en/whitelist-en",
-                  "en/mailev-identity-en",
-                  "en/broadcast-in-mailev-en",
-                  "en/salah-input-email-en",
-                  "en/mailketing-en",
-                  "en/login-lms-as-owner-en",
-                  "en/member-area-pwa-en",
-                  "en/not-bounced-en",
-                  "en/powered-by-scalev-en",
-                  "en/send-lms-access-manual-en",
-                  "en/jualandigital-en",
-                  "en/lms-en",
-                  "en/link-akses-404-en"
-                ]
-              },
-              {
-                "group": "Integrations",
-                "pages": [
-                  "en/enable-collaboration-en",
-                  "en/plugin-ninja-en",
-                  "en/broadcast-waba-en",
-                  "en/broadcast-whatsapp-en",
-                  "en/birdsend-en",
-                  "en/integrasi-ad-account-en",
-                  "en/integrasimoota-en",
-                  "en/starsender-en",
-                  "en/balesotomatis-en",
-                  "en/watzap-en",
-                  "en/woowa-en",
-                  "en/multiwagateway-en",
-                  "en/waba-en",
-                  "en/failed-reg-waba-en",
-                  "en/external-plugin-en",
-                  "en/kontak-collaborations-en"
-                ]
-              },
-              {
-                "group": "Settings & team",
-                "pages": [
-                  "en/custom-jualan-en",
-                  "en/satset-jualan-en",
-                  "en/members-en",
-                  "en/jadwal-cs-en",
-                  "en/change-owner-en",
-                  "en/change-username-en",
-                  "en/user-setting-en",
-                  "en/create-privacy-policy-en",
-                  "en/create-terms-of-service-en",
-                  "en/otp-en",
-                  "en/logout-scalev-en",
-                  "en/setting-biaya-khusus-en",
-                  "en/setting-fu-en",
-                  "en/followuptext-en",
-                  "en/upgrade-en",
-                  "en/quicktour-en",
-                  "en/role-en",
-                  "en/rapatscalev-en",
-                  "en/tambahbisnis-en"
-                ]
-              },
-              {
-                "group": "Troubleshooting",
-                "pages": [
-                  "en/grayed-out-save-button-en",
-                  "en/diblokir-negara-en",
-                  "en/siapayangerror-en",
-                  "en/notif-telegram-tidak-masuk-en"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Developers",
-            "icon": "code-branch",
-            "pages": [
-              "en/dev-introduction",
+              "en",
               "en/authorization-with-o-auth",
               "en/authentication-with-api-key",
               "en/scalev-mcp-connector",
@@ -620,7 +46,9 @@
               },
               {
                 "group": "Use cases",
-                "pages": ["en/creating-orders"]
+                "pages": [
+                  "en/creating-orders"
+                ]
               },
               {
                 "group": "Landing pages",
@@ -634,13 +62,73 @@
           },
           {
             "tab": "API Reference",
-            "icon": "code",
             "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
           },
           {
             "tab": "Changelog",
-            "icon": "newspaper",
-            "pages": ["en/changelog"]
+            "pages": [
+              "en/changelog"
+            ]
+          }
+        ],
+        "default": true
+      },
+      {
+        "language": "id",
+        "tabs": [
+          {
+            "tab": "Guide",
+            "pages": [
+              "id",
+              "id/otorisasi-dengan-o-auth",
+              "id/autentikasi-dengan-api-key",
+              "id/konektor-scalev-mcp",
+              {
+                "group": "Storefront API",
+                "pages": [
+                  "id/storefront-api-id/introduction",
+                  "id/storefront-api-id/auth",
+                  "id/storefront-api-id/checkout-payments",
+                  "id/storefront-api-id/advertising-conversion-events",
+                  "id/storefront-api-id/build-a-browser-only-storefront"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "id/ringkasan-webhooks",
+                  "id/mengaktifkan-webhooks",
+                  "id/verifikasi-request-webhook",
+                  "id/webhooks-aplikasi",
+                  "id/event-webhook",
+                  "id/contoh-payload-webhook"
+                ]
+              },
+              {
+                "group": "Contoh penggunaan",
+                "pages": [
+                  "id/membuat-pesanan"
+                ]
+              },
+              {
+                "group": "Landing Pages",
+                "pages": [
+                  "id/api-landing-pages",
+                  "id/runtime-html-mode",
+                  "id/aksi-setelah-order-html-mode"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Referensi API",
+            "openapi": "https://api-openapi.scalev.com/specs/v3/openapi.json"
+          },
+          {
+            "tab": "Changelog",
+            "pages": [
+              "id/changelog"
+            ]
           }
         ]
       }
