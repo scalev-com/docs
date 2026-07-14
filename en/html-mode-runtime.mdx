@@ -346,6 +346,8 @@ Use `estimateSummary` only when the checkout UI displays totals before submit. D
 
 Creates a real public order and validates the payload. Call this only after a visitor intentionally submits the form.
 
+The runtime automatically assigns an idempotent checkout attempt to each submission. If the browser loses the response, it checks whether Nexus already committed the order and safely retries once only when needed. You do not need to create, persist, or pass an attempt ID in `payload`.
+
 ```js
 async function submitOrder(event) {
   event.preventDefault();
