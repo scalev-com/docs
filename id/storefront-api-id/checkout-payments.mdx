@@ -189,6 +189,26 @@ Endpoint checkout memakai courier service, warehouse, destinasi, metode pembayar
 
 Jika berhasil, response berisi data public order ringkas yang dibuat, termasuk `secret_slug`, `public_order_url`, `payment_url`, status, total, object map `variants` dan `bundle_price_options` yang sudah ada, line item, detail pengiriman, dan field payment. ID order internal, revenue khusus dashboard, platform fee, payment-status history, dan atribusi affiliate tidak dikembalikan. Gunakan `secret_slug` untuk membaca atau mengubah order. Gunakan `payment_url` hanya sebagai hosted fallback jika storefront Anda tidak merender instruksi payment sendiri.
 
+Saat pembeli membayar surcharge E-Payment Link, response mengekspos jumlah yang
+dibayar customer sebagai `payment_link_income`. Nilai ini terpisah dari
+`other_income` dan sudah termasuk dalam `gross_revenue`.
+
+`payment_method` biasanya memakai satu metode canonical yang dikembalikan
+endpoint payment method store. Virtual account memakai value flat seperti
+`va_bca` dan `va_bri`.
+
+### Checkout E-Payment Link strict two-step
+
+Saat store mengaktifkan checkout strict two-step dan menawarkan
+`payment_link`, Anda dapat mengosongkan `payment_method`. Scalev menetapkan
+metode order menjadi `payment_link` dan mengembalikan `payment_url` menuju
+halaman E-Payment Link Scalev, tempat pembeli memilih metode konkretnya.
+
+Jangan render `payment_link` sebagai virtual account atau e-wallet. Arahkan
+pembeli ke `payment_url`. Setelah pembayaran, `payment_method` order menjadi
+metode canonical yang benar-benar digunakan, sedangkan asal E-Payment Link
+tetap disimpan secara terpisah oleh Scalev.
+
 ## Instruksi payment
 
 Setelah checkout, panggil:
@@ -201,7 +221,7 @@ Endpoint ini idempotent. Jika instruksi payment sudah ada, response mengembalika
 
 Gunakan urutan preferensi berikut di browser storefront:
 
-1. Render instruksi per metode dari `payment_method`, `sub_payment_method`, `epayment_provider`, dan `pg_payment_info`.
+1. Render instruksi per metode dari `payment_method` canonical, `epayment_provider`, dan `pg_payment_info`.
 2. Untuk metode hosted oleh provider, buka URL provider dari `pg_payment_info` saat provider memang membutuhkan redirect.
 3. Gunakan `payment_url` hanya sebagai fallback ke payment page hosted Scalev jika storefront Anda belum mendukung metode atau response provider tersebut.
 4. Poll public order saat metode payment memerlukan data gateway yang mungkin belum langsung tersedia.
@@ -245,9 +265,9 @@ Tampilkan total order, rekening manual bank transfer, expiry countdown jika akti
 
 Tampilkan body sukses COD dan jangan tampilkan countdown payment. Payment creation dapat mengembalikan `pg_payment_info` kosong.
 
-Virtual account (`va`):
+Virtual account (`va_*`):
 
-Render bank/channel virtual account dari `sub_payment_method`, `vaNumber`, dan `vaAccountHolder` jika tersedia. Tampilkan tombol copy dan link tutorial pembayaran. Bank code yang dikenal mencakup `BRI`, `MANDIRI`, `PERMATA`, `BNI`, `BCA`, `MAYBANK`, `CIMB`, `BNC`, `DANAMON`, `BSI`, `AG`, `BJB`, `SAHABAT_SAMPOERNA`, `ARTAJASA`, `BMI`, dan `BTN`.
+Tentukan bank dari metode canonical, lalu render `vaNumber` dan `vaAccountHolder` jika tersedia. Tampilkan tombol copy dan link tutorial pembayaran. Value canonical yang didukung adalah `va_bca`, `va_bni`, `va_bri`, `va_mandiri`, `va_permata`, `va_cimb`, `va_bsi`, `va_maybank`, `va_bnc`, `va_danamon`, `va_artha_graha`, `va_muamalat`, `va_btn`, `va_ocbc`, `va_bjb`, `va_sahabat_sampoerna`, dan `va_artajasa`.
 
 QRIS (`qris`):
 
@@ -271,11 +291,11 @@ Render `vaNumber` sebagai `No Pembayaran`, tampilkan `vaAccountHolder` jika ters
 
 ## Polling dan cek status
 
-Untuk metode e-payment (`gopay`, `card`, `invoice`, `va`, `qris`, `ovo`, `dana`, `shopeepay`, `linkaja`, `alfamart`, dan `indomaret`), success page bawaan menunggu `pg_payment_info` muncul dengan refetch public order sampai 15 kali dengan jeda 1,5 detik.
+Untuk metode e-payment (`gopay`, `card`, `invoice`, semua metode canonical `va_*`, `qris`, `ovo`, `dana`, `shopeepay`, `linkaja`, `alfamart`, dan `indomaret`), success page bawaan menunggu `pg_payment_info` muncul dengan refetch public order sampai 15 kali dengan jeda 1,5 detik.
 
 Untuk order pending unpaid dengan `card`, `invoice`, `shopeepay`, `dana`, `qris`, `linkaja`, `gopay`, `bank_transfer`, `indomaret`, dan `alfamart`, success page bawaan kemudian me-refresh public order setiap 5 detik sambil menunggu konfirmasi payment.
 
-Untuk `va`, `bank_transfer`, `qris`, `alfamart`, dan `indomaret`, success page bawaan juga menampilkan aksi manual "cek status pembayaran".
+Untuk metode canonical `va_*`, `bank_transfer`, `qris`, `alfamart`, dan `indomaret`, success page bawaan juga menampilkan aksi manual "cek status pembayaran".
 
 ## Authenticated customer checkout
 

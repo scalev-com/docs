@@ -12,6 +12,11 @@ Saat ini Scalev mendukung event webhook berikut:
 * `order.payment_status_changed`: Dikirim saat status pembayaran order berubah.
 * `order.spam_created`: Dikirim saat spam order dibuat.
 
+Payload webhook order memakai satu `payment_method` canonical; virtual account
+memakai value flat seperti `va_bca`. `payment_link_id` dan
+`is_from_payment_link` mempertahankan asal E-Payment Link setelah order paid
+menampilkan metode konkret yang digunakan pembeli.
+
 <br />
 
 ## Struktur payload
@@ -33,6 +38,9 @@ Contoh:
   "unique_id": "event_I7fkiBF4YksYDsKbVe5ZOEyZ",
   "timestamp": "2025-01-29T20:28:25.046183Z",
   "data": {
+    "id": "01948092-9b80-7f91-b23d-1a8686278331",
+    "payment_link_id": null,
+    "is_from_payment_link": false,
     "order_id": "250130JQHFZG",
     "secret_slug": "WjCc_Jk-EK2F8xLCseNKfjFIaESbm9-W2RZvRaas",
     "status": "pending",
@@ -62,7 +70,6 @@ Contoh:
     },
     "epayment_provider": null,
     "payment_method": "bank_transfer",
-    "sub_payment_method": null,
     "financial_entity": {
       "code": "bni",
       "name": "Bank Negara Indonesia"
@@ -83,6 +90,7 @@ Contoh:
     "product_discount": "0.00",
     "other_income_name": "Biaya Lainnya",
     "other_income": "0.00",
+    "payment_link_income": "0.00",
     "discount_rate": "0.00",
     "cogs": "45095.00",
     "shipping_cost": "19000.00",

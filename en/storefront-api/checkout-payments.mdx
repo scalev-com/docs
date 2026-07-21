@@ -190,6 +190,26 @@ The checkout endpoint uses the selected courier service, warehouse, destination,
 
 On success, the response includes the created slim public order data, including `secret_slug`, `public_order_url`, `payment_url`, status, totals, the existing `variants` and `bundle_price_options` object maps, line items, shipping details, and payment fields. Internal order IDs, dashboard-only revenue fields, platform fees, payment-status history, and affiliate attribution are not returned. Use `secret_slug` to read or update the order. Use `payment_url` only as a hosted fallback if your storefront does not render the payment instructions itself.
 
+When the buyer pays an E-Payment Link surcharge, the response exposes that
+customer-paid amount as `payment_link_income`. It is separate from
+`other_income` and is included in `gross_revenue`.
+
+`payment_method` normally uses one canonical method returned by the store's
+payment-method endpoint. Virtual accounts use flat values such as `va_bca` and
+`va_bri`.
+
+### Strict two-step E-Payment Link checkout
+
+When the store enables strict two-step checkout and offers `payment_link`, you
+may omit `payment_method`. Scalev resolves the order to `payment_link` and
+returns a `payment_url` for the Scalev E-Payment Link page, where the buyer
+selects the concrete method.
+
+Do not render `payment_link` as a virtual account or wallet. Redirect the buyer
+to `payment_url`. After payment, the order's `payment_method` becomes the
+canonical method actually used, while Scalev keeps the E-Payment Link origin
+separately.
+
 ## Payment instructions
 
 After checkout, call:
@@ -202,7 +222,7 @@ The endpoint is idempotent. If payment instructions already exist, the response 
 
 Use this order of preference in a browser storefront:
 
-1. Render the order's method-specific instructions from `payment_method`, `sub_payment_method`, `epayment_provider`, and `pg_payment_info`.
+1. Render the order's method-specific instructions from the canonical `payment_method`, `epayment_provider`, and `pg_payment_info`.
 2. For provider-hosted methods, open the provider URL from `pg_payment_info` when the provider requires a redirect.
 3. Use `payment_url` only as a fallback to the Scalev-hosted payment page when your storefront does not yet support that method or provider response.
 4. Poll the public order when the method needs gateway data that may not exist immediately.
@@ -283,9 +303,9 @@ PATCH /v3/stores/{store_id}/public/orders/{secret_slug}
 
 Display the COD success body and do not show a payment countdown. Payment creation may return an empty `pg_payment_info`.
 
-Virtual account (`va`):
+Virtual accounts (`va_*`):
 
-Render the virtual account bank/channel from `sub_payment_method`, the `vaNumber`, and the optional `vaAccountHolder`. Show a copy button and a payment tutorial link. Known bank codes include `BRI`, `MANDIRI`, `PERMATA`, `BNI`, `BCA`, `MAYBANK`, `CIMB`, `BNC`, `DANAMON`, `BSI`, `AG`, `BJB`, `SAHABAT_SAMPOERNA`, `ARTAJASA`, `BMI`, and `BTN`.
+Derive the bank from the canonical method and render `vaNumber` plus the optional `vaAccountHolder`. Show a copy button and a payment tutorial link. Supported canonical values are `va_bca`, `va_bni`, `va_bri`, `va_mandiri`, `va_permata`, `va_cimb`, `va_bsi`, `va_maybank`, `va_bnc`, `va_danamon`, `va_artha_graha`, `va_muamalat`, `va_btn`, `va_ocbc`, `va_bjb`, `va_sahabat_sampoerna`, and `va_artajasa`.
 
 QRIS (`qris`):
 
@@ -309,11 +329,11 @@ Render `vaNumber` as `No Pembayaran`, show `vaAccountHolder` when present, and p
 
 ## Polling and status checks
 
-For e-payment methods (`gopay`, `card`, `invoice`, `va`, `qris`, `ovo`, `dana`, `shopeepay`, `linkaja`, `alfamart`, and `indomaret`), the hosted success page waits for `pg_payment_info` to appear by refetching the public order up to 15 times with a 1.5 second delay.
+For e-payment methods (`gopay`, `card`, `invoice`, any canonical `va_*` method, `qris`, `ovo`, `dana`, `shopeepay`, `linkaja`, `alfamart`, and `indomaret`), the hosted success page waits for `pg_payment_info` to appear by refetching the public order up to 15 times with a 1.5 second delay.
 
 For pending unpaid orders with `card`, `invoice`, `shopeepay`, `dana`, `qris`, `linkaja`, `gopay`, `bank_transfer`, `indomaret`, and `alfamart`, the hosted success page then refreshes the public order every 5 seconds while waiting for payment confirmation.
 
-For `va`, `bank_transfer`, `qris`, `alfamart`, and `indomaret`, it also shows a manual "check payment status" action.
+For canonical `va_*` methods, `bank_transfer`, `qris`, `alfamart`, and `indomaret`, it also shows a manual "check payment status" action.
 
 ## Authenticated customer checkout
 

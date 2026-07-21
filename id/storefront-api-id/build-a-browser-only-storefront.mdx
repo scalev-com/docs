@@ -325,7 +325,7 @@ Gunakan field order ini untuk merender halaman payment:
 - `other_income`
 - `gross_revenue`
 - `payment_method`
-- `sub_payment_method`
+- `payment_link_income`
 - `payment_account_holder`
 - `payment_account_number`
 - `payment_url`
@@ -334,7 +334,12 @@ Gunakan field order ini untuk merender halaman payment:
 - `handler_phone`
 - `chat_message`
 
-Manual bank transfer bisa memakai `store.payment_accounts` saat tidak ada akun spesifik pada order. Metode hosted atau provider-backed bisa memakai `payment_url` atau `pg_payment_info`. `gross_revenue` adalah jumlah yang dibayar buyer.
+`payment_method` memakai value canonical; virtual account memakai value flat
+seperti `va_bca`. Manual bank transfer bisa memakai `store.payment_accounts`
+saat tidak ada akun spesifik pada order. Metode hosted atau provider-backed
+bisa memakai `payment_url` atau `pg_payment_info`. `payment_link_income` adalah
+surcharge E-Payment Link yang dibayar buyer, sedangkan `gross_revenue` adalah
+total jumlah yang dibayar buyer.
 
 Lihat [Checkout dan Payment](/id/storefront-api-id/checkout-payments) untuk aturan rendering per metode.
 

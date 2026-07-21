@@ -16,7 +16,9 @@ Runtime currently supports these filters:
 The response also includes:
 
 - `payment_methods`
-- `sub_payment_methods`
+
+`payment_methods` contains the canonical values accepted by order APIs. Virtual
+accounts use flat codes such as `va_bca`, `va_bni`, and `va_bri`.
 
 If you want a dedicated payment-method lookup for a specific store, use:
 
@@ -45,7 +47,7 @@ For digital product orders, the minimal payload is:
       "variant_unique_id": "variant_xxx"
     }
   ],
-  "payment_method": "invoice"
+  "payment_method": "payment_link"
 }
 ```
 
@@ -63,7 +65,7 @@ Or if you want to use bundles instead of products:
       "bundle_price_option_unique_id": "bpo_xxx"
     }
   ],
-  "payment_method": "invoice"
+  "payment_method": "payment_link"
 }
 ```
 
@@ -84,6 +86,11 @@ The response includes:
 Use `id` for later business API calls such as `GET /v3/orders/{id}` or `PATCH /v3/orders/{id}`. Legacy numeric order IDs for migrated orders are still accepted on ID routes, but new order responses return UUIDs.
 
 Use `payment_url` for the customer redirect.
+
+When `payment_method` is `payment_link`, the customer selects the final payment
+method on Scalev's E-Payment Link page. The order keeps its E-Payment Link
+origin while the paid order exposes the canonical method that was actually
+used.
 
 ***
 
@@ -130,7 +137,7 @@ Minimal example:
       "variant_unique_id": "variant_xxx"
     }
   ],
-  "payment_method": "invoice",
+  "payment_method": "payment_link",
   "address": "Jl. Pegangsaan Timur No. 28",
   "location_id": 1,
   "postal_code": "12345",
