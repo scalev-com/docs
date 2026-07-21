@@ -4,6 +4,19 @@ description: "Pembaruan produk dan dokumentasi"
 rss: true
 ---
 
+<Update label="Juli 2026" tags={["API","Docs"]} description="Metode pembayaran canonical dan E-Payment Link">
+  API order dan Storefront kini memakai satu `payment_method` canonical.
+  Virtual account memakai value flat seperti `va_bca`; tidak ada field metode
+  pembayaran sekunder dalam kontrak request atau response yang terdokumentasi.
+  Store dapat menawarkan `payment_link`, dan checkout strict two-step dapat
+  mengosongkan `payment_method` agar Scalev mengarahkan pembeli ke selector
+  E-Payment Link. Response public order mengekspos pendapatan surcharge
+  E-Payment Link yang dibayar customer sebagai `payment_link_income`. Webhook
+  order mengekspos `payment_link_id` dan `is_from_payment_link` agar asal order
+  tetap tersedia setelah `payment_method` order paid berubah menjadi metode
+  konkret yang digunakan.
+</Update>
+
 <Update label="Mei 2026" tags={["API","Docs"]} description="ID order setelah partisi">
   Response order bisnis kini mengembalikan primary key order canonical sebagai
   string UUIDv7 setelah migrasi tabel order ke partisi. Gunakan `id` dari
@@ -68,7 +81,7 @@ rss: true
 </Update>
 
 <Update label="Mei 2026" tags={["API"]} description="Klarifikasi response pembayaran order">
-  Response pembayaran order kini mendokumentasikan `pg_payment_info` per tipe provider. Metode manual seperti `bank_transfer` dan `cod` mengembalikan object kosong; virtual account mengekspos referensi provider dan detail akun; QRIS mengekspos data QR atau payload gambar QR; e-wallet, kartu, dan invoice dapat mengekspos action provider, sementara browser sebaiknya memakai `payment_url` untuk redirect hosted. `sub_payment_method` didokumentasikan sebagai channel provider, misalnya kode bank virtual account, saat tersedia.
+  Response pembayaran order kini mendokumentasikan `pg_payment_info` per tipe provider. Metode manual seperti `bank_transfer` dan `cod` mengembalikan object kosong; virtual account mengekspos referensi provider dan detail akun; QRIS mengekspos data QR atau payload gambar QR; e-wallet, kartu, dan invoice dapat mengekspos action provider, sementara browser sebaiknya memakai `payment_url` untuk redirect hosted. Metode pembayaran memakai value canonical flat, termasuk kode virtual account khusus bank seperti `va_bca`.
 </Update>
 
 <Update label="Mei 2026" tags={["API"]} description="Rate limiting Storefront">

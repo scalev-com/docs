@@ -16,7 +16,9 @@ Saat ini runtime mendukung filter berikut:
 Response juga mencakup:
 
 - `payment_methods`
-- `sub_payment_methods`
+
+`payment_methods` berisi value canonical yang diterima API order. Virtual
+account memakai kode flat seperti `va_bca`, `va_bni`, dan `va_bri`.
 
 Jika Anda ingin mengambil daftar metode pembayaran khusus untuk satu toko, gunakan:
 
@@ -45,7 +47,7 @@ Untuk pesanan produk digital, payload minimalnya adalah:
       "variant_unique_id": "variant_xxx"
     }
   ],
-  "payment_method": "invoice"
+  "payment_method": "payment_link"
 }
 ```
 
@@ -63,7 +65,7 @@ Atau jika ingin menggunakan bundle, gunakan payload berikut:
       "bundle_price_option_unique_id": "bpo_xxx"
     }
   ],
-  "payment_method": "invoice"
+  "payment_method": "payment_link"
 }
 ```
 
@@ -84,6 +86,11 @@ Response akan mencakup:
 Gunakan `id` untuk panggilan API bisnis berikutnya seperti `GET /v3/orders/{id}` atau `PATCH /v3/orders/{id}`. ID numerik legacy untuk order yang sudah dimigrasikan masih diterima di route berbasis ID, tetapi response order baru mengembalikan UUID.
 
 Gunakan `payment_url` untuk redirect customer.
+
+Saat `payment_method` bernilai `payment_link`, customer memilih metode
+pembayaran final di halaman E-Payment Link Scalev. Order tetap menyimpan asal
+E-Payment Link, sedangkan order yang sudah dibayar mengekspos metode canonical
+yang benar-benar digunakan.
 
 ---
 
@@ -130,7 +137,7 @@ Contoh minimal:
       "variant_unique_id": "variant_xxx"
     }
   ],
-  "payment_method": "invoice",
+  "payment_method": "payment_link",
   "address": "Jl. Pegangsaan Timur No. 28",
   "location_id": 1,
   "postal_code": "12345",

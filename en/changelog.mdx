@@ -4,6 +4,18 @@ description: "Product updates and documentation changes"
 rss: true
 ---
 
+<Update label="July 2026" description="Canonical payment methods and E-Payment Link" tags={["API", "Docs"]}>
+  Order and Storefront APIs now use one canonical `payment_method`. Virtual
+  accounts use flat values such as `va_bca`; there is no secondary payment
+  method field in the documented request or response contract. Stores can
+  offer `payment_link`, and strict two-step checkout can omit
+  `payment_method` so Scalev routes the buyer to the E-Payment Link selector.
+  Public order responses expose customer-paid E-Payment Link surcharge income
+  as `payment_link_income`. Order webhooks expose `payment_link_id` and
+  `is_from_payment_link` so the origin remains available after a paid order's
+  `payment_method` changes to the concrete method used.
+</Update>
+
 <Update label="May 2026" description="Partitioned order IDs" tags={["API", "Docs"]}>
   Business order responses now return the canonical order primary key as a
   UUIDv7 string after the partitioned orders-table migration. Use the response
@@ -134,8 +146,8 @@ rss: true
   virtual account methods expose provider reference and account details;
   QRIS responses expose QR data or a QR image payload; e-wallet, card, and
   invoice methods may expose provider actions while the browser should use
-  `payment_url` for hosted redirects. `sub_payment_method` is documented as
-  the provider channel, such as a virtual-account bank code, when applicable.
+  `payment_url` for hosted redirects. Payment methods use canonical flat
+  values, including bank-specific virtual-account codes such as `va_bca`.
 </Update>
 
 <Update label="May 2026" description="Storefront rate limiting" tags={["API"]}>
