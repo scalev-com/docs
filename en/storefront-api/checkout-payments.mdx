@@ -323,17 +323,17 @@ Card (`card`) and invoice/hosted payment (`invoice`):
 
 Open the mapped `invoiceUrl` as a button/redirect. The hosted success page redirects automatically when `invoiceUrl` exists and `renderUrlAs` is `button`.
 
-Alfamart and Indomaret:
+Alfamart:
 
 Render `vaNumber` as `No Pembayaran`, show `vaAccountHolder` when present, and provide a copy action.
 
 ## Polling and status checks
 
-For e-payment methods (`gopay`, `card`, `invoice`, any canonical `va_*` method, `qris`, `ovo`, `dana`, `shopeepay`, `linkaja`, `alfamart`, and `indomaret`), the hosted success page waits for `pg_payment_info` to appear by refetching the public order up to 15 times with a 1.5 second delay.
+For e-payment methods (`gopay`, `card`, `invoice`, any canonical `va_*` method, `qris`, `ovo`, `dana`, `shopeepay`, `linkaja`, and `alfamart`), the hosted success page waits for `pg_payment_info` to appear by refetching the public order up to 15 times with a 1.5 second delay.
 
-For pending unpaid orders with `card`, `invoice`, `shopeepay`, `dana`, `qris`, `linkaja`, `gopay`, `bank_transfer`, `indomaret`, and `alfamart`, the hosted success page then refreshes the public order every 5 seconds while waiting for payment confirmation.
+For pending unpaid orders with `card`, `invoice`, `shopeepay`, `dana`, `qris`, `linkaja`, `gopay`, `bank_transfer`, and `alfamart`, the hosted success page then refreshes the public order every 5 seconds while waiting for payment confirmation.
 
-For canonical `va_*` methods, `bank_transfer`, `qris`, `alfamart`, and `indomaret`, it also shows a manual "check payment status" action.
+For canonical `va_*` methods, `bank_transfer`, `qris`, and `alfamart`, it also shows a manual "check payment status" action.
 
 ## Authenticated customer checkout
 
