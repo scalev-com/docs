@@ -285,17 +285,17 @@ Card (`card`) dan invoice/hosted payment (`invoice`):
 
 Buka `invoiceUrl` hasil mapping sebagai button/redirect. Hosted success page otomatis redirect ketika `invoiceUrl` tersedia dan `renderUrlAs` bernilai `button`.
 
-Alfamart dan Indomaret:
+Alfamart:
 
 Render `vaNumber` sebagai `No Pembayaran`, tampilkan `vaAccountHolder` jika tersedia, dan sediakan aksi copy.
 
 ## Polling dan cek status
 
-Untuk metode e-payment (`gopay`, `card`, `invoice`, semua metode canonical `va_*`, `qris`, `ovo`, `dana`, `shopeepay`, `linkaja`, `alfamart`, dan `indomaret`), success page bawaan menunggu `pg_payment_info` muncul dengan refetch public order sampai 15 kali dengan jeda 1,5 detik.
+Untuk metode e-payment (`gopay`, `card`, `invoice`, semua metode canonical `va_*`, `qris`, `ovo`, `dana`, `shopeepay`, `linkaja`, dan `alfamart`), success page bawaan menunggu `pg_payment_info` muncul dengan refetch public order sampai 15 kali dengan jeda 1,5 detik.
 
-Untuk order pending unpaid dengan `card`, `invoice`, `shopeepay`, `dana`, `qris`, `linkaja`, `gopay`, `bank_transfer`, `indomaret`, dan `alfamart`, success page bawaan kemudian me-refresh public order setiap 5 detik sambil menunggu konfirmasi payment.
+Untuk order pending unpaid dengan `card`, `invoice`, `shopeepay`, `dana`, `qris`, `linkaja`, `gopay`, `bank_transfer`, dan `alfamart`, success page bawaan kemudian me-refresh public order setiap 5 detik sambil menunggu konfirmasi payment.
 
-Untuk metode canonical `va_*`, `bank_transfer`, `qris`, `alfamart`, dan `indomaret`, success page bawaan juga menampilkan aksi manual "cek status pembayaran".
+Untuk metode canonical `va_*`, `bank_transfer`, `qris`, dan `alfamart`, success page bawaan juga menampilkan aksi manual "cek status pembayaran".
 
 ## Authenticated customer checkout
 
