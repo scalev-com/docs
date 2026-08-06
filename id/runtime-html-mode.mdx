@@ -346,6 +346,8 @@ Gunakan `estimateSummary` hanya saat UI checkout menampilkan total sebelum submi
 
 Membuat public order sungguhan dan memvalidasi payload. Panggil method ini hanya setelah pengunjung sengaja submit form.
 
+Runtime otomatis menetapkan order-creation attempt yang idempotent untuk setiap submission. Jika browser kehilangan response, runtime akan memeriksa apakah Nexus sudah menyimpan order dan hanya melakukan satu retry yang aman jika diperlukan. Anda tidak perlu membuat, menyimpan, atau mengirim attempt ID di `payload`.
+
 ```js
 async function submitOrder(event) {
   event.preventDefault();
